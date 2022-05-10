@@ -1,6 +1,7 @@
-\documentclass[12pt]{article}
+\documentclass[12pt, a4paper]{article}
 
 \usepackage{tikz}
+\usepackage{setspace}
 
 
 \begin{document}
@@ -12,14 +13,14 @@
     {\scshape\huge OpenID Connect Doctor \par}
     {\scshape\Large Project 8 \par}
 \end{titlepage}
-
+\onehalfspacing
 \section{Runtime Components}
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=\textwidth]{runtime_comp}
+    \includegraphics[width=.7\textwidth]{runtime_comp}
 \end{figure}
 
-{\large The OpenID Connect Doctor is standalone CLI tool, should be able to run on as many Operating Systems as possible. }
+\noindent {\large The OpenID Connect Doctor is a standalone CLI tool, that should be able to run on as many Operating Systems as possible. Furthermore, the application is required to work without the user having to install any additional programs. For this reason, it was decided, that the OpenID Connect Doctor should consist of only a single NodeJS application and use as few dependencies as possible. As the OpenID Connect Doctor must request tokens from an authorization server using OpenID Connect, it requires an interface to connect to a given authorization server using REST. To fully fulfill its task, the OpenID Connect Doctor is split into multiple smaller internal components, which carry out different tasks like requesting a token, decoding a token, etc. }
 
 \newpage
 \section{Code Components}
@@ -28,19 +29,40 @@
     \includegraphics[width=\textwidth]{Code-Components}
 \end{figure}
 
-
+\newpage
 \section{Technology Stack}
 \begin{center}
-\begin{tabular}{|l|l|l|l|}
+\begin{tabular}{|p{1.5cm}|p{9cm}|p{1.5cm}|p{2cm}|}
+\hline
+\textbf{Type} & Programming Language & & \\
+\hline
+\textbf{Name} & \textbf{Description} & \textbf{Version} & \textbf{License}\\
+\hline
+NodeJS & Programming Language used to implement the application & 16.15.0 & MIT License\\
+\hline
+\end{tabular}\vspace{1cm}
+
+\begin{tabular}{|p{1.5cm}|p{9cm}|p{1.5cm}|p{2cm}|}
     \hline
-    \textbf{Tool} & \textbf{Type} & \textbf{Version} & \textbf{Licence} \\\hline
-    NodeJS & Programming Language & 16.15.0 & MIT\\
+    \textbf{Type} & Package Manager & & \\
     \hline
-    npm & Package Manager & 8.5.5 & MIT\\
+    \textbf{Name} & \textbf{Description} & \textbf{Version} & \textbf{License}\\
     \hline
-    Git & Version Control & - & MIT\\
+    npm\textcolor{white}{aaa} & Package Manager is used in combination with the Programming Language to potentionally add additional libraries to create the application & 8.5.5 & Artistic License 2.0\\
+    \hline
+\end{tabular}\vspace{1cm}
+
+\begin{tabular}{|p{1.5cm}|p{9cm}|p{1.5cm}|p{2cm}|}
+    \hline
+    \textbf{Type} & Version Control & & \\
+    \hline
+    \textbf{Name} & \textbf{Description} & \textbf{Version} & \textbf{License}\\
+    \hline
+    Git\textcolor{white}{aaaaa} & Version Control employed to syoncronize to code with the developers  & - & GPL-2.0-only\\
     \hline
 \end{tabular}
+
+
 \end{center}
 
 

@@ -1,15 +1,18 @@
 # Required information
 
-1. Authentication Server (Authorisation endpoint URL)
+1. **Authentication Server (Authorisation endpoint URL)**
+
 The JWT token has to come from the authentication server. That will be defined as a URL.
 ![][pictures/client-authentication-token.png]
 Therefore, the address of the authentication server (OpenID) is required to request a token.
 
-2. Authorized Applications
+2. **Authorized Applications**
+
 Client applications have to be registered at the authentication server, that they can execute OAuth 2.0 grants before you can request tokens.
 There is the [implicit grant](https://datatracker.ietf.org/doc/html/rfc6749#section-4.2) and the refreshing [authorization code grant](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1) possible.
 
-3. Registration Token
+3. **Registration Token**
+
 A registration token is required to receive access to tokens. That can be requested with curl.
 Example from [https://connect2id.com/products/server/docs/guides/client-registration](https://connect2id.com/products/server/docs/guides/client-registration):
 ```
@@ -44,7 +47,8 @@ Pragma: no-cache
 }
 ```
 
-4) Registration for Client Secret JWT
+4) **Registration for Client Secret JWT**
+
 If you want to register for a client secret JWT authentication, you have to make request like this:
 ```
 POST /clients HTTP/1.1
@@ -59,7 +63,8 @@ Content-Type: application/json
 ```
 That generates a key plair. Then you have to export the public key to a JSON Web Key (JWK) set, so that it can be registered for the OpenID Connect server.
 
-5) Signature and Encryption
+5) **Signature and Encryption**
+
 The JWT tokens are encrypted by default for data security. You need the public key for being able to decypt the data, if they are encrypted.
 The signature is available for verification. That will be done with JSON Web Signatures, which are useful features of JWT.
 
@@ -83,10 +88,12 @@ wCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A",
 ```
 [Peyrott, Sebastian: JWT Handbook]
 
-6) Keystore
+6) **Keystore**
+
 We need a keystore for managing keys, that you can access the authentication server continuously.
 node-jose is a possible tool to decrypt data from JWE.
 
 Useful literature:
-[JWT Handbook with code examples:](https://auth0.com/resources/ebooks/jwt-handbook/thankyou)
-[Client Registration](https://connect2id.com/products/server/docs/guides/client-registration)
+1. [JWT Handbook with code examples:](https://auth0.com/resources/ebooks/jwt-handbook/thankyou)
+
+2. [Client Registration](https://connect2id.com/products/server/docs/guides/client-registration)

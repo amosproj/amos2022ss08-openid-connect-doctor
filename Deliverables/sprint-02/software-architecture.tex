@@ -29,7 +29,15 @@
     \includegraphics[width=\textwidth]{Code-Components}
 \end{figure}
 
-\newpage
+The code of the application will consist of multiple smaller classes, that each are responsible for a certain part of the application:
+\begin{description}
+\item[authflowConnector]: This class will contain the logic to send HTTP-requests to the different Identity-Providers and process the returned HTTP-response (e.g. for the different OIDC-Login-Flows).
+\item[tokenDecoder]: This class will contain the logic to decode and transform the received access and id-tokens into a format that can be analyzed by the rest of the application.
+\item[tokenAnalyzer]: This class will contain the logic to analyze the prepared information and report these information to the user (e.g. via the terminal or a logfile)
+\item[authflowAnalyzer]: This class will reference the other three class and will be responsible for orchestrating the different functions. Additionally it will also include input-validation, global error-handling and configuration.
+\end{description}
+The reason for this split is to keep a certain level of separation between the different parts of the software, so it is easier to modify and test them.
+
 \section{Technology Stack}
 \begin{center}
 \begin{tabular}{|p{1.5cm}|p{9cm}|p{1.5cm}|p{2cm}|}

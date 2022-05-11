@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/TeX Live for SUSE Linux) (preloaded format=pdflatex 2022.5.11)  11 MAY 2022 08:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/TeX Live for SUSE Linux) (preloaded format=pdflatex 2022.5.11)  11 MAY 2022 18:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -398,32 +398,52 @@ Overfull \hbox (56.33855pt too wide) in paragraph at lines 43--52
  []
 
 
-Overfull \hbox (1.38895pt too wide) in paragraph at lines 57--57
+Overfull \hbox (1.38895pt too wide) in paragraph at lines 58--58
 []\OT1/cmr/bx/n/12 Version| 
  []
 
 
-Overfull \hbox (56.33855pt too wide) in paragraph at lines 53--62
+Underfull \hbox (badness 10000) in paragraph at lines 60--61
+[]\OT1/cmr/m/n/12 MIT Li-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 62--63
+[]\OT1/cmr/m/n/12 MIT Li-
+ []
+
+
+Overfull \hbox (56.33855pt too wide) in paragraph at lines 54--65
  [][] 
  []
 
 
-Overfull \hbox (1.38895pt too wide) in paragraph at lines 67--67
+Overfull \hbox (1.38895pt too wide) in paragraph at lines 70--70
 []\OT1/cmr/bx/n/12 Version| 
  []
 
 
-Overfull \hbox (3.74818pt too wide) in paragraph at lines 69--69
+Overfull \hbox (56.33855pt too wide) in paragraph at lines 66--75
+ [][] 
+ []
+
+
+Overfull \hbox (1.38895pt too wide) in paragraph at lines 80--80
+[]\OT1/cmr/bx/n/12 Version| 
+ []
+
+
+Overfull \hbox (3.74818pt too wide) in paragraph at lines 82--82
 []\OT1/cmr/m/n/12 Git[]aaaaa[]| 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 69--70
+Underfull \hbox (badness 10000) in paragraph at lines 82--83
 []\OT1/cmr/m/n/12 GPL-2.0-
  []
 
 
-Overfull \hbox (56.33855pt too wide) in paragraph at lines 63--72
+Overfull \hbox (56.33855pt too wide) in paragraph at lines 76--85
  [][] 
  []
 
@@ -431,7 +451,7 @@ Overfull \hbox (56.33855pt too wide) in paragraph at lines 63--72
 Here is how much of TeX's memory you used:
  11809 strings out of 479305
  245223 string characters out of 5872607
- 515619 words of memory out of 5000000
+ 517619 words of memory out of 5000000
  29671 multiletter control sequences out of 15000+600000
  474109 words of font info for 44 fonts, out of 8000000 for 9000
  475 hyphenation exceptions out of 8191
@@ -439,7 +459,7 @@ Here is how much of TeX's memory you used:
 </usr/share/texmf/fonts/type1/public/ams
 fonts/cm/cmbx12.pfb></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmcsc10.pf
 b></usr/share/texmf/fonts/type1/public/amsfonts/cm/cmr12.pfb>
-Output written on software-architecture.pdf (5 pages, 143584 bytes).
+Output written on software-architecture.pdf (5 pages, 145062 bytes).
 PDF statistics:
  45 PDF objects out of 1000 (max. 8388607)
  25 compressed objects within 1 object stream

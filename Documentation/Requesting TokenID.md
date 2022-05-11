@@ -68,7 +68,7 @@ Furthermore, for the ID Token in the Implicit Flow, the following Claims do also
 ## Hybrid Flow
 This method is quite similar to the Authorization Code flow with having more additional parameters depending on the response.
 >
->1.  Client prepares an Authentication Request containing the desired request parameters.
+>   1.  Client prepares an Authentication Request containing the desired request parameters.
 >	2.  Client sends the request to the Authorization Server.
 >	3.  Authorization Server Authenticates the End-User.
 >	4.  Authorization Server obtains End-User Consent/Authorization.

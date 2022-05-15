@@ -9,7 +9,7 @@ Depending on how the TokenID and Access Token are returned to the Client, there 
 ## Authorization Code Flow
 
 
-###  1. Authorization Code Request
+###  1.1. Authorization Code Request
 
 This step  include  the following processes:
 
@@ -25,15 +25,10 @@ An Authentication Request is an OAuth 2.0 Authorization Request that requests th
 OpenID Connect uses the following OAuth 2.0 request parameters with the Authorization Code Flow:
 
 >https://YOUR_DOMAIN/authorize?   
-> 
 >response_type=code&
-> 
 >client_id=YOUR_CLIENT_ID& 
->
 >redirect_uri=https://YOUR_APP/callback&
-> 
 >scope=SCOPE& 
->
 >state=STATE
 
 -	`scope` (required) Selected scope separated by a space.
@@ -46,9 +41,9 @@ Your application's Client ID. You can find this value in your  [Application Sett
 If the request is valid and  the Authorization Server attempts to Authenticate the End-User or determines whether the End-User is authenticated, the response would look like as the example below:
 
 >	HTTP/1.1 302 Found 
-	Location: https://YOUR_APP/callback?
-	code=AUTHORIZATION_CODE&
-	state=xyzABC123
+>	Location: https://YOUR_APP/callback?
+>	code=AUTHORIZATION_CODE&
+>	state=xyzABC123
 
 
 
@@ -63,10 +58,10 @@ The Client sends the parameters to the Token Endpoint using the HTTP  POST  meth
 >	--url 'https://YOUR_DOMAIN/oauth/token' \ 
 >	--header 'content-type: application/x-www-form-urlencoded' \ 
 >	--data grant_type=authorization_code \ 
-	--data 'client_id=YOUR_CLIENT_ID' \ 
-	--data client_secret=YOUR_CLIENT_SECRET \ 
-	--data code=YOUR_AUTHORIZATION_CODE \ 
-	--data 'redirect_uri=https://YOUR_APP/callback'
+>	--data 'client_id=YOUR_CLIENT_ID' \ 
+>	--data client_secret=YOUR_CLIENT_SECRET \ 
+>	--data code=YOUR_AUTHORIZATION_CODE \ 
+>	--data 'redirect_uri=https://YOUR_APP/callback'
 
 The parameters in the TokenID Request are as following:
 
@@ -82,20 +77,20 @@ The parameters in the TokenID Request are as following:
 
 Response example (success)
 
->
+
 >   {
-    "access_token" : "eyJhbGciOiJSUzI1NiJ9.eyJ2ZXIiOjEsImlzcyI6Imh0dHA6Ly9yYWluLm9rdGExLmNvbToxODAyIiwiaWF0IjoxNDQ5Nj
+>    "access_token" : "eyJhbGciOiJSUzI1NiJ9.eyJ2ZXIiOjEsImlzcyI6Imh0dHA6Ly9yYWluLm9rdGExLmNvbToxODAyIiwiaWF0IjoxNDQ5Nj
                       I0MDI2LCJleHAiOjE0NDk2Mjc2MjYsImp0aSI6IlVmU0lURzZCVVNfdHA3N21BTjJxIiwic2NvcGVzIjpbIm9wZW5pZCIsI
                       mVtYWlsIl0sImNsaWVudF9pZCI6InVBYXVub2ZXa2FESnh1a0NGZUJ4IiwidXNlcl9pZCI6IjAwdWlkNEJ4WHc2STZUVjRt
                       MGczIn0.HaBu5oQxdVCIvea88HPgr2O5evqZlCT4UXH4UKhJnZ5px-ArNRqwhxXWhHJisslswjPpMkx1IgrudQIjzGYbtLF
                       jrrg2ueiU5-YfmKuJuD6O2yPWGTsV7X6i7ABT6P-t8PRz_RNbk-U1GXWIEkNnEWbPqYDAm_Ofh7iW0Y8WDA5ez1jbtMvd-o
                       XMvJLctRiACrTMLJQ2e5HkbUFxgXQ_rFPNHJbNSUBDLqdi2rg_ND64DLRlXRY7hupNsvWGo0gF4WEUk8IZeaLjKw8UoIs-E
                       TEwJlAMcvkhoVVOsN5dPAaEKvbyvPC1hUGXb4uuThlwdD3ECJrtwgKqLqcWonNtiw",
-    "token_type" : "Bearer",
-    "expires_in" : 3600,
-    "scope"      : "openid email",
-    "refresh_token" : "a9VpZDRCeFh3Nkk2VdY",
-    "id_token" : "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIwMHVpZDRCeFh3Nkk2VFY0bTBnMyIsImVtYWlsIjoid2VibWFzdGVyQGNsb3VkaXR1ZG
+>    "token_type" : "Bearer",
+>   "expires_in" : 3600,
+>    "scope"      : "openid email",
+>    "refresh_token" : "a9VpZDRCeFh3Nkk2VdY",
+>    "id_token" : "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIwMHVpZDRCeFh3Nkk2VFY0bTBnMyIsImVtYWlsIjoid2VibWFzdGVyQGNsb3VkaXR1ZG
                   UubmV0IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInZlciI6MSwiaXNzIjoiaHR0cDovL3JhaW4ub2t0YTEuY29tOjE4MDIiLCJsb
                   2dpbiI6ImFkbWluaXN0cmF0b3IxQGNsb3VkaXR1ZGUubmV0IiwiYXVkIjoidUFhdW5vZldrYURKeHVrQ0ZlQngiLCJpYXQiOjE0
                   NDk2MjQwMjYsImV4cCI6MTQ0OTYyNzYyNiwiYW1yIjpbInB3ZCJdLCJqdGkiOiI0ZUFXSk9DTUIzU1g4WGV3RGZWUiIsImF1dGh
@@ -104,22 +99,22 @@ Response example (success)
                   nvIs7NScKpOAab6ayZU0VL8W6XAijQmnYTtMWQfSuaaR8rYOaWHrffh3OypvDdrQuYacbkT0csxdrayXfBG3UF5-ZAlhfch1fhF
                   T3yZFdWwzkSDc0BGygfiFyNhCezfyT454wbciSZgrA9ROeHkfPCaX7KCFO8GgQEkGRoQntFBNjluFhNLJIUkEFovEDlfuB4tv_M
                   8BM75celdy3jkpOurg"
-    }
+>    }
 
 
 Response example (error)
->
+
 >HTTP 401 Unauthorized
-Content-Type: application/json;charset=UTF-8
-{
-    "error" : "invalid_client",
-    "error_description" : "No client credentials found."
-}
+>Content-Type: application/json;charset=UTF-8
+>{
+>    "error" : "invalid_client",
+>   "error_description" : "No client credentials found."
+>}
 
 
 
 Ultimately, the retrieved Access Token is passed as a Bearer token in the Authorization header of the HTTP request.
->
+
 >	{
 >    "access_token": "eyJz93a...k4laUWw",
 >    "refresh_token": "GEbRxBN...edjnXbL",
@@ -129,7 +124,7 @@ Ultimately, the retrieved Access Token is passed as a Bearer token in the Author
 
 ### 1.3. API Call
 For calling the API, the application passes the retrieved access token as a Bearer token which is found in the header of the HTTP request.
->
+
 >	  curl 
 >	  --request GET \ --url https://"SealsystemAPI".com/api \ 
 >	  --header 'authorization: Bearer 	ACCESS_TOKEN' \ 
@@ -139,7 +134,7 @@ For calling the API, the application passes the retrieved access token as a Bear
 ### 1.4. Refresh Token
 This token is used to get a new access token, quite short after the previous access token is expired. To refresh the token a `Post` request to the endpoint authentication containing the `grant_type=refresh_token` is made. 
 An instance for the Refresh Token request:
->
+
 >	curl 
 >	--request POST \ 
 >	--url 'https://YOUR_DOMAIN/oauth/token' \ 
@@ -164,11 +159,11 @@ Initially a request token should be placed from the authorized application. The 
 
 >	curl
 >	--request POST \ 
-	--url 'https://YOUR_DOMAIN/oauth/token' \ 
-	--header 'content-type: application/x-www-form-urlencoded' \ 
-	--data grant_type=client_credentials \ --data client_id=YOUR_CLIENT_ID \ 
-	--data client_secret=YOUR_CLIENT_SECRET \ 
-	--data audience=YOUR_API_IDENTIFIER
+>	--url 'https://YOUR_DOMAIN/oauth/token' \ 
+>	--header 'content-type: application/x-www-form-urlencoded' \ 
+>	--data grant_type=client_credentials \ --data client_id=YOUR_CLIENT_ID \ 
+>	--data client_secret=YOUR_CLIENT_SECRET \ 
+>	--data audience=YOUR_API_IDENTIFIER
 
 The `POST` parameters in this request are explained below.
 -	`grant_type` : (required) The  `grant_type`  parameter must be set to  *client_credentials*.
@@ -179,37 +174,37 @@ The audience for the token, which is your API. You can find this in the  **Ident
 -	`Resource` (optional) : To create customized Access Token for authorizing access to APIs and API gateways, the Resource could be specified.
 The response in a successful request would be similar to the below response:
 
->
+
 >	{ 
-	"access_token":"eyJz93a...k4laUWw",
-	"token_type":"Bearer",
-	"expires_in":86400
-	}
+>	"access_token":"eyJz93a...k4laUWw",
+>	"token_type":"Bearer",
+>	"expires_in":86400
+>	}
 
 Ultimately, the retrieved Access Token is passed as a Bearer token in the Authorization header of the HTTP request.
 
->	
+	
 >	curl 
 >	--request GET \
-	 --url https://"SealsystemAPI".com/api \ 
-	 --header 'authorization: Bearer ACCESS_TOKEN' \ 
-	 --header 'content-type: application/json'
+>	 --url https://"SealsystemAPI".com/api \ 
+>	 --header 'authorization: Bearer ACCESS_TOKEN' \ 
+>	 --header 'content-type: application/json'
 
 ##  Password Grant
 After locating the **Default Directory** in  [Tenant Settings](https://manage.auth0.com/?_ga=2.209824341.1141517786.1652538501-897533596.1651679864&_gac=1.263199102.1652372090.Cj0KCQjw4PKTBhD8ARIsAHChzRIRJeWrbtecf70LMyVTLX93rxtvFx75Fe2M5M0I0y2JylDvurNyxnkaAkeAEALw_wcB&_gl=1*xdj8jr*rollup_ga*ODk3NTMzNTk2LjE2NTE2Nzk4NjQ.*rollup_ga_F1G3E656YZ*MTY1MjU0NjI1Ny4xNC4xLjE2NTI1NDc5NTEuNjA.#/tenant), the name of the desired directory should be entered.
 For this method the *grant_type* is set to **password** and the values for *username*, *password* are required to be entered by the user. Any *scope* could be also defined by the application, however this is not mandatory. 
 To get the user credentials the given interactive form with should be posted to the token URL.
->
+
 >	curl 
 >	--request POST \ --url 
-	--https://YOUR_DOMAIN/oauth/token' \
-	--header 'content-type: application/x-www-form-urlencoded' \ 
-	--data grant_type=password \ 
-	--data username=user@example.com \ 
-	--data password=pwd \ --data audience=YOUR_API_IDENTIFIER \ 
-	--data scope=read:sample \ 
-	--data 'client_id=YOUR_CLIENT_ID' \ 
-	--data client_secret=YOUR_CLIENT_SECRET
+>	--https://YOUR_DOMAIN/oauth/token' \
+>	--header 'content-type: application/x-www-form-urlencoded' \ 
+>	--data grant_type=password \ 
+>	--data username=user@example.com \ 
+>	--data password=pwd \ --data audience=YOUR_API_IDENTIFIER \ 
+>	--data scope=read:sample \ 
+>	--data 'client_id=YOUR_CLIENT_ID' \ 
+>	--data client_secret=YOUR_CLIENT_SECRET
 
 The `POST` parameters in this request are explained below.
 
@@ -223,21 +218,21 @@ The `POST` parameters in this request are explained below.
 
 The server replies with an access token in the same format as the other grant types in case of successful process.
 
->
+
 >	{ "access_token": "eyJz93a...k4laUWw", 
-	"refresh_token": "GEbRxBN...edjnXbL", 
-	"id_token": "eyJ5ZAi...4faeEoQ", 
-	"token_type": "Bearer", 
-	"expires_in": 36000 
-	}
+>	"refresh_token": "GEbRxBN...edjnXbL", 
+>	"id_token": "eyJ5ZAi...4faeEoQ", 
+>	"token_type": "Bearer", 
+>	"expires_in": 36000 
+>	}
 
 Ultimately, the retrieved Access Token is passed as a Bearer token in the Authorization header of the HTTP request.
 
 >	curl 
 >	--request GET \
 >	 --url https://"SealsystemAPI".com/api \ 
-	 --header 'authorization: Bearer ACCESS_TOKEN' \ 
-	 --header 'content-type: application/json'
+>	 --header 'authorization: Bearer ACCESS_TOKEN' \ 
+>	 --header 'content-type: application/json'
 
 
 ## Libraries

@@ -1,12 +1,16 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { AppService } from './app.service';
 
 async function bootstrap() {
-  const app = await NestFactory.createApplicationContext(AppModule);
-  const appService = app.get(AppService)
+  const app = await NestFactory.create(AppModule);
+  const appService = app.get(AppService);
 
-  console.log(appService.getHello())
+  app.setGlobalPrefix('api');
+  app.useGlobalPipes(new ValidationPipe());
+
+  //console.log(appService.getHello())
 
   // Read the user-information
 
@@ -16,6 +20,6 @@ async function bootstrap() {
 
   // Return the information to the user
 
-  await app.close()
+  await app.listen(8081);
 }
 bootstrap();

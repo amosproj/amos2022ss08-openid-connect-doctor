@@ -1,4 +1,4 @@
-import { Controller, Get, Render } from '@nestjs/common';
+import { Controller, Get, Render, Query } from '@nestjs/common';
 
 @Controller()
 export class AppController {
@@ -6,5 +6,11 @@ export class AppController {
   @Render('index')
   root() {
     return;
+  }
+
+  @Get('issuer')
+  @Render('index')
+  discover_issuer(@Query('issuer') issuer: string) {
+    return { result: issuer };
   }
 }

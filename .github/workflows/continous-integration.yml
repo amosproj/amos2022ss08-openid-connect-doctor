@@ -1,6 +1,7 @@
 name: continous-integration
 on:
-  push:
+  pull_request:
+    branches: [main]
     paths-ignore:
       - 'Deliverables/**'
       - 'Documentation/**'

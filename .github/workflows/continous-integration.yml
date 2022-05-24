@@ -1,0 +1,30 @@
+name: continous-integration
+on:
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - 'Deliverables/**'
+      - 'Documentation/**'
+jobs:
+  run-unit-tests:
+    strategy:
+      matrix:
+        node-version: [16.15.0]
+        os: [ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup Node.js $ {{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Build application
+        run: npm run build
+      - name: Run Tests
+        run: npm test

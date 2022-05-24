@@ -11,9 +11,7 @@ jobs:
       matrix:
         node-version: [16.15.0]
         os: [ubuntu-latest, windows-latest]
-
     runs-on: ${{ matrix.os }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -28,3 +26,40 @@ jobs:
         run: npm run build
       - name: Run Tests
         run: npm test
+
+  run-keycloak:
+    name: keycloak
+    runs-on: ubuntu-latest
+    container: 
+      image: bitnami/keycloak:latest
+      env:
+        KEYCLOAK_USER: admin
+        KEYCLOAK_PASSWORD: admin
+      ports:
+        #http
+        - 8080:8080
+        #https
+        - 8443:8443
+        #ajp
+        - 8009:8009
+        #management
+        - 9990:9990
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_DB: keycloak
+          POSTGRES_USER: keycloak
+          POSTGRES_PASSWORD: pass
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 8
+        ports:
+          - 5432:5432
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2

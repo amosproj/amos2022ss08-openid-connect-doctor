@@ -1,4 +1,4 @@
-import { Controller, Get, Render, Query } from '@nestjs/common';
+import { Controller, Get, Render, Query, Logger } from '@nestjs/common';
 import { Issuer } from 'openid-client';
 
 @Controller()
@@ -21,11 +21,14 @@ export class AppController {
       result: await this.get_issuer(issuer_s)
         .then((issuer) => {
           console.log(issuer);
+          Logger.log(issuer.authorization_endpoint)
           return "Provider exists on endpoint: " + issuer.authorization_endpoint;
         })
         .catch((err) => {
+          Logger.error(err)
           return err;
         }),
     };
+
   }
 }

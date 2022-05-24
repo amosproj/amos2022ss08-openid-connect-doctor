@@ -31,7 +31,7 @@ jobs:
     name: keycloak
     runs-on: ubuntu-latest
     container: 
-      image: quay.io/keycloak/keycloak:latest
+      image: bitnami/keycloak:latest
       env:
         KEYCLOAK_USER: admin
         KEYCLOAK_PASSWORD: admin

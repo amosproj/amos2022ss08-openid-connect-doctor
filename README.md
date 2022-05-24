@@ -3,7 +3,7 @@ Something something something
 
 
 ## Local Development
-### Prerequisits
+### Prerequisites
 * Git
 * Node.js Version 16.15.0 or later (with NPM)
 * Optional: A local docker environment (for testing purposes)

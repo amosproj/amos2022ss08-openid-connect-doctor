@@ -30,7 +30,8 @@ jobs:
   run-keycloak:
     name: keycloak
     runs-on: ubuntu-latest
-    container: quay.io/keycloak/keycloak:latest
+    container: 
+      image: quay.io/keycloak/keycloak:latest
       env:
         KEYCLOAK_USER: admin
         KEYCLOAK_PASSWORD: admin

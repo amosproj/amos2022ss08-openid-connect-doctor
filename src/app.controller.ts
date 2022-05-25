@@ -16,29 +16,30 @@ export class AppController {
 
   @Get('issuer')
   @Render('index')
-  async discover_issuer(@Query('issuer_url') issuer_url_s: string,
-    @Query('authorization_endpoint') authorization_endpoint_s: string,
-    @Query('claim_types_supported') claim_types_supported_s: string,
-    @Query('claims_parameter_supported') claims_parameter_supported_s: string,
-    @Query('claims_supported') claims_supported_s: string,
-    @Query('code_challenge_methods_supported') code_challenge_methods_supported_s: string,
-    @Query('device_authorization_endpoint') device_authorization_endpoint_s: string,
-    @Query('grant_types_supported') grant_types_supported_s: string,
-    @Query('id_token_signing_alg_values_supported') id_token_signing_alg_values_supported_s: string,
-    @Query('issuer') issuer_s: string,
-    @Query('jwks_uri') jwks_uri_s: string,
-    @Query('request_parameter_supported') request_parameter_supported_s: string,
-    @Query('request_uri_parameter_supported') request_uri_parameter_supported_s: string,
-    @Query('require_request_uri_registration') require_request_uri_registration_s: string,
-    @Query('response_modes_supported') response_modes_supported_s: string,
-    @Query('response_types_supported') response_types_supported_s: string,
-    @Query('revocation_endpoint') revocation_endpoint_s: string,
-    @Query('revocation_endpoint_auth_methods_supported') revocation_endpoint_auth_methods_supported_s: string,
-    @Query('scopes_supported') scopes_supported_s: string,
-    @Query('subject_types_supported') subject_types_supported_s: string,
-    @Query('token_endpoint') token_endpoint_s: string,
-    @Query('token_endpoint_auth_methods_supported') token_endpoint_auth_methods_supported_s: string,
-    @Query('userinfo_endpoint') userinfo_endpoint_s: string) {
+  async discover_issuer(
+      @Query('issuer_url') issuer_url_s: string,
+      @Query('authorization_endpoint') authorization_endpoint_s: string,
+      @Query('claim_types_supported') claim_types_supported_s: string,
+      @Query('claims_parameter_supported') claims_parameter_supported_s: string,
+      @Query('claims_supported') claims_supported_s: string,
+      @Query('code_challenge_methods_supported') code_challenge_methods_supported_s: string,
+      @Query('device_authorization_endpoint') device_authorization_endpoint_s: string,
+      @Query('grant_types_supported') grant_types_supported_s: string,
+      @Query('id_token_signing_alg_values_supported') id_token_signing_alg_values_supported_s: string,
+      @Query('issuer') issuer_s: string,
+      @Query('jwks_uri') jwks_uri_s: string,
+      @Query('request_parameter_supported') request_parameter_supported_s: string,
+      @Query('request_uri_parameter_supported') request_uri_parameter_supported_s: string,
+      @Query('require_request_uri_registration') require_request_uri_registration_s: string,
+      @Query('response_modes_supported') response_modes_supported_s: string,
+      @Query('response_types_supported') response_types_supported_s: string,
+      @Query('revocation_endpoint') revocation_endpoint_s: string,
+      @Query('revocation_endpoint_auth_methods_supported') revocation_endpoint_auth_methods_supported_s: string,
+      @Query('scopes_supported') scopes_supported_s: string,
+      @Query('subject_types_supported') subject_types_supported_s: string,
+      @Query('token_endpoint') token_endpoint_s: string,
+      @Query('token_endpoint_auth_methods_supported') token_endpoint_auth_methods_supported_s: string,
+      @Query('userinfo_endpoint') userinfo_endpoint_s: string) {
     const checkboxes = new Map([
       ['authorization_endpoint', authorization_endpoint_s],
       ['claim_types_supported', claim_types_supported_s],
@@ -70,7 +71,7 @@ export class AppController {
       }
     });
     return {
-      result: await this.get_issuer(issuer_s)
+      result: await this.get_issuer(issuer_url_s)
         .then((issuer) => {
           //console.log(issuer);
           return {

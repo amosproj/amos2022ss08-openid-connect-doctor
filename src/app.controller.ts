@@ -21,10 +21,16 @@ export class AppController {
       result: await this.get_issuer(issuer_s)
         .then((issuer) => {
           console.log(issuer);
-          return "Provider exists on endpoint: " + issuer.authorization_endpoint;
+          return {
+            success: 1,
+            info: JSON.stringify(issuer, null, 2),
+          };
         })
         .catch((err) => {
-          return err;
+          return {
+            success: 0,
+            info: err,
+          };
         }),
     };
   }

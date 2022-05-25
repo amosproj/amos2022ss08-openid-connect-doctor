@@ -5,9 +5,9 @@
 		<title>App</title>
 	</head>
 	<body>
-		<form action="/api/issuer">
+		<form action="/api/issuer" id="issuer_form">
 			<label for="issuer">Issuer:</label><br>
-			<input type="text" id="issuer" name="issuer"><br>
+			<input type="text" id="issuer_url" name="issuer_url"><br>
 
 			<input type="checkbox" id="authorization_endpoint_checkbox" name="authorization_endpoint" value="1">
 			<label for="authorization_endpoint_box"> authorization_endpoint </label><br>
@@ -54,6 +54,26 @@
 			<input type="checkbox" id="userinfo_endpoint_checkbox" name="userinfo_endpoint" value="1">
 			<label for="userinfo_endpoint_box"> userinfo_endpoint </label><br>
 		</form>
+		<button id="btn_enableAll">Enable All</button>
+		<button id="btn_disableAll">Disable All</button>
+		<script>
+			function setAll(b) {
+				let checkboxes = document.querySelectorAll('input[type="checkbox"]');
+				checkboxes.forEach((checkbox) => {
+					checkbox.checked = b;
+				});
+			}
+			function enableAll() {
+				setAll(true);
+			}
+			function disableAll() {
+				setAll(false);
+			}
+			const btn_enable = document.querySelector('#btn_enableAll');
+			btn_enable.onclick = enableAll;
+			const btn_disable = document.querySelector('#btn_disableAll');
+			btn_disable.onclick = disableAll;
+		</script>
 	</body>
 	</head>
 </html>

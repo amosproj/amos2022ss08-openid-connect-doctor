@@ -9,7 +9,14 @@
       <label for="issuer">Issuer:</label><br>
       <input type="text" id="issuer" name="issuer"><br>
     </form>
-    {{ result }}
+    {{#if result.success}}
+      <label for="result_display">Provider found:</label><br>
+    {{else}}
+      <label for="result_display">Error, could not find provider:</label><br>
+    {{/if}}
+    <textarea id="result_display" rows="50" cols="100">
+      {{ result.info }}
+    </textarea>
   </body>
   </head>
 </html>

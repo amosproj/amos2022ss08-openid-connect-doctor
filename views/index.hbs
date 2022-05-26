@@ -9,7 +9,12 @@
       <label for="issuer">Issuer:</label><br>
       <input type="text" id="issuer" name="issuer"><br>
     </form>
-    {{ result }}
+    <p> <strong> Provider exists on endpoint: </strong>{{ result.authorization_endpoint }}</p>
+    <p> <strong> Device_authorization_endpoint: </strong>{{ result.device_authorization_endpoint }}</p>
+    <p> <strong> Token_endpoint: </strong>{{ result.token_endpoint }}</p>
+    <p> <strong> Userinfo_endpoint: </strong>{{ result.userinfo_endpoint }}</p>
+    <p> <strong> Revocation_endpoint_auth_methods_supported:: </strong>{{ result.revocation_endpoint_auth_methods_supported: }}</p>
+    <p> <strong> Response_types_supported:: </strong>{{ result.response_types_supported }}</p>
   </body>
   </head>
 </html>

@@ -22,7 +22,11 @@ export class AppController {
         .then((issuer) => {
           console.log(issuer);
           Logger.log(issuer.authorization_endpoint)
-          return "Provider exists on endpoint: " + issuer.authorization_endpoint;
+          var covertToJson = JSON.parse(JSON.stringify(issuer));
+          console.log(covertToJson)
+          console.log("Let's try something new:::  "+covertToJson.request_parameter_supported);
+         // return "Provider exists on endpoint: " + issuer.authorization_endpoint;
+          return covertToJson;
         })
         .catch((err) => {
           Logger.error(err)

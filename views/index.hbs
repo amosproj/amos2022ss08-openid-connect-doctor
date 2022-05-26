@@ -3,18 +3,63 @@
   <head>
     <meta charset="utf-8" />
     <title>App</title>
+      <style>
+          .center {
+              margin: auto;
+              width: 60%;
+              border: 3px solid #73AD21;
+              padding: 10px;
+          }
+          table {
+              font-family: arial, sans-serif;
+              border-collapse: collapse;
+              width: 100%;
+          }
+
+          td, th {
+              border: 1px solid #dddddd;
+              text-align: left;
+              padding: 8px;
+          }
+
+      </style>
   </head>
   <body>
+  <div class="center">
     <form action="/api/issuer">
-      <label for="issuer">Issuer:</label><br>
-      <input type="text" id="issuer" name="issuer"><br>
+        <div align="center">
+      <label for="issuer"><b>Issuer:  </b></label>
+      <input type="text" id="issuer" name="issuer"><br><br>
+        </div>
     </form>
-    <p> <strong> Provider exists on endpoint: </strong>{{ result.authorization_endpoint }}</p>
-    <p> <strong> Device_authorization_endpoint: </strong>{{ result.device_authorization_endpoint }}</p>
-    <p> <strong> Token_endpoint: </strong>{{ result.token_endpoint }}</p>
-    <p> <strong> Userinfo_endpoint: </strong>{{ result.userinfo_endpoint }}</p>
-    <p> <strong> Revocation_endpoint_auth_methods_supported:: </strong>{{ result.revocation_endpoint_auth_methods_supported: }}</p>
-    <p> <strong> Response_types_supported:: </strong>{{ result.response_types_supported }}</p>
+      <h2 style="align-content: center">Access Identity Provider Result:  </h2>
+      <table>
+          <tr>
+              <th>Parameter's Name</th>
+              <th>Result</th>
+          </tr>
+          <tr>
+              <td> Device_authorization_endpoint  </td>
+              <td>{{ result.device_authorization_endpoint }}</td>
+          </tr>
+          <tr>
+              <td> Token_endpoint  </td>
+              <td>{{ result.token_endpoint }}</td>
+          </tr>
+          <tr>
+              <td> Userinfo_endpoint  </td>
+              <td>{{ result.userinfo_endpoint }}</td>
+          </tr>
+          <tr>
+              <td> Revocation_endpoint_auth_methods_supported  </td>
+              <td>{{ result.revocation_endpoint_auth_methods_supported }}</td>
+          </tr>
+          <tr>
+              <td> Response_types_supported  </td>
+              <td>{{ result.response_types_supported }}</td>
+          </tr>
+      </table>
+  </div>
   </body>
   </head>
 </html>

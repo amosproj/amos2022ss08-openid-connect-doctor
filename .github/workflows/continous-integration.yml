@@ -26,10 +26,6 @@ jobs:
         run: npm run build
       - name: Run Tests
         run: npm test
-      - name: Run bundle
-        run: npm run bundle
-      - name: Generate binary
-        run: npm run binary
 
   run-keycloak:
     name: keycloak
@@ -67,3 +63,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 2
+
+  release-binary:
+

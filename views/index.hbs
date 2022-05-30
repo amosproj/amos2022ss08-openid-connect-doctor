@@ -24,7 +24,6 @@
             div.scroll {
                 overflow: auto;
             }
-
         </style>
 	</head>
 	<body>
@@ -77,9 +76,9 @@
 			<label for="token_endpoint_auth_methods_supported_box"> token_endpoint_auth_methods_supported </label><br>
 			<input type="checkbox" id="userinfo_endpoint_checkbox" name="userinfo_endpoint" value="1" {{#if result.previously_checked.userinfo_endpoint}} checked{{/if}}>
 			<label for="userinfo_endpoint_box"> userinfo_endpoint </label><br>
-		</form>
+		</form><br>
 		<button id="btn_enableAll">Enable All</button>
-		<button id="btn_disableAll">Disable All</button><br>
+		<button id="btn_disableAll">Disable All</button><br><br>
 
 		<script>
 			function setAll(b) {
@@ -100,9 +99,9 @@
 			btn_disable.onclick = disableAll;
 		</script>
 		{{#if result.success}}
-			<label for="result_display">Provider found:</label><br>
+            <label for="result_display"><strong style="color: green;font-size: 20px;">Provider found:</strong></label><br><br>
 		{{else}}
-			<label for="result_display">Error, could not find provider:</label><br>
+			<label for="result_display"><strong style="color: red;font-size: 20px;">Error, could not find provider: </strong></label><br><br>
 		{{/if}}
         <div class="scroll">
 		<textarea id="result_display" rows="50" cols="100">

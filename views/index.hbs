@@ -3,8 +3,32 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>App</title>
+        <style>
+            /*.center {
+                margin: auto;
+                width: 60%;
+                border: 3px solid #73AD21;
+                padding: 10px;
+            }
+            table {
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }*/
+
+            td, th {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+            div.scroll {
+                overflow: auto;
+            }
+
+        </style>
 	</head>
 	<body>
+    <div class="center">
 		<form action="/api/issuer">
 			<label for="issuer">Issuer:</label><br>
 			<input type="text" id="issuer_url" name="issuer_url"><br>
@@ -56,6 +80,7 @@
 		</form>
 		<button id="btn_enableAll">Enable All</button>
 		<button id="btn_disableAll">Disable All</button><br>
+
 		<script>
 			function setAll(b) {
 				let checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -79,9 +104,12 @@
 		{{else}}
 			<label for="result_display">Error, could not find provider:</label><br>
 		{{/if}}
+        <div class="scroll">
 		<textarea id="result_display" rows="50" cols="100">
 			{{ result.info }}
 		</textarea>
+        </div>
+    </div>
 	</body>
 	</head>
 </html>

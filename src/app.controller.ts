@@ -1,4 +1,4 @@
-import { Controller, Get, Render, Query } from '@nestjs/common';
+import { Controller, Get, Render, Redirect, Query } from '@nestjs/common';
 import { Issuer } from 'openid-client';
 
 @Controller()
@@ -69,6 +69,16 @@ export class AppController {
       if (checkboxes[key] === '1') {
         keys.push(key);
       }
+    }
+    if (issuer_url_s === undefined) {
+      return {
+        result: {
+          success: 2,
+          info: null,
+          previously_checked: null,
+        },
+        first_query: 1,
+      };
     }
     return {
       result: await this.get_issuer(issuer_url_s)

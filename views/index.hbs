@@ -159,13 +159,17 @@
 			btn_disable.onclick = disableAll;
 		</script>
 		{{#if result.success}}
+		{{#if first_query }}
+            <label for="result_display"><strong style="color: green;font-size: 20px;">Please input provider url</strong></label><br><br>
+		{{else}}
             <label for="result_display"><strong style="color: green;font-size: 20px;">Provider found:</strong></label><br><br>
+		{{/if}}
 		{{else}}
 			<label for="result_display"><strong style="color: red;font-size: 20px;">Error, could not find provider: </strong></label><br><br>
 		{{/if}}
         <div class="scroll">
 		<textarea id="result_display" rows="50" cols="100">
-			{{ result.info }}
+{{ result.info }}
 		</textarea>
         </div>
     </div>

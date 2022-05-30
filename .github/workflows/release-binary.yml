@@ -23,7 +23,7 @@ jobs:
         run: npm bundle
       - name: Generate Binary
         run: npm binary
-      - run: chmod -R ugo+x oidc-*
+      - run: chmod -R +x oidc-*
       - name: Upload artifacts
         uses: skx/github-action-publish-binaries@master
         env:

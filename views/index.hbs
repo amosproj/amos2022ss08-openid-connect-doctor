@@ -4,17 +4,13 @@
 		<meta charset="utf-8" />
 		<title>App</title>
         <style>
-            /*.center {
+            .center {
                 margin: auto;
-                width: 60%;
-                border: 3px solid #73AD21;
+                width: auto;
+                border: 2px solid black;
                 padding: 10px;
             }
-            table {
-                font-family: arial, sans-serif;
-                border-collapse: collapse;
-                width: 100%;
-            }*/
+
 
             td, th {
                 border: 1px solid #dddddd;
@@ -24,58 +20,124 @@
             div.scroll {
                 overflow: auto;
             }
+            .url{
+                width: 40%;
+            }
         </style>
 	</head>
 	<body>
     <div class="center">
 		<form action="/api/issuer">
-			<label for="issuer">Issuer:</label><br>
-			<input type="text" id="issuer_url" name="issuer_url"><br>
+			<label for="issuer">Issuer: </label><br>
+			<input type="text" id="issuer_url" name="issuer_url"  class="url"><br><br>
+            <label for="issuer">Parameter's List: </label><br>
+            <table >
+                <tr>
+                    <td>
+                        <input type="checkbox" id="authorization_endpoint_checkbox" name="authorization_endpoint" value="1" {{#if result.previously_checked.authorization_endpoint}} checked{{/if}}>
+                        <label for="authorization_endpoint_box"> authorization_endpoint </label><br>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="claim_types_supported_checkbox" name="claim_types_supported" value="1" {{#if result.previously_checked.claim_types_supported}} checked{{/if}}>
+                        <label for="claim_types_supported_box"> claim_types_supported </label><br>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="claims_parameter_supported_checkbox" name="claims_parameter_supported" value="1" {{#if result.previously_checked.claims_parameter_supported}} checked{{/if}}>
+                        <label for="claims_parameter_supported_box"> claims_parameter_supported </label><br>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="claims_supported_checkbox" name="claims_supported" value="1" {{#if result.previously_checked.claims_supported}} checked{{/if}}>
+                        <label for="claims_supported_box"> claims_supported </label><br>
+                    </td>
+                </tr>
 
-			<input type="checkbox" id="authorization_endpoint_checkbox" name="authorization_endpoint" value="1" {{#if result.previously_checked.authorization_endpoint}} checked{{/if}}>
-			<label for="authorization_endpoint_box"> authorization_endpoint </label><br>
-			<input type="checkbox" id="claim_types_supported_checkbox" name="claim_types_supported" value="1" {{#if result.previously_checked.claim_types_supported}} checked{{/if}}>
-			<label for="claim_types_supported_box"> claim_types_supported </label><br>
-			<input type="checkbox" id="claims_parameter_supported_checkbox" name="claims_parameter_supported" value="1" {{#if result.previously_checked.claims_parameter_supported}} checked{{/if}}>
-			<label for="claims_parameter_supported_box"> claims_parameter_supported </label><br>
-			<input type="checkbox" id="claims_supported_checkbox" name="claims_supported" value="1" {{#if result.previously_checked.claims_supported}} checked{{/if}}>
-			<label for="claims_supported_box"> claims_supported </label><br>
-			<input type="checkbox" id="code_challenge_methods_supported_checkbox" name="code_challenge_methods_supported" value="1" {{#if result.previously_checked.code_challenge_methods_supported}} checked{{/if}}>
-			<label for="code_challenge_methods_supported_box"> code_challenge_methods_supported </label><br>
-			<input type="checkbox" id="device_authorization_endpoint_checkbox" name="device_authorization_endpoint" value="1" {{#if result.previously_checked.device_authorization_endpoint}} checked{{/if}}>
-			<label for="device_authorization_endpoint_box"> device_authorization_endpoint </label><br>
-			<input type="checkbox" id="grant_types_supported_checkbox" name="grant_types_supported" value="1" {{#if result.previously_checked.grant_types_supported}} checked{{/if}}>
-			<label for="grant_types_supported_box"> grant_types_supported </label><br>
-			<input type="checkbox" id="id_token_signing_alg_values_supported_checkbox" name="id_token_signing_alg_values_supported" value="1" {{#if result.previously_checked.id_token_signing_alg_values_supported}} checked{{/if}}>
-			<label for="id_token_signing_alg_values_supported_box"> id_token_signing_alg_values_supported </label><br>
-			<input type="checkbox" id="issuer_checkbox" name="issuer" value="1" {{#if result.previously_checked.issuer}} checked{{/if}}>
-			<label for="issuer_box"> issuer </label><br>
-			<input type="checkbox" id="jwks_uri_checkbox" name="jwks_uri" value="1" {{#if result.previously_checked.jwks_uri}} checked{{/if}}>
-			<label for="jwks_uri_box"> jwks_uri </label><br>
-			<input type="checkbox" id="request_parameter_supported_checkbox" name="request_parameter_supported" value="1" {{#if result.previously_checked.request_parameter_supported}} checked{{/if}}>
-			<label for="request_parameter_supported_box"> request_parameter_supported </label><br>
-			<input type="checkbox" id="request_uri_parameter_supported_checkbox" name="request_uri_parameter_supported" value="1" {{#if result.previously_checked.request_uri_parameter_supported}} checked{{/if}}>
-			<label for="request_uri_parameter_supported_box"> request_uri_parameter_supported </label><br>
-			<input type="checkbox" id="require_request_uri_registration_checkbox" name="require_request_uri_registration" value="1" {{#if result.previously_checked.require_request_uri_registration}} checked{{/if}}>
-			<label for="require_request_uri_registration_box"> require_request_uri_registration </label><br>
-			<input type="checkbox" id="response_modes_supported_checkbox" name="response_modes_supported" value="1" {{#if result.previously_checked.response_modes_supported}} checked{{/if}}>
-			<label for="response_modes_supported_box"> response_modes_supported </label><br>
-			<input type="checkbox" id="response_types_supported_checkbox" name="response_types_supported" value="1" {{#if result.previously_checked.response_types_supported}} checked{{/if}}>
-			<label for="response_types_supported_box"> response_types_supported </label><br>
-			<input type="checkbox" id="revocation_endpoint_checkbox" name="revocation_endpoint" value="1" {{#if result.previously_checked.revocation_endpoint}} checked{{/if}}>
-			<label for="revocation_endpoint_box"> revocation_endpoint </label><br>
-			<input type="checkbox" id="revocation_endpoint_auth_methods_supported_checkbox" name="revocation_endpoint_auth_methods_supported" value="1" {{#if result.previously_checked.revocation_endpoint_auth_methods_supported}} checked{{/if}}>
-			<label for="revocation_endpoint_auth_methods_supported_box"> revocation_endpoint_auth_methods_supported </label><br>
-			<input type="checkbox" id="scopes_supported_checkbox" name="scopes_supported" value="1" {{#if result.previously_checked.scopes_supported}} checked{{/if}}>
-			<label for="scopes_supported_box"> scopes_supported </label><br>
-			<input type="checkbox" id="subject_types_supported_checkbox" name="subject_types_supported" value="1" {{#if result.previously_checked.subject_types_supported}} checked{{/if}}>
-			<label for="subject_types_supported_box"> subject_types_supported </label><br>
-			<input type="checkbox" id="token_endpoint_checkbox" name="token_endpoint" value="1" {{#if result.previously_checked.token_endpoint}} checked{{/if}}>
-			<label for="token_endpoint_box"> token_endpoint </label><br>
-			<input type="checkbox" id="token_endpoint_auth_methods_supported_checkbox" name="token_endpoint_auth_methods_supported" value="1" {{#if result.previously_checked.token_endpoint_auth_methods_supported}} checked{{/if}}>
-			<label for="token_endpoint_auth_methods_supported_box"> token_endpoint_auth_methods_supported </label><br>
-			<input type="checkbox" id="userinfo_endpoint_checkbox" name="userinfo_endpoint" value="1" {{#if result.previously_checked.userinfo_endpoint}} checked{{/if}}>
-			<label for="userinfo_endpoint_box"> userinfo_endpoint </label><br>
+                <tr>
+                    <td>
+                        <input type="checkbox" id="code_challenge_methods_supported_checkbox" name="code_challenge_methods_supported" value="1" {{#if result.previously_checked.code_challenge_methods_supported}} checked{{/if}}>
+                        <label for="code_challenge_methods_supported_box"> code_challenge_methods_supported </label><br>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="device_authorization_endpoint_checkbox" name="device_authorization_endpoint" value="1" {{#if result.previously_checked.device_authorization_endpoint}} checked{{/if}}>
+                        <label for="device_authorization_endpoint_box"> device_authorization_endpoint </label><br>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="grant_types_supported_checkbox" name="grant_types_supported" value="1" {{#if result.previously_checked.grant_types_supported}} checked{{/if}}>
+                        <label for="grant_types_supported_box"> grant_types_supported </label><br>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="id_token_signing_alg_values_supported_checkbox" name="id_token_signing_alg_values_supported" value="1" {{#if result.previously_checked.id_token_signing_alg_values_supported}} checked{{/if}}>
+                        <label for="id_token_signing_alg_values_supported_box"> id_token_signing_alg_values_supported </label><br>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <input type="checkbox" id="issuer_checkbox" name="issuer" value="1" {{#if result.previously_checked.issuer}} checked{{/if}}>
+                        <label for="issuer_box"> issuer </label><br>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="jwks_uri_checkbox" name="jwks_uri" value="1" {{#if result.previously_checked.jwks_uri}} checked{{/if}}>
+                        <label for="jwks_uri_box"> jwks_uri </label><br>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="request_parameter_supported_checkbox" name="request_parameter_supported" value="1" {{#if result.previously_checked.request_parameter_supported}} checked{{/if}}>
+                        <label for="request_parameter_supported_box"> request_parameter_supported </label><br>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="request_uri_parameter_supported_checkbox" name="request_uri_parameter_supported" value="1" {{#if result.previously_checked.request_uri_parameter_supported}} checked{{/if}}>
+                        <label for="request_uri_parameter_supported_box"> request_uri_parameter_supported </label><br>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <input type="checkbox" id="require_request_uri_registration_checkbox" name="require_request_uri_registration" value="1" {{#if result.previously_checked.require_request_uri_registration}} checked{{/if}}>
+                        <label for="require_request_uri_registration_box"> require_request_uri_registration </label><br>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="response_modes_supported_checkbox" name="response_modes_supported" value="1" {{#if result.previously_checked.response_modes_supported}} checked{{/if}}>
+                        <label for="response_modes_supported_box"> response_modes_supported </label><br>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="response_types_supported_checkbox" name="response_types_supported" value="1" {{#if result.previously_checked.response_types_supported}} checked{{/if}}>
+                        <label for="response_types_supported_box"> response_types_supported </label><br>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="revocation_endpoint_checkbox" name="revocation_endpoint" value="1" {{#if result.previously_checked.revocation_endpoint}} checked{{/if}}>
+                        <label for="revocation_endpoint_box"> revocation_endpoint </label><br>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <input type="checkbox" id="revocation_endpoint_auth_methods_supported_checkbox" name="revocation_endpoint_auth_methods_supported" value="1" {{#if result.previously_checked.revocation_endpoint_auth_methods_supported}} checked{{/if}}>
+                        <label for="revocation_endpoint_auth_methods_supported_box"> revocation_endpoint_auth_methods_supported </label><br>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="scopes_supported_checkbox" name="scopes_supported" value="1" {{#if result.previously_checked.scopes_supported}} checked{{/if}}>
+                        <label for="scopes_supported_box"> scopes_supported </label><br>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="subject_types_supported_checkbox" name="subject_types_supported" value="1" {{#if result.previously_checked.subject_types_supported}} checked{{/if}}>
+                        <label for="subject_types_supported_box"> subject_types_supported </label><br>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="token_endpoint_checkbox" name="token_endpoint" value="1" {{#if result.previously_checked.token_endpoint}} checked{{/if}}>
+                        <label for="token_endpoint_box"> token_endpoint </label><br>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <input type="checkbox" id="token_endpoint_auth_methods_supported_checkbox" name="token_endpoint_auth_methods_supported" value="1" {{#if result.previously_checked.token_endpoint_auth_methods_supported}} checked{{/if}}>
+                        <label for="token_endpoint_auth_methods_supported_box"> token_endpoint_auth_methods_supported </label><br>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="userinfo_endpoint_checkbox" name="userinfo_endpoint" value="1" {{#if result.previously_checked.userinfo_endpoint}} checked{{/if}}>
+                        <label for="userinfo_endpoint_box"> userinfo_endpoint </label><br>
+                    </td>
+                </tr>
+            </table>
 		</form><br>
 		<button id="btn_enableAll">Enable All</button>
 		<button id="btn_disableAll">Disable All</button><br><br>

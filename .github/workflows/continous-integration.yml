@@ -33,8 +33,16 @@ jobs:
     container: 
       image: bitnami/keycloak:latest
       env:
-        KEYCLOAK_USER: admin
-        KEYCLOAK_PASSWORD: admin
+        KEYCLOAK_CREATE_ADMIN_USER: true
+        KEYCLOAK_ADMIN_USER: oidc-admin
+        KEYCLOAK_ADMIN_PASSWORD: bitnami
+        KEYCLOAK_MANAGEMENT_USER: oidc-manager
+        KEYCLOAK_MANAGEMENT_PASSWORD: bitnami1
+        KEYCLOAK_DATABASE_HOST: postgres
+        KEYCLOAK_DATABASE_PORT: 5432
+        KEYCLOAK_DATABASE_NAME: bitnami_keycloak
+        KEYCLOAK_DATABASE_USER: bn_keycloak
+        KEYCLOAK_DATABASE_PASSWORD: pass
       ports:
         #http
         - 8080:8080
@@ -48,8 +56,8 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_DB: keycloak
-          POSTGRES_USER: keycloak
+          POSTGRES_DB: bitnami_keycloak
+          POSTGRES_USER: bn_keycloak
           POSTGRES_PASSWORD: pass
         options: >-
           --health-cmd pg_isready

@@ -7,7 +7,7 @@ export class TokenService {
     issuer: string,
     keyMaterialEndpoint: string,
     tokenString: string,
-  ): Promise<string> {
+  ): Promise<[string, string]> {
     if (issuer === undefined || issuer === '') {
       throw new HttpException(
         'There was no issuer to validate the token against!',
@@ -36,6 +36,6 @@ export class TokenService {
       },
     );
 
-    return payload.sub;
+    return [JSON.stringify(payload), JSON.stringify(protectedHeader)];
   }
 }

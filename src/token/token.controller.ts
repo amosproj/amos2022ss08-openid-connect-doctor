@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { TokenService } from './token.service';
 import { TokenDto } from './token.dto';
+import { TokenResultDto } from './tokenResult.dto';
 
 @Controller('token')
 export class TokenController {
@@ -21,9 +22,11 @@ export class TokenController {
     return {
       result: await this.tokenService
         .decodeToken(issuer, tokenDto.keyMaterialEndpoint, tokenDto.tokenString)
-        .then((sub) => {
-          console.log(sub);
-          return 'Token decoded for sub: ' + sub;
+        .then((result) => {
+          return new TokenResultDto({
+              payload: result[0],
+              header: result[1],
+            });
         })
         .catch((err) => {
           return err;

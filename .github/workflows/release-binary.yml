@@ -20,12 +20,12 @@ jobs:
       - name: Build application
         run: npm run build
       - name: Bundle
-        run: npm bundle
+        run: npm run bundle
       - name: Generate Binary
-        run: npm binary
+        run: npm run binary
       - run: chmod -R +x oidc-*
       - name: Upload artifacts
-        uses: skx/github-action-publish-binaries@master
+        uses: skx/github-action-publish-binaries@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

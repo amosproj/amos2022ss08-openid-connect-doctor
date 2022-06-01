@@ -17,7 +17,7 @@ import { TokenResultDto } from './tokenResult.dto';
 export class TokenController {
   constructor(private readonly tokenService: TokenService) {}
 
-  @Post()
+  @Post('decode')
   async get(@Query('issuer') issuer: string, @Body() tokenDto: TokenDto) {
     return {
       result: await this.tokenService

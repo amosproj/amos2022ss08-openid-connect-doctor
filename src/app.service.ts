@@ -40,11 +40,12 @@ export class AppService {
     return await this.getToken(String(issuer.token_endpoint), grantBody);
   }
 
-  async validateJson(json: string, schema_file_path: string) {
+  async validateJson(json: string, schema_file: string) {
     const ajv = new Ajv();
-    console.log(require(schema_file_path));
+    const schema_file_path = "../schema/" + schema_file;
     const validate = ajv.compile(require(schema_file_path));
-    console.log(validate(42));
-    console.log(validate(json));
+    if (validate(json)) {
+      console.log("JSON valid");
+    }
   }
 }

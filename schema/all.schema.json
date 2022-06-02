@@ -1,5 +1,4 @@
 {
-	"$schema": "schema/all.schema.json",
 	"$id": "all.schema.json",
 	"title": "Default-All",
 	"description": "Default schema with all parameters to be used as template",

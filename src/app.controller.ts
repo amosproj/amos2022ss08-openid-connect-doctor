@@ -12,6 +12,7 @@ import {
 import { Issuer, GrantBody } from 'openid-client';
 import { AppService } from './app.service';
 import { Response } from 'express';
+import { promises as fs } from 'fs';
 
 @Controller()
 export class AppController {
@@ -61,6 +62,7 @@ export class AppController {
     @Query('token_endpoint_auth_methods_supported')
     token_endpoint_auth_methods_supported_s: string,
     @Query('userinfo_endpoint') userinfo_endpoint_s: string,
+    @Query('schema') schema_s: string,
   ) {
     const checkboxes = {
       authorization_endpoint: authorization_endpoint_s,
@@ -95,6 +97,9 @@ export class AppController {
         keys.push(key);
       }
     }
+    let empty_schemas = [ "" ];
+    const uploaded_schemas = await fs.readdir('schema');
+    const schemas = empty_schemas.concat(uploaded_schemas);
     if (issuer_url_s === undefined) {
       return {
         result: {
@@ -103,25 +108,35 @@ export class AppController {
           previously_checked: null,
         },
         first_query: 1,
+        schemas: schemas,
       };
     }
+    const issuer_query_res = await this.get_issuer(issuer_url_s)
+      .then((issuer) => {
+        //console.log(issuer);
+        return {
+          success: 1,
+          info: JSON.stringify(issuer, keys, 2),
+          previously_checked: checkboxes,
+        };
+      })
+      .catch((err) => {
+        return {
+          success: 0,
+          info: err,
+          previously_checked: null,
+        };
+      });
+    if (issuer_query_res.success === 1 && schema_s !== '') {
+      await this.appService.validateJson(
+        JSON.parse(issuer_query_res.info),
+        schema_s,
+      );
+    }
     return {
-      result: await this.get_issuer(issuer_url_s)
-        .then((issuer) => {
-          //console.log(issuer);
-          return {
-            success: 1,
-            info: JSON.stringify(issuer, keys, 2),
-            previously_checked: checkboxes,
-          };
-        })
-        .catch((err) => {
-          return {
-            success: 0,
-            info: err,
-            previously_checked: null,
-          };
-        }),
+      result: issuer_query_res,
+      first_query: 0,
+      schemas: schemas,
     };
   }
 
@@ -163,13 +178,5 @@ export class AppController {
       grantBody,
     );
     res.json(result.data).send();
-  }
-
-  @Get('/test')
-  async test() {
-    this.appService.validateJson(
-      JSON.parse('{"authorization_endpoint": "https://accounts.google.com/o/oauth2/v2/auth"}'),
-      '../schema/test.schema.json',
-    );
   }
 }

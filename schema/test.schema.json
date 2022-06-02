@@ -1,0 +1,13 @@
+{
+	"$id": "test.schema.json",
+	"title": "Default-test",
+	"description": "Default schema with all parameters to be used as template",
+	"type": "object",
+	"properties": {
+		"authorization_endpoint": {
+			"description": "REQUIRED. URL of the OP's OAuth 2.0 Authorization Endpoint [OpenID.Core]",
+			"type": "string"
+		}
+	},
+	"required": [ "authorization_endpoint" ]
+}

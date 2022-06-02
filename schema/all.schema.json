@@ -1,10 +1,10 @@
 {
-	"$schmema": "https://json-schema.org/draft/2020-12/schema",
-	"$id": "all.schmema.json",
+	"$schema": "schema/all.schema.json",
+	"$id": "all.schema.json",
 	"title": "Default-All",
 	"description": "Default schema with all parameters to be used as template",
 	"type": "object",
-	"propterties": {
+	"properties": {
 		"issuer": {
 			"description": "REQUIRED. URL using the https scheme with no query or fragment component that the OP asserts as its Issuer Identifier. If Issuer discovery is supported (see Section 2), this value MUST be identical to the issuer value returned by WebFinger. This also MUST be identical to the iss Claim value in ID Tokens issued from this Issuer",
 			"type": "string"

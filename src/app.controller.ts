@@ -164,4 +164,12 @@ export class AppController {
     );
     res.json(result.data).send();
   }
+
+  @Get('/test')
+  async test() {
+    this.appService.validateJson(
+      JSON.parse('{"authorization_endpoint": "https://accounts.google.com/o/oauth2/v2/auth"}'),
+      '../schema/test.schema.json',
+    );
+  }
 }

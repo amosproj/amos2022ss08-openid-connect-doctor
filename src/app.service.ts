@@ -3,6 +3,8 @@ import { GrantBody, Issuer } from 'openid-client';
 import axios from 'axios';
 import * as qs from 'qs';
 
+import Ajv, {JSONSchemaType} from "ajv"
+
 @Injectable()
 export class AppService {
   getHello(): string {
@@ -36,5 +38,13 @@ export class AppService {
     };
 
     return await this.getToken(String(issuer.token_endpoint), grantBody);
+  }
+
+  async validateJson(json: string, schema_file_path: string) {
+    const ajv = new Ajv();
+    console.log(require(schema_file_path));
+    const validate = ajv.compile(require(schema_file_path));
+    console.log(validate(42));
+    console.log(validate(json));
   }
 }

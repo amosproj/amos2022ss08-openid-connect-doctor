@@ -1,6 +1,6 @@
 # OpenID Connect Doctor (AMOS SS 2022)
 
-https://github.com/amosproj/amos2022ss08-openid-connect-doctor/blob/main/Deliverables/sprint-05/build-process-video.mkv
+[our video documentation](https://github.com/amosproj/amos2022ss08-openid-connect-doctor/raw/expand-readme/Deliverables/sprint-05/build-process-video.mkv)
 
 ## Local Development
 ### Prerequisites

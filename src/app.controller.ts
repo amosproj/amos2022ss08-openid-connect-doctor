@@ -97,9 +97,14 @@ export class AppController {
         keys.push(key);
       }
     }
-    let empty_schemas = [ "" ];
+    let empty_schemas;
+    if (schema_s === undefined) {
+      empty_schemas = [''];
+    } else {
+      empty_schemas = [schema_s, ''];
+    }
     const uploaded_schemas = await fs.readdir('schema');
-    const schemas = empty_schemas.concat(uploaded_schemas);
+    const schemas = empty_schemas.concat(uploaded_schemas.filter((x) => { return x !== schema_s; }));
     if (issuer_url_s === undefined) {
       return {
         result: {

@@ -23,7 +23,7 @@ export class AppController {
     return;
   }
 
-  async get_issuer(issuer_s) {
+/*  async get_issuer(issuer_s) {
     const issuer = await Issuer.discover(issuer_s);
     return issuer;
   }
@@ -123,9 +123,9 @@ export class AppController {
           };
         }),
     };
-  }
+  }*/
 
-  @Get('token')
+/*  @Get('token')
   async requestToken(
     @Query('issuer') issuer_s: string,
     @Res() res: Response,
@@ -141,9 +141,9 @@ export class AppController {
     });
     const result = await this.appService.requestToken(issuer);
     res.json(result.data).send();
-  }
+  }*/
 
-  @Post('/token')
+ /* @Post('/token')
   async requestTokenWithClientInformation(
     @Query('issuer') issuer_s: string,
     @Body() grantBody: GrantBody,
@@ -163,5 +163,5 @@ export class AppController {
       grantBody,
     );
     res.json(result.data).send();
-  }
+  }*/
 }

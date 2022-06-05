@@ -40,12 +40,59 @@ export class AppService {
     return await this.getToken(String(issuer.token_endpoint), grantBody);
   }
 
-  async validateJson(json: string, schema_file: string) {
+  async validateJson(issuer: object, schema_file: string) {
     const ajv = new Ajv();
-    const schema_file_path = "../schema/" + schema_file;
+    const schema_file_path = '../schema/' + schema_file;
     const validate = ajv.compile(require(schema_file_path));
-    if (validate(json)) {
-      console.log("JSON valid");
+    return [validate(issuer), validate.errors];
+  }
+
+  colorFilterJSON(required) {
+    return function(key, value) {
+      console.log('stringify key');
+      console.log(key);
+      if (key === '') {
+        return value;
+      }
+      if (required.includes(key)) {
+        return '<span style="color:green">' + JSON.stringify(value) + '</span>';
+      } else {
+        return JSON.stringify(value, null, 2);
+      }
+    };
+  }
+
+  myStringify(issuer, required, keys) {
+    let res = '{\n';
+    let first = true;
+    for (const key in issuer) {
+      if (keys.includes(key)) {
+        if (!first) {
+          res = res + ',\n';
+        }
+        if (required.includes(key)) {
+          res = res + `"${key}": ` + '<span style="color:green">' + JSON.stringify(issuer[key]) + '</span>';
+        } else {
+          res = res + `"${key}": ` + JSON.stringify(issuer[key], null, 2);
+        }
+        first = false;
+      }
+    }
+    res = res + '\n}';
+    return res;
+  }
+
+  async coloredFilteredValidation(issuer: object, schema_file: string, keys: any[]) {
+    const [ valid, errors ] = await this.validateJson(issuer, schema_file);
+    console.log('start validation');
+    if (valid) {
+      const schema = require('../schema/' + schema_file);
+      const required = schema.required;
+      const replacer = this.colorFilterJSON(required);
+      console.log('start stringify');
+      return this.myStringify(issuer, required, keys);
+    } else {
+      return errors;
     }
   }
 }

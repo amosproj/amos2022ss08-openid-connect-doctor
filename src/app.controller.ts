@@ -103,7 +103,7 @@ export class AppController {
     if (issuer_url_s === undefined) {
       return {
         result: {
-          success: 2,
+          success: 1,
           info: null,
           previously_checked: null,
         },
@@ -111,26 +111,33 @@ export class AppController {
         schemas: schemas,
       };
     }
-    const issuer_query_res = await this.get_issuer(issuer_url_s)
+    const [ issuer_query_res, issuer_res ] = await this.get_issuer(issuer_url_s)
       .then((issuer) => {
         //console.log(issuer);
-        return {
-          success: 1,
-          info: JSON.stringify(issuer, keys, 2),
-          previously_checked: checkboxes,
-        };
+        return [
+          {
+            success: 1,
+            info: JSON.stringify(issuer, keys, 2),
+            previously_checked: checkboxes,
+          },
+          issuer,
+        ];
       })
       .catch((err) => {
-        return {
-          success: 0,
-          info: err,
-          previously_checked: null,
-        };
+        return [
+          {
+            success: 0,
+            info: err,
+            previously_checked: null,
+          },
+          null,
+        ];
       });
     if (issuer_query_res.success === 1 && schema_s !== '') {
-      await this.appService.validateJson(
-        JSON.parse(issuer_query_res.info),
+      issuer_query_res.info = await this.appService.coloredFilteredValidation(
+        issuer_res,
         schema_s,
+        keys,
       );
     }
     return {

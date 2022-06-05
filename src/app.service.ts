@@ -47,21 +47,6 @@ export class AppService {
     return [validate(issuer), validate.errors];
   }
 
-  colorFilterJSON(required) {
-    return function(key, value) {
-      console.log('stringify key');
-      console.log(key);
-      if (key === '') {
-        return value;
-      }
-      if (required.includes(key)) {
-        return '<span style="color:green">' + JSON.stringify(value) + '</span>';
-      } else {
-        return JSON.stringify(value, null, 2);
-      }
-    };
-  }
-
   myStringify(issuer, required, keys) {
     let res = '{\n';
     let first = true;
@@ -88,11 +73,10 @@ export class AppService {
     if (valid) {
       const schema = require('../schema/' + schema_file);
       const required = schema.required;
-      const replacer = this.colorFilterJSON(required);
       console.log('start stringify');
-      return this.myStringify(issuer, required, keys);
+      return [1, this.myStringify(issuer, required, keys)];
     } else {
-      return errors;
+      return [0, JSON.stringify(errors, null, 2)];
     }
   }
 }

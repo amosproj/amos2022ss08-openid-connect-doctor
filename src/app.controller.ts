@@ -107,10 +107,11 @@ export class AppController {
           info: null,
           previously_checked: null,
         },
-        first_query: 1,
+        short_message: 'Please input provider url',
         schemas: schemas,
       };
     }
+    let short_message = 'Provider found:';
     const [ issuer_query_res, issuer_res ] = await this.get_issuer(issuer_url_s)
       .then((issuer) => {
         //console.log(issuer);
@@ -133,16 +134,24 @@ export class AppController {
           null,
         ];
       });
+    if (issuer_query_res.success === 0) {
+      short_message = 'Error, could not find provider:';
+    }
     if (issuer_query_res.success === 1 && schema_s !== '') {
-      issuer_query_res.info = await this.appService.coloredFilteredValidation(
+      const [success, info] = await this.appService.coloredFilteredValidation(
         issuer_res,
         schema_s,
         keys,
       );
+      issuer_query_res.success = success;
+      issuer_query_res.info = info;
+      if (success === 0) {
+        short_message = 'Provider did not match schema';
+      }
     }
     return {
       result: issuer_query_res,
-      first_query: 0,
+      short_message: short_message,
       schemas: schemas,
     };
   }

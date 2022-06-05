@@ -12,6 +12,8 @@ import {
 import { TokenService } from './token.service';
 import { TokenDto } from './token.dto';
 import { TokenResultDto } from './tokenResult.dto';
+import { Response } from 'express';
+import { GrantBody } from 'openid-client';
 
 @Controller('token')
 export default class TokenController {
@@ -20,7 +22,7 @@ export default class TokenController {
   @Get('decode')
   @Render('decode')
   async get() {
-    return { 
+    return {
       message: 'Please enter the wanted information!',
       showResults: false,
     };
@@ -57,5 +59,50 @@ export default class TokenController {
       payload: result.payload,
       header: result.header,
     };
+  }
+
+  @Get('gettoken')
+  async requestToken(
+    @Query('issuer')
+    issuer_s: string,
+    @Res()
+    res: Response,
+  ): Promise<any> {
+    const issuer = await this.tokenService.get_issuer(issuer_s).catch(() => {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'invalid issuer',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    });
+    const result = await this.tokenService.requestToken(issuer);
+    res.json(result.data).send();
+  }
+
+  @Post('gettoken')
+  async requestTokenWithClientInformation(
+    @Query('issuer')
+    issuer_s: string,
+    @Body()
+    grantBody: GrantBody,
+    @Res()
+    res: Response,
+  ): Promise<any> {
+    const issuer = await this.tokenService.get_issuer(issuer_s).catch(() => {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'invalid issuer',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    });
+    const result = await this.tokenService.getToken(
+      String(issuer.token_endpoint),
+      grantBody,
+    );
+    res.json(result.data).send();
   }
 }

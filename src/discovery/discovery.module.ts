@@ -4,6 +4,7 @@ import { DiscoveryService } from './discovery.service';
 
 @Module({
   controllers: [DiscoveryController],
-  providers: [DiscoveryService]
+  providers: [DiscoveryService],
+  exports: [DiscoveryService],
 })
 export class DiscoveryModule {}

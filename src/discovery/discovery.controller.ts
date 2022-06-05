@@ -3,14 +3,8 @@ import {
     Get,
     Render,
     Query,
-    HttpException,
-    HttpStatus,
-    Res,
-    Post,
-    Body,
 } from '@nestjs/common';
-import { Issuer, GrantBody } from 'openid-client';
-import {AppService} from "../app.service";
+
 import {DiscoveryService} from "./discovery.service";
 
 
@@ -54,46 +48,8 @@ export class DiscoveryController {
         @Query('userinfo_endpoint') userinfo_endpoint_s: string,
     ) {
         const checkboxes = this.extracted(authorization_endpoint_s, claim_types_supported_s, claims_parameter_supported_s, claims_supported_s, code_challenge_methods_supported_s, device_authorization_endpoint_s, grant_types_supported_s, id_token_signing_alg_values_supported_s, issuer_s, jwks_uri_s, request_parameter_supported_s, request_uri_parameter_supported_s, require_request_uri_registration_s, response_modes_supported_s, response_types_supported_s, revocation_endpoint_s, revocation_endpoint_auth_methods_supported_s, scopes_supported_s, subject_types_supported_s, token_endpoint_s, token_endpoint_auth_methods_supported_s, userinfo_endpoint_s);
-
         let keys = this.rememberSelectedParameters(checkboxes);
-        if (issuer_url_s === undefined) {
-            return {
-                result: {
-                    success: 2,
-                    info: null,
-                    previously_checked: null,
-                },
-                first_query: 1,
-            };
-        }
-        return {
-            result: await this.discoveryService.get_issuer(issuer_url_s)
-                .then((issuer) => {
-                    //console.log(issuer);
-                    return {
-                        success: 1,
-                        info: JSON.stringify(issuer, keys, 2),
-                        previously_checked: checkboxes,
-                    };
-                })
-                .catch((err) => {
-                    return {
-                        success: 0,
-                        info: err,
-                        previously_checked: null,
-                    };
-                }),
-        };
-    }
-
-    private rememberSelectedParameters(checkboxes) {
-        let keys = [];
-        for (const key in checkboxes) {
-            if (checkboxes[key] === '1') {
-                keys.push(key);
-            }
-        }
-        return keys;
+        return await this.checkIssuerUrlDetails(issuer_url_s, keys, checkboxes);
     }
 
     private extracted(authorization_endpoint_s: string, claim_types_supported_s: string, claims_parameter_supported_s: string, claims_supported_s: string, code_challenge_methods_supported_s: string, device_authorization_endpoint_s: string, grant_types_supported_s: string, id_token_signing_alg_values_supported_s: string, issuer_s: string, jwks_uri_s: string, request_parameter_supported_s: string, request_uri_parameter_supported_s: string, require_request_uri_registration_s: string, response_modes_supported_s: string, response_types_supported_s: string, revocation_endpoint_s: string, revocation_endpoint_auth_methods_supported_s: string, scopes_supported_s: string, subject_types_supported_s: string, token_endpoint_s: string, token_endpoint_auth_methods_supported_s: string, userinfo_endpoint_s: string) {
@@ -126,4 +82,47 @@ export class DiscoveryController {
         };
         return checkboxes;
     }
+
+    private rememberSelectedParameters(checkboxes) {
+        let keys = [];
+        for (const key in checkboxes) {
+            if (checkboxes[key] === '1') {
+                keys.push(key);
+            }
+        }
+        return keys;
+    }
+
+    private async checkIssuerUrlDetails(issuer_url_s: string, keys: any[], checkboxes: { response_types_supported: string; request_parameter_supported: string; revocation_endpoint_auth_methods_supported: string; request_uri_parameter_supported: string; claims_parameter_supported: string; grant_types_supported: string; revocation_endpoint: string; scopes_supported: string; issuer: string; authorization_endpoint: string; userinfo_endpoint: string; device_authorization_endpoint: string; claims_supported: string; require_request_uri_registration: string; code_challenge_methods_supported: string; jwks_uri: string; subject_types_supported: string; claim_types_supported: string; id_token_signing_alg_values_supported: string; token_endpoint_auth_methods_supported: string; response_modes_supported: string; token_endpoint: string }) {
+        if (issuer_url_s === undefined) {
+            return {
+                result: {
+                    success: 2,
+                    info: null,
+                    previously_checked: null,
+                },
+                first_query: 1,
+            };
+        }
+        return {
+            result: await this.discoveryService.get_issuer(issuer_url_s)
+                .then((issuer) => {
+                    //console.log(issuer);
+                    return {
+                        success: 1,
+                        info: JSON.stringify(issuer, keys, 2),
+                        previously_checked: checkboxes,
+                    };
+                })
+                .catch((err) => {
+                    return {
+                        success: 0,
+                        info: err,
+                        previously_checked: null,
+                    };
+                }),
+        };
+    }
+
+
 }

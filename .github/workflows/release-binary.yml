@@ -9,20 +9,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@master
+        uses: actions/checkout@main
       - name: Setup Node.js version
-        uses: actions/setup-node@master
+        uses: actions/setup-node@main
         with:
-          node-version: [16.15.0]
+          node-version: 16.15.0
           cache: 'npm'
       - name: Install dependencies
         run: npm install
       - name: Build application
-        run: npm build
+        run: npm run build
       - name: Bundle
-        run: npm bundle
+        run: npm run bundle
       - name: Generate Binary
-        run: npm binary
+        run: npm run binary
       - run: chmod -R +x oidc-*
       - name: Upload artifacts
         uses: skx/github-action-publish-binaries@master

@@ -68,7 +68,7 @@ export default class TokenController {
     @Res()
     res: Response,
   ): Promise<any> {
-    const issuer = await this.tokenService.get_issuer(issuer_s).catch(() => {
+    const issuer = await this.tokenService.getIssuer(issuer_s).catch(() => {
       throw new HttpException(
         {
           status: HttpStatus.BAD_REQUEST,
@@ -90,7 +90,7 @@ export default class TokenController {
     @Res()
     res: Response,
   ): Promise<any> {
-    const issuer = await this.tokenService.get_issuer(issuer_s).catch(() => {
+    const issuer = await this.tokenService.getIssuer(issuer_s).catch(() => {
       throw new HttpException(
         {
           status: HttpStatus.BAD_REQUEST,

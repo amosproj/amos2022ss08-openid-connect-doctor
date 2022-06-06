@@ -10,11 +10,29 @@ export class TokenService {
   @Inject(DiscoveryService)
   private readonly discoveryService: DiscoveryService;
 
-  async get_issuer(issuer_s: string) {
+  async getIssuer(issuer_s: string) {
+    if (issuer_s === undefined || issuer_s === '') {
+      throw new HttpException(
+        'There was no issuer string passed to get the issuer',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return await this.discoveryService.get_issuer(issuer_s);
   }
 
   async getToken(token_endpoint: string, grantBody: GrantBody): Promise<any> {
+    if (token_endpoint === undefined || token_endpoint === '') {
+      throw new HttpException(
+        'No or Empty token endpoint has been received',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (grantBody.grant_type === undefined || grantBody.grant_type === '') {
+      throw new HttpException(
+        'No or Empty grant_type has been received',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return await axios
       .post(token_endpoint, qs.stringify(grantBody), {
         headers: {
@@ -33,6 +51,12 @@ export class TokenService {
   }
 
   async requestToken(issuer: Issuer): Promise<any> {
+    if (issuer === undefined) {
+      throw new HttpException(
+        'Received issuer does not contain the token endpoint to get a token',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const grantBody: GrantBody = {
       grant_type: process.env.CLIENT_CREDENTIALS_STRING,
       client_id: process.env.CLIENT_ID,

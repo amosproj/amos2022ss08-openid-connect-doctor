@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Delete,
   Render,
   Query,
   HttpException,
@@ -8,11 +9,15 @@ import {
   Res,
   Post,
   Body,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Issuer, GrantBody } from 'openid-client';
 import { AppService } from './app.service';
-import { Response } from 'express';
-import { promises as fs } from 'fs';
+import { Express, Response } from 'express';
+import { createReadStream, promises as fs } from 'fs';
+import { join } from 'path';
 
 @Controller()
 export class AppController {
@@ -199,5 +204,25 @@ export class AppController {
       grantBody,
     );
     res.json(result.data).send();
+  }
+
+  @Post('/schema/upload')
+  @UseInterceptors(FileInterceptor('upload'))
+  async uploadSchema(@UploadedFile() file: Express.Multer.File, @Res() res) {
+    console.log(file);
+    await fs.writeFile(join('schema', file.originalname), file.buffer);
+    res.status(302).redirect('/api/issuer');
+  }
+
+  @Get('/schema/download')
+  downloadSchema(@Query('schema') schema_s: string, @Res() res: Response) {
+    const file = createReadStream(join(process.cwd(), 'schema', schema_s));
+    file.pipe(res);
+  }
+
+  @Get('/schema/delete')
+  async deleteSchema(@Query('schema') schema_s: string, @Res() res: Response) {
+    await fs.unlink(join('schema', schema_s));
+    res.status(302).redirect('/api/issuer');
   }
 }

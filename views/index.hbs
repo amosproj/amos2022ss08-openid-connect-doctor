@@ -166,6 +166,30 @@
 				const btn_disable = document.querySelector('#btn_disableAll');
 				btn_disable.onclick = disableAll;
 			</script>
+			<form enctype="multipart/form-data" method="post" action="/api/schema/upload">
+				<input type="file" id="file_upload" name="upload">
+				<input type="submit">
+			</form>
+			{{#if schemas}}
+			<form action="/api/schema/download">
+				<label for="schema_download_selector"> Download schema: </label>
+				<select name="schema" id="schema_download_selector">
+					{{#each schemas as |schema|}}
+					<option value="{{ schema }}">{{ schema }}</option>
+					{{/each}}
+				</select>
+				<input type="submit">
+			</form>
+			<form action="/api/schema/delete">
+				<label for="schema_delete_selector"> Delete schema: </label>
+				<select name="schema" id="schema_delete_selector">
+					{{#each schemas as |schema|}}
+					<option value="{{ schema }}">{{ schema }}</option>
+					{{/each}}
+				</select>
+				<input type="submit">
+			</form>
+			{{/if}}
 			<label for="result_display"><strong style="color: {{#if result.success}}green{{else}}red{{/if}};font-size: 20px;">{{ short_message }}</strong></label><br><br>
 			<div class="scroll">
 				<div style="height:400px; width:500px; overflow-y:auto;">

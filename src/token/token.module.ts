@@ -8,5 +8,6 @@ import { DiscoveryModule } from 'src/discovery/discovery.module';
   imports: [ConfigModule.forRoot(), DiscoveryModule],
   controllers: [TokenController],
   providers: [TokenService],
+  exports: [TokenService],
 })
 export class TokenModule {}

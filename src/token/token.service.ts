@@ -50,13 +50,24 @@ export class TokenService {
       });
   }
 
-  async requestToken(issuer: Issuer): Promise<any> {
-    if (issuer === undefined) {
+  async requestToken(issuer_s: string): Promise<any> {
+    if (issuer_s === undefined || issuer_s === '') {
       throw new HttpException(
-        'Received issuer is empty',
+        'There was no issuer string passed to get the issuer',
         HttpStatus.BAD_REQUEST,
       );
     }
+
+    const issuer = await this.getIssuer(issuer_s).catch(() => {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'invalid issuer',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    });
+
     const grantBody: GrantBody = {
       grant_type: process.env.CLIENT_CREDENTIALS_STRING,
       client_id: process.env.CLIENT_ID,

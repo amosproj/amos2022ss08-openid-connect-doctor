@@ -68,16 +68,7 @@ export default class TokenController {
     @Res()
     res: Response,
   ): Promise<any> {
-    const issuer = await this.tokenService.getIssuer(issuer_s).catch(() => {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'invalid issuer',
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    });
-    const result = await this.tokenService.requestToken(issuer);
+    const result = await this.tokenService.requestToken(issuer_s);
     res.json(result.data).send();
   }
 

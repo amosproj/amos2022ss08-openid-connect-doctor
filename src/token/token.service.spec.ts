@@ -141,9 +141,15 @@ describe('TokenService', () => {
   });
 
   describe('requestToken', () => {
-    it('should fail if empty issuer is provided', async () => {
+    it('should fail if no issuer is provided', async () => {
       await expect(service.requestToken(undefined)).rejects.toThrow(
-        'Received issuer is empty',
+        'There was no issuer string passed to get the issuer',
+      );
+    });
+
+    it('should fail if empty issuer is provided', async () => {
+      await expect(service.requestToken('')).rejects.toThrow(
+        'There was no issuer string passed to get the issuer',
       );
     });
   });

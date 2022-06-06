@@ -14,23 +14,48 @@ import { TokenDto } from './token.dto';
 import { TokenResultDto } from './tokenResult.dto';
 
 @Controller('token')
-export class TokenController {
+export default class TokenController {
   constructor(private readonly tokenService: TokenService) {}
 
+  @Get('decode')
+  @Render('decode')
+  async get() {
+    return { 
+      message: 'Please enter the wanted information!',
+      showResults: false,
+    };
+  }
+
   @Post('decode')
-  async get(@Query('issuer') issuer: string, @Body() tokenDto: TokenDto) {
+  @Render('decode')
+  async post(@Body() tokenDto: TokenDto) {
+    const result = await this.tokenService
+      .decodeToken(
+        tokenDto.issuer,
+        tokenDto.keyMaterialEndpoint,
+        tokenDto.token,
+      )
+      .then((result) => {
+        return new TokenResultDto({
+          success: true,
+          message: 'Decoding successful',
+          payload: result[0],
+          header: result[1],
+        });
+      })
+      .catch((err) => {
+        return new TokenResultDto({
+          success: false,
+          message: err.message,
+        });
+      });
+
     return {
-      result: await this.tokenService
-        .decodeToken(issuer, tokenDto.keyMaterialEndpoint, tokenDto.tokenString)
-        .then((result) => {
-          return new TokenResultDto({
-              payload: result[0],
-              header: result[1],
-            });
-        })
-        .catch((err) => {
-          return err;
-        }),
+      showResults: result.success,
+      message: result.message,
+
+      payload: result.payload,
+      header: result.header,
     };
   }
 }

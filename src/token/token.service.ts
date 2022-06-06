@@ -53,7 +53,7 @@ export class TokenService {
   async requestToken(issuer: Issuer): Promise<any> {
     if (issuer === undefined) {
       throw new HttpException(
-        'Received issuer does not contain the token endpoint to get a token',
+        'Received issuer is empty',
         HttpStatus.BAD_REQUEST,
       );
     }

@@ -143,7 +143,7 @@ describe('TokenService', () => {
   describe('requestToken', () => {
     it('should fail if empty issuer is provided', async () => {
       await expect(service.requestToken(undefined)).rejects.toThrow(
-        'Received issuer does not contain the token endpoint to get a token',
+        'Received issuer is empty',
       );
     });
   });

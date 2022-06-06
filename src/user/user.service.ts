@@ -8,8 +8,9 @@ export class UserService {
   private readonly flowsService: FlowsService;
 
   async login(loginUserDto: LoginUserDto): Promise<any> {
-    return await this.flowsService.clientCredentialsFlow(
+    const result = await this.flowsService.clientCredentialsFlow(
       process.env.ISSUER_STRING,
     );
+    return JSON.stringify(result.data);
   }
 }

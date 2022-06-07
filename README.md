@@ -1,6 +1,7 @@
 # OpenID Connect Doctor (AMOS SS 2022)
 
-<video src='Deliverables/sprint-05/build-process-video.mp4' width=180/>
+![caption](Deliverables/sprint-05/build-process-video.mp4)
+
 
 ## Local Development
 ### Prerequisites

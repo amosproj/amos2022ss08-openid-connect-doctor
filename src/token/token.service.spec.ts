@@ -1,13 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TokenService } from './token.service';
 import { DiscoveryModule } from '../discovery/discovery.module';
+import { FlowsModule } from '../flows/flows.module';
 
 describe('TokenService', () => {
   let service: TokenService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [DiscoveryModule],
+      imports: [DiscoveryModule, FlowsModule],
       providers: [TokenService],
     }).compile();
 

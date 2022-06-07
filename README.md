@@ -1,7 +1,8 @@
 # OpenID Connect Doctor (AMOS SS 2022)
 
-![How to use the application](Deliverables/sprint-05/build-process-video.mp4)
-
+## Documentation
+The documentation can be found in the [Documentation-Folder](https://github.com/amosproj/amos2022ss08-openid-connect-doctor/tree/main/Documentation).
+If you find any mistakes or if you have an idea how to improve the documentation, please create an issue or a pull-request.
 
 ## Local Development
 ### Prerequisites
@@ -10,6 +11,9 @@
 * Optional: A local docker environment (for testing purposes)
 
 ### Build
+
+![How to build the application](Deliverables/sprint-05/build-process-video.mp4)
+
 Before you can build the application you have to checkout the code from github.
 
 ```sh

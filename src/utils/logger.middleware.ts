@@ -16,6 +16,21 @@ export class LoggerMiddleware implements NestMiddleware {
       this.logger.log(
         `${method} ${originalUrl} ${statusCode} ${contentLength} - ${userAgent} ${ip}`,
       );
+
+      if (statusCode >= 200 && statusCode <=299){
+        this.logger.log("Successful Response ");
+        this.logger.log( `${method} ${originalUrl} ${statusCode} ${contentLength} - ${userAgent} ${ip}`, );
+      }else if(statusCode >= 400 && statusCode <=499){
+        this.logger.error("Client error responses ");
+        this.logger.error( `${method} ${originalUrl} ${statusCode} ${contentLength} -  ${ip}`, );
+      }
+      else if(statusCode >= 500 && statusCode <=599){
+        this.logger.error("Server error responses ");
+        this.logger.error( `${method} ${originalUrl} ${statusCode} ${contentLength} -  ${ip}`, );
+      }else{
+        this.logger.warn("Informational or Redirect message ");
+        this.logger.log(`${method} ${originalUrl} ${statusCode}`)
+      }
     });
 
     next();

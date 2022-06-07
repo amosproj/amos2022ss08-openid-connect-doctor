@@ -6,4 +6,6 @@ import { ProtocolService } from './protocol.service';
   controllers: [ProtocolController],
   providers: [ProtocolService]
 })
-export class ProtocolModule {}
+export class ProtocolModule {
+
+}

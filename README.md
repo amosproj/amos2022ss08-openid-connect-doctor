@@ -1,5 +1,6 @@
 # OpenID Connect Doctor (AMOS SS 2022)
-Something something something
+
+![How to use the application](Deliverables/sprint-05/build-process-video.mp4)
 
 
 ## Local Development

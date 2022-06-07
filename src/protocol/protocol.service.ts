@@ -9,9 +9,10 @@ export class ProtocolService {
 
     writeLoggerToFile(logMessage:string): void {
         const fs = require('fs');
+        let dateTime = new Date();
         const dirPath="../amos2022ss08-openid-connect-doctor/src/protocol/";
         if(fs.existsSync(dirPath)){
-            fs.writeFileSync(dirPath+"/logger.txt","\n "+logMessage, {flag:"a"});
+            fs.writeFileSync(dirPath+"/logger.txt",dateTime+" :: "+logMessage+"\n", {flag:"a"});
            return  this.logger.log("write Successful")
 
         }else{

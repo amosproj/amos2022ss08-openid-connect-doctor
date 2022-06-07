@@ -7,7 +7,6 @@ import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  const appService = app.get(AppService);
 
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe());

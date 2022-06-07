@@ -1,0 +1,13 @@
+{
+	"$id": "test.schema.json",
+	"title": "Default-test",
+	"description": "Default schema with all parameters to be used as template",
+	"type": "object",
+	"properties": {
+		"service_documentation": {
+			"description": "OPTIONAL. URL of a page containing human-readable information that developers might want or need to know when using the OpenID Provider. In particular, if the OpenID Provider does not support Dynamic Client Registration, then information on how to register Clients needs to be provided in this documentation",
+			"type": "string"
+		}
+	},
+	"required": [ "service_documentation" ]
+}

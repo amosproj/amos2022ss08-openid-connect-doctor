@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Delete,
   Render,
   Query,
   HttpException,
@@ -8,10 +9,15 @@ import {
   Res,
   Post,
   Body,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Issuer, GrantBody } from 'openid-client';
 import { AppService } from './app.service';
-import { Response } from 'express';
+import { Express, Response } from 'express';
+import { createReadStream, promises as fs } from 'fs';
+import { join } from 'path';
 
 @Controller()
 export class AppController {
@@ -22,5 +28,4 @@ export class AppController {
   root() {
     return;
   }
-
 }

@@ -22,13 +22,14 @@
     "binary": "js2bin --cache --build --platform=windows --platform=linux --platform=darwin --app=bundle/index.js --name=oidc"
   },
   "dependencies": {
-    "@nestjs/common": "^8.0.0",
+    "@nestjs/common": "^8.4.6",
     "@nestjs/config": "^2.0.1",
-    "@nestjs/core": "^8.0.0",
+    "@nestjs/core": "^8.4.6",
     "@nestjs/platform-express": "^8.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "hbs": "^4.2.0",
+    "jose": "^4.8.1",
     "openid-client": "^5.1.6",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

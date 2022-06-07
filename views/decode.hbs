@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>App</title>
+        <style>
+            .container {
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                
+                margin: 3px;
+                padding: 10px;
+
+                border: 2px solid black;
+                border-radius: 3px 2px;
+            }
+
+            .input-container {
+                margin:3px;
+                padding: 10px;
+
+                border: 2px solid black;
+                border-radius: 3px 2px;
+            }
+
+            .input-form {
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
+            }
+
+            .input-group {
+                display: inline-flex;
+
+                padding: 10px;
+            }
+
+            .input-group > label {
+                flex: 25%;
+            }
+            
+            .input-group > input,
+            .input-group > textarea {
+                flex: 75%;
+            }
+
+            .button-group {
+                display: inline-flex;
+            }
+
+            .reset-button,
+            .submit-button {
+                flex: 45%;
+                padding: 5px;
+                margin: 5px;
+
+                color: #000;
+                background-color: #e4e4e4;
+                border: 2px solid #000;
+                border-radius: 3px 2px;
+            }
+
+            .reset-button:hover,
+            .reset-button:focus {
+                color: #a11;
+                border: 2px solid #a11;
+            }
+            
+            .submit-button:hover,
+            .submit-button:focus {
+                color: #1a1;
+                border: 2px solid #1a1;
+            }
+
+            .result-container {
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
+
+                margin:3px;
+                padding: 10px;
+
+                border: 2px solid black;
+                border-radius: 3px 2px;
+            }
+
+            .results-item {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .result-group {
+                display: flex;
+                flex: 45%;
+                flex-direction: column;
+                flex-wrap: nowrap;
+
+                margin:3px;
+                padding: 10px;
+
+                border: 1px dotted black;
+                border-radius: 3px 2px;
+            }
+        </style>
+	</head>
+	<body>
+        <div class="container">
+            <div class="input-container">
+                <form class="input-form" action="/api/token/decode" method="post">
+                    <div class="input-group">
+                        <label for="issuer">Issuer:</label>
+                        <input type="text" id="issuer" name="issuer" />
+                    </div>
+                    <div class="input-group">
+                        <label for="keyMaterialEndpoint">Key-Material-Endpoint:</label>
+                        <input type="text" id="keyMaterialEndpoint" name="keyMaterialEndpoint" />
+                    </div>
+                    <div class="input-group">
+                        <label for="token">Access-Token:</label>
+                        <textarea type="text" id="token" name="token" rows="8"></textarea>
+                    </div>
+                    <div class="button-group">
+                        <button class="reset-button" type="submit" formaction="/api/token/decode" formmethod="get">Reset</button>
+                        <button class="submit-button" type="submit">Submit</button>
+                    </div>
+                </form>                
+            </div>
+
+            <div class="result-container">
+                <p class="message-item">{{message}}</p>
+                {{#if showResults}}
+                    <div class="results-item">
+                        <div class="result-group">
+                            <h2>Header</h2>
+                            <pre>{{ header }}</pre>
+                        </div>
+                        <div class="result-group">
+                            <h2>Payload</h2>
+                            <pre>{{ payload }}</pre>
+                        </div>
+                    </div>
+                {{/if}}
+            </div>
+            
+        </div>
+	</body>
+</html>

@@ -25,7 +25,7 @@
 	</head>
 	<body>
 		<div class="center">
-			<form action="/api/issuer">
+			<form action="/api/discovery/issuer">
 				<label for="issuer"><b>Issuer: </b></label><br>
 				<input type="text" id="issuer_url" name="issuer_url"  class="url"><br><br>
 				<label for="issuer"><b>Parameter's List: </b></label><br>
@@ -48,7 +48,6 @@
 							<label for="claims_supported_box"> claims_supported </label><br>
 						</td>
 					</tr>
-
 					<tr>
 						<td>
 							<input type="checkbox" id="code_challenge_methods_supported_checkbox" name="code_challenge_methods_supported" value="1" {{#if result.previously_checked.code_challenge_methods_supported}} checked{{/if}}>
@@ -124,7 +123,6 @@
 							<label for="token_endpoint_box"> token_endpoint </label><br>
 						</td>
 					</tr>
-
 					<tr>
 						<td>
 							<input type="checkbox" id="token_endpoint_auth_methods_supported_checkbox" name="token_endpoint_auth_methods_supported" value="1" {{#if result.previously_checked.token_endpoint_auth_methods_supported}} checked{{/if}}>
@@ -147,6 +145,7 @@
 			</form><br>
 			<button id="btn_enableAll" class="button enableButton">Enable All</button>
 			<button id="btn_disableAll" class="button disableButton">Disable All</button><br><br>
+			<button id="btn_login" class="button loginButton">Login</button><br><br>
 
 			<script>
 				function setAll(b) {
@@ -165,13 +164,16 @@
 				btn_enable.onclick = enableAll;
 				const btn_disable = document.querySelector('#btn_disableAll');
 				btn_disable.onclick = disableAll;
+				document.querySelector('#btn_login').onclick = function () {
+					location.href = 'http://localhost:8081/api/user/login';
+				};
 			</script>
-			<form enctype="multipart/form-data" method="post" action="/api/schema/upload">
+			<form enctype="multipart/form-data" method="post" action="/api/discovery/schema/upload">
 				<input type="file" id="file_upload" name="upload">
 				<input type="submit">
 			</form>
 			{{#if schemas}}
-			<form action="/api/schema/download">
+			<form action="/api/discovery/schema/download">
 				<label for="schema_download_selector"> Download schema: </label>
 				<select name="schema" id="schema_download_selector">
 					{{#each schemas as |schema|}}
@@ -180,7 +182,7 @@
 				</select>
 				<input type="submit">
 			</form>
-			<form action="/api/schema/delete">
+			<form action="/api/discovery/schema/delete">
 				<label for="schema_delete_selector"> Delete schema: </label>
 				<select name="schema" id="schema_delete_selector">
 					{{#each schemas as |schema|}}

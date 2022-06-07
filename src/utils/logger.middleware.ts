@@ -1,8 +1,11 @@
 import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 
+import {ProtocolService} from "../protocol/protocol.service";
+
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
+  constructor(private readonly protocolService: ProtocolService) {}
   private logger = new Logger('HTTP');
 
   use(request: Request, response: Response, next: NextFunction): void {
@@ -13,9 +16,9 @@ export class LoggerMiddleware implements NestMiddleware {
       const { statusCode } = response;
       const contentLength = response.get('content-length');
 
-      this.logger.log(
-        `${method} ${originalUrl} ${statusCode} ${contentLength} - ${userAgent} ${ip}`,
-      );
+      let msg:string =`${method} ${originalUrl} ${statusCode} ${contentLength} - ${userAgent} ${ip}`;
+      this.logger.log(msg);
+      this.protocolService.writeLoggerToFile(msg);
 
       if (statusCode >= 200 && statusCode <=299){
         this.logger.log("Successful Response ");

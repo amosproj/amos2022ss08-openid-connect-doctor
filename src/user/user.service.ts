@@ -11,6 +11,6 @@ export class UserService {
     const result = await this.flowsService.clientCredentialsFlow(
       process.env.ISSUER_STRING,
     );
-    return JSON.stringify(result.data);
+    return JSON.stringify(result);
   }
 }

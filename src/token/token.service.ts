@@ -36,6 +36,9 @@ export class TokenService {
       },
     );
 
-    return [JSON.stringify(payload), JSON.stringify(protectedHeader)];
+    return [
+      JSON.stringify(payload, undefined, 2),
+      JSON.stringify(protectedHeader, undefined, 2),
+    ];
   }
 }

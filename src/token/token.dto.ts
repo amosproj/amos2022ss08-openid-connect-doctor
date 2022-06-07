@@ -1,4 +1,5 @@
 export class TokenDto {
+  issuer: string;
   keyMaterialEndpoint: string;
-  tokenString: string;
+  token: string;
 }

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { TokenService } from '../token/token.service';
-import { DiscoveryService } from 'src/discovery/discovery.service';
+import { DiscoveryService } from '../discovery/discovery.service';
 
 @Injectable()
 export class FlowsService {

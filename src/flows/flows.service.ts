@@ -21,7 +21,10 @@ export class FlowsService {
         audience: process.env.AUDIENCE,
       },
     );
-
-    return receivedToken.data.access_token;
+    return await this.tokenService.decodeToken(
+      process.env.ISSUER_STRING,
+      String(issuer.jwks_uri),
+      String(receivedToken.data.access_token),
+    );
   }
 }

@@ -12,7 +12,7 @@ If you find any mistakes or if you have an idea how to improve the documentation
 
 ### Build
 
-![How to build the application](Deliverables/sprint-05/build-process-video.mp4)
+![How to build the application](https://raw.githubusercontent.com/amosproj/amos2022ss08-openid-connect-doctor/main/Deliverables/sprint-05/build-process-video.mp4)
 
 Before you can build the application you have to checkout the code from github.
 

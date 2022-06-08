@@ -1,4 +1,5 @@
-import {Injectable, Logger} from '@nestjs/common';
+import {Injectable, Logger, Res} from '@nestjs/common';
+import {Response} from "express";
 
 @Injectable()
 export class ProtocolService {
@@ -7,15 +8,17 @@ export class ProtocolService {
     constructor() {
         this.logger = new Logger(ProtocolService.name);
     }
-    toggleWriteStatus(flag:number){
+    async toggleWriteStatus(flag:number){
         this.toggle=flag;
+        this.logger.error("Value changed to: "+this.toggle);
     }
 
     writeLoggerToFile(logMessage:string): void {
         const fs = require('fs');
         let dateTime = new Date();
         const dirPath="../amos2022ss08-openid-connect-doctor/src/protocol/";
-        if(this.toggle==1) {
+        this.logger.warn("value of toggle before writeing : "+this.toggle);
+        if(this.toggle == 1) {
             if (fs.existsSync(dirPath)) {
                 fs.writeFileSync(dirPath + "/logger.txt", dateTime + " :: " + logMessage + "\n", {flag: "a"});
                 return this.logger.log("write Successful")

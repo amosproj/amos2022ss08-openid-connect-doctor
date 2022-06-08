@@ -1,5 +1,6 @@
-import {Controller, Get, Query, Render} from '@nestjs/common';
+import {Controller, Get, Query, Render, Res} from '@nestjs/common';
 import {ProtocolService} from "./protocol.service";
+import {Response} from "express";
 
 @Controller('protocol')
 export class ProtocolController {
@@ -7,7 +8,7 @@ export class ProtocolController {
     @Get('toggleLogger')
     async discover_issuer(
         @Query('toggleLogger') toggleLogger: number){
-         this.protocolService.toggleWriteStatus(toggleLogger);
+         await this.protocolService.toggleWriteStatus(toggleLogger);
     }
 
 }

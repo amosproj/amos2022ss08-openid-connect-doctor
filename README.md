@@ -1,7 +1,7 @@
 # OpenID Connect Doctor (AMOS SS 2022)
 
 ## Documentation
-The documentation can be found in the [Documentation-Folder](https://github.com/amosproj/amos2022ss08-openid-connect-doctor/tree/main/Documentation).
+The documentation can be found in the [Documentation-Folder]([https://github.com/amosproj/amos2022ss08-openid-connect-doctor/tree/main/Documentation](https://github.com/amosproj/amos2022ss08-openid-connect-doctor/blob/main/Documentation/user-documentation.md)).
 If you find any mistakes or if you have an idea how to improve the documentation, please create an issue or a pull-request.
 
 ## Local Development

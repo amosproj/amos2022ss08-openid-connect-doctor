@@ -1,6 +1,6 @@
 # Setup
 
-## Prerequisits
+## Prerequisites
 * A tool to send HTTP-Requests like cURL or Postman
 
 ## Preparations
@@ -8,7 +8,7 @@
 2. Start the application. This will start a local instance that runs on Port 8081.
 
 ## Checking the discovery endpoint
-Open your favorite browser and go to `http://localhost:8081/`. This will open a user-interface that lets you enter the URL of the identity-provider you want to analyze. Please make sure to enter the complete path, to ensure that the program can find the correct endpoints (e.g. if your provider is hosted in a subpath).  
+Open your favourite browser and go to `http://localhost:8081/`. This will open a user-interface that lets you enter the URL of the identity-provider you want to analyze. Please make sure to enter the complete path, to ensure that the program can find the correct endpoints (e.g. if your provider is hosted in a subpath).  
 Below this you can select which values are returned from the discovery-endpoint (IMPORTANT: If no keys are selected, no values are returned!). 
 
 If you have entered all the information hit the enter key to submit them. The results are then shown in a separate field below the input form. 

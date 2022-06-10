@@ -233,13 +233,13 @@
             </table>
 		</form><br>
         <label for="myCheck"><b>Toggle Protocol Status </b></label>
-        <input type="checkbox" id="toggleProtocol" name="toggleProtocol" checked onclick="toggleProtocol()" onkeypress="return event.keyCode != 13;"><br><br>
+        <input type="checkbox" id="toggleProtocol" name="toggleProtocol" checked onclick="toggleProtocol()"><br><br>
 		<button id="btn_enableAll" class="button enableButton">Enable All</button>
 		<button id="btn_disableAll" class="button disableButton">Disable All</button><br><br>
 
 		<script>
+            var checkBox = document.getElementById("toggleProtocol");
             async function toggleProtocol() {
-                var checkBox = document.getElementById("toggleProtocol");
                 if (checkBox.checked == true) {
                     const response = await fetch('http://localhost:8081/api/protocol/toggleLogger?toggleLogger=1');
                     alert('Checked ');

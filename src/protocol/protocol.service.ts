@@ -32,4 +32,19 @@ export class ProtocolService {
 
     }
 
+    tempLogStore(logMessage:string, statusCode:number): void {
+        const fs = require('fs');
+        let dateTime = new Date();
+        const dirPath="../amos2022ss08-openid-connect-doctor/src/protocol/";
+            if (fs.existsSync(dirPath)) {
+                fs.writeFileSync(dirPath + "/tempLogger.txt", statusCode+" "+dateTime + " :: " + logMessage + "\n", {flag: "w"});
+                return this.logger.log("write Successful")
+
+            } else {
+                return this.logger.error(`${dirPath} not found`)
+            }
+
+    }
+
+
 }

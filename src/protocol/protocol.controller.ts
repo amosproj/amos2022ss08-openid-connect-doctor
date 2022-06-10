@@ -1,5 +1,16 @@
-import {Controller, Get, Logger, NestMiddleware, Query, Render, Res} from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    InternalServerErrorException,
+    Logger,
+    NestMiddleware,
+    Query,
+    Render,
+    Res
+} from '@nestjs/common';
 import {ProtocolService} from "./protocol.service";
+import {name} from "ts-jest/dist/transformers/hoist-jest";
+import {ProtocolLogger} from "./protocolLogger";
 
 @Controller('protocol')
 export class ProtocolController {
@@ -8,14 +19,25 @@ export class ProtocolController {
     @Get('logger')
     showLogMessage(){
         const readLastLines = require('read-last-lines');
-        readLastLines.read('../amos2022ss08-openid-connect-doctor/src/protocol/logger.txt', 2)
-            .then((lines) => console.log(lines));
-         return {
-             statusCode: 0,
-             color:'red',
-             info: "I am log",
-             previously_checked: 1,
-        };
+        let data:any;
+      return   readLastLines.read('../amos2022ss08-openid-connect-doctor/src/protocol/templogger.txt', 5)
+            .then((lines) =>{
+                let listOfObjects = [];
+                let splitLines = lines.split("\n");
+                 console.log(splitLines.length)
+                for(let i=splitLines.length-2; i>=0; i--){
+                    let decode=splitLines[i].split("##");
+                    let x= new ProtocolLogger(decode[1],decode[0],i+1);
+                     listOfObjects.push(x);
+                }
+                console.log("#####");
+                console.log(listOfObjects);
+                data=JSON.stringify(listOfObjects);
+                return data;
+            }).catch((e:any) => {
+            throw new InternalServerErrorException('Could not create user');
+            return e;
+        });
 
     }
 

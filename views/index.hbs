@@ -232,22 +232,14 @@
                 </tr>
             </table>
 		</form><br>
-        <label for="myCheck"><b>Toggle Protocol Status </b></label>
-        <input type="checkbox" id="toggleProtocol" name="toggleProtocol" checked onclick="toggleProtocol()"><br><br>
+        <button id="btn_protocol" class="button protocol">Check Protocols</button><br><br>
 		<button id="btn_enableAll" class="button enableButton">Enable All</button>
 		<button id="btn_disableAll" class="button disableButton">Disable All</button><br><br>
 
 		<script>
-            var checkBox = document.getElementById("toggleProtocol");
-            async function toggleProtocol() {
-                if (checkBox.checked == true) {
-                    const response = await fetch('http://localhost:8081/api/protocol/toggleLogger?toggleLogger=1');
-                    alert('Checked ');
-                } else {
-                    const response = await fetch('http://localhost:8081/api/protocol/toggleLogger?toggleLogger=0');
-                    alert('UnChecked');
-                }
-            }
+            document.querySelector('#btn_protocol').onclick = function () {
+                location.href = 'http://localhost:8081/api/protocol/logger';
+            };
 
 			function setAll(b) {
 				let checkboxes = document.querySelectorAll('input[type="checkbox"]');

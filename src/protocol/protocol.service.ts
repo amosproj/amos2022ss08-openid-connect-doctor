@@ -37,7 +37,7 @@ export class ProtocolService {
         let dateTime = new Date();
         const dirPath="../amos2022ss08-openid-connect-doctor/src/protocol/";
             if (fs.existsSync(dirPath)) {
-                fs.writeFileSync(dirPath + "/tempLogger.txt", statusCode+" ## "+dateTime + " :: " + logMessage + "\n", {flag: "a"});
+                fs.writeFileSync(dirPath + "/tempLogger.txt", statusCode+" >> "+dateTime + " :: " + logMessage + "\n", {flag: "a"});
                 return this.logger.log("write Successful")
 
             } else {

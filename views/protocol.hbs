@@ -4,6 +4,29 @@
     <meta charset="utf-8" />
 </head>
 <body>
-    <h3>Protocol Front End</h3>
+<!--<h4>Logger</h4>
+{{#each result}}
+    {{log}} {{index}}
+{{/each}}-->
+<label for="myCheck"><b>Save Protocol Logs in File</b></label>
+<input type="checkbox" id="toggleProtocol" name="toggleProtocol" checked onclick="toggleProtocol()"><br><br>
+<button id="btn_back" onclick="location.href = 'http://localhost:8081/api/issuer';" class="button backButton">Back to Discovery</button><br><br>
+    <h3>List of last 5 Request Logger </h3>
+    <textarea id="result_display" rows="50" cols="100">
+        {{ result }}
+    </textarea>
+
+<script>
+    var checkBox = document.getElementById("toggleProtocol");
+    async function toggleProtocol() {
+        if (checkBox.checked == true) {
+            const response = await fetch('http://localhost:8081/api/protocol/toggleLogger?toggleLogger=1');
+            alert('Checked ');
+        } else {
+            const response = await fetch('http://localhost:8081/api/protocol/toggleLogger?toggleLogger=0');
+            alert('UnChecked');
+        }
+    }
+    </script>
 </body>
 </html>

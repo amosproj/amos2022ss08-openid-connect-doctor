@@ -9,7 +9,6 @@ import {
     Res
 } from '@nestjs/common';
 import {ProtocolService} from "./protocol.service";
-import {name} from "ts-jest/dist/transformers/hoist-jest";
 import {ProtocolLogger} from "./protocolLogger";
 
 @Controller('protocol')
@@ -18,14 +17,14 @@ export class ProtocolController {
 
     @Get('logger')
     @Render('protocol')
-    showLogMessage(){
+    async showLogMessage(){
         const readLastLines = require('read-last-lines');
         let data:any;
-      return  readLastLines.read('../amos2022ss08-openid-connect-doctor/src/protocol/templogger.txt', 5)
+        return readLastLines.read('./src/protocol/tempLogger.txt', 5)
             .then((lines) =>{
                 let listOfObjects = [];
                 let splitLines = lines.split("\n");
-                 console.log(splitLines.length)
+                console.log(splitLines.length)
                 let counter=0;
                 for(let i=splitLines.length-2; i>=0; i--){
                     let decode=splitLines[i].split(">>");
@@ -34,11 +33,12 @@ export class ProtocolController {
                 }
                 console.log("#####");
                 console.log(listOfObjects);
-                data=JSON.stringify(listOfObjects,null,4);
+                data = this.protocolService.myStringify(listOfObjects);
                 return {result: data};
-            }).catch((e:any) => {
-            throw new InternalServerErrorException('Could not create user');
-            return e;
+            })
+            .catch((e:any) => {
+                throw new InternalServerErrorException('Could not create user');
+                return e;
         });
 
     }

@@ -46,5 +46,22 @@ export class ProtocolService {
 
     }
 
-
+    myStringify(log) {
+        let res = '[\n';
+        for (let i = 0; i < log.length; i++) {
+            const logEntry = log[i];
+            const sc = parseInt(logEntry.statusCode);
+            let red = false;
+            if (sc < 200 || sc >= 300) {
+                red = true;
+                res = res + '<span style="color:red">'
+            }
+            res = res + JSON.stringify(logEntry, null, 2) + ',\n';
+            if (red) {
+                res = res + '</span>';
+            }
+        }
+        res = res + '\n]';
+        return res;
+    }
 }

@@ -4,7 +4,8 @@ import { ProtocolService } from './protocol.service';
 
 @Module({
   controllers: [ProtocolController],
-  providers: [ProtocolService]
+  providers: [ProtocolService],
+  exports: [ProtocolService],
 })
 export class ProtocolModule {
 

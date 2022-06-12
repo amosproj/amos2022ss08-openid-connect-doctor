@@ -12,9 +12,11 @@
 <input type="checkbox" id="toggleProtocol" name="toggleProtocol" checked onclick="toggleProtocol()"><br><br>
 <button id="btn_back" onclick="location.href = 'http://localhost:8081/api/issuer';" class="button backButton">Back to Discovery</button><br><br>
     <h3>List of last 5 Request Logger </h3>
-    <textarea id="result_display" rows="50" cols="100">
-        {{ result }}
-    </textarea>
+    <div class="scroll" style="height:400px; width:500px; overflow-y:auto;">
+	    <pre>
+{{{ result }}}
+	    </pre>
+    </div>
 
 <script>
     var checkBox = document.getElementById("toggleProtocol");

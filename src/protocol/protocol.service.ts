@@ -16,8 +16,8 @@ export class ProtocolService {
     writeLoggerToFile(logMessage:string): void {
         const fs = require('fs');
         let dateTime = new Date();
-        const dirPath="../amos2022ss08-openid-connect-doctor/src/protocol/";
-        this.logger.warn("value of toggle before writeing : "+this.toggle);
+        const dirPath="../amos2022ss08-openid-connect-doctor/logfiles/";
+        this.logger.warn("value of toggle before writing : "+this.toggle);
         if(this.toggle == 1) {
             if (fs.existsSync(dirPath)) {
                 fs.writeFileSync(dirPath + "/logger.txt", dateTime + " :: " + logMessage + "\n", {flag: "a"});
@@ -35,7 +35,7 @@ export class ProtocolService {
     tempLogStore(logMessage:string, statusCode:number): void {
         const fs = require('fs');
         let dateTime = new Date();
-        const dirPath="../amos2022ss08-openid-connect-doctor/src/protocol/";
+        const dirPath="../amos2022ss08-openid-connect-doctor/logfiles/";
             if (fs.existsSync(dirPath)) {
                 fs.writeFileSync(dirPath + "/tempLogger.txt", statusCode+" >> "+dateTime + " :: " + logMessage + "\n", {flag: "a"});
                 return this.logger.log("write Successful")

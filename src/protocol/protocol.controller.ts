@@ -20,7 +20,7 @@ export class ProtocolController {
     async showLogMessage(){
         const readLastLines = require('read-last-lines');
         let data:any;
-        return readLastLines.read('./src/protocol/tempLogger.txt', 5)
+        return readLastLines.read('./logfiles/tempLogger.txt', 50)
             .then((lines) =>{
                 let listOfObjects = [];
                 let splitLines = lines.split("\n");

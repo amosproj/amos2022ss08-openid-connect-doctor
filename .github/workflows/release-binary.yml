@@ -1,7 +1,7 @@
 name: release-binary
 on:
   release:
-    types: [created]
+    types: [published]
 
 jobs:
   build-binary:
@@ -23,10 +23,10 @@ jobs:
         run: npm run bundle
       - name: Generate Binary
         run: npm run binary
-      - run: chmod -R +x oidc-*
+      - run: chmod -R +x index-*
       - name: Upload artifacts
         uses: skx/github-action-publish-binaries@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          args: 'oidc-*'
+          args: 'index-*'

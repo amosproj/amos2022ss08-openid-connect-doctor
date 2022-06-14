@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+</head>
+<body>
+<!--{{#each this}}
+    {{log}} {{index}}
+{{/each}}-->
+
+<label for="myCheck"><b>Save Protocol Logs in File</b></label>
+<input type="checkbox" id="toggleProtocol" name="toggleProtocol" checked onclick="toggleProtocol()"><br><br>
+<button id="btn_back" onclick="location.href = 'http://localhost:8081/api/discovery/issuer';" class="button backButton">Back to Discovery</button><br><br>
+    <h2>List of last 50 Request Logger </h2>
+    <div class="scroll" style="height:400px; width:500px; overflow-y:auto;">
+	    <pre>
+{{{ result }}}
+	    </pre>
+    </div>
+
+<script>
+    var checkBox = document.getElementById("toggleProtocol");
+    async function toggleProtocol() {
+        if (checkBox.checked == true) {
+            const response = await fetch('http://localhost:8081/api/protocol/toggleLogger?toggleLogger=1');
+            alert('Checked ');
+        } else {
+            const response = await fetch('http://localhost:8081/api/protocol/toggleLogger?toggleLogger=0');
+            alert('UnChecked');
+        }
+    }
+    </script>
+</body>
+</html>

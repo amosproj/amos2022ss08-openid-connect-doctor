@@ -1,3 +1,6 @@
+//SDPX-License-Identifier: MIT
+//SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
+
 import {MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';

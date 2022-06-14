@@ -1,3 +1,6 @@
+//SDPX-License-Identifier: MIT
+//SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { TokenService } from './token.service';
 import { DiscoveryModule } from '../discovery/discovery.module';

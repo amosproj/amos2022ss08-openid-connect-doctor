@@ -1,6 +1,9 @@
+//SDPX-License-Identifier: MIT
+//SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
+
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import * as jose from 'jose';
-import { GrantBody, Issuer } from 'openid-client';
+import { GrantBody } from 'openid-client';
 import axios from 'axios';
 import * as qs from 'qs';
 import { DiscoveryService } from '../discovery/discovery.service';

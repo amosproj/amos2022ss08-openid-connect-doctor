@@ -41,6 +41,7 @@
             }
             
             .input-group > input,
+            .input-group > select,
             .input-group > textarea {
                 flex: 75%;
             }
@@ -121,12 +122,66 @@
                         <label for="token">Access-Token:</label>
                         <textarea type="text" id="token" name="token" rows="8"></textarea>
                     </div>
+                    <div class="input-group">
+                        {{#if schemas}}
+                        <label for="schema_selector"> Select schema: </label>
+                        <select name="schema" id="schema_selector">
+                            {{#each schemas as |schema|}}
+                            <option value="{{ schema }}">{{ schema }}</option>
+                            {{/each}}
+                        </select>
+                        {{/if}}
+                    </div>
                     <div class="button-group">
                         <button class="reset-button" type="submit" formaction="/api/token/decode" formmethod="get">Reset</button>
                         <button class="submit-button" type="submit">Submit</button>
                     </div>
                 </form>                
             </div>
+
+            <div class="input-container">
+                <form class="input-form" enctype="multipart/form-data" method="post" action="/api/token/schema/upload">
+                    <div class="input-group">
+                        <label for="file_upload">Upload schema: </label>
+                        <input type="file" id="file_upload" name="upload">
+                    </div>
+                    <div class="button-group">
+                        <button class="submit-button" type="submit">Upload</button>
+                    </div>
+                </form>
+            </div>
+            {{#if schemas}}
+            <div class="input-container">
+                <form class="input-form" action="/api/token/schema/download">
+                    <div class="input-group">
+                        <label for="schema_download_selector"> Download schema: </label>
+                        <select name="schema" id="schema_download_selector">
+                            {{#each schemas as |schema|}}
+                            <option value="{{ schema }}">{{ schema }}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="button-group">
+                        <button class="submit-button" type="submit">Download</button>
+                    </div>
+                </form>
+            </div>
+            <div class="input-container">
+                <form class="input-form" action="/api/token/schema/delete">
+                    <div class="input-group">
+                        <label for="schema_delete_selector"> Delete schema: </label>
+                        <select name="schema" id="schema_delete_selector">
+                            {{#each schemas as |schema|}}
+                            <option value="{{ schema }}">{{ schema }}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="button-group">
+                        <button class="submit-button" type="submit">Delete</button>
+                    </div>
+                </form>
+            </div>
+            {{/if}}
 
             <div class="result-container">
                 <p class="message-item">{{message}}</p>
@@ -138,7 +193,7 @@
                         </div>
                         <div class="result-group">
                             <h2>Payload</h2>
-                            <pre>{{ payload }}</pre>
+                            <pre>{{{ payload }}}</pre>
                         </div>
                     </div>
                 {{/if}}

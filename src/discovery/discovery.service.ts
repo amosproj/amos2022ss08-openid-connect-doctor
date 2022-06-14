@@ -1,6 +1,7 @@
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {Issuer} from "openid-client";
 import Ajv, {JSONSchemaType} from "ajv"
+import { join } from 'path';
 
 @Injectable()
 export class DiscoveryService {
@@ -31,9 +32,9 @@ export class DiscoveryService {
                   res = res + ',\n';
               }
               if (required.includes(key)) {
-                  res = res + `"${key}": ` + '<span style="color:green">' + JSON.stringify(issuer[key]) + '</span>';
+                  res = res + `  "${key}": ` + '<span style="color:green">' + JSON.stringify(issuer[key]) + '</span>';
               } else {
-                  res = res + `"${key}": ` + JSON.stringify(issuer[key], null, 2);
+                  res = res + `  "${key}": ` + JSON.stringify(issuer[key], null, 2);
               }
               first = false;
           }
@@ -44,11 +45,9 @@ export class DiscoveryService {
 
   async coloredFilteredValidation(issuer: object, schema_file: string, keys: any[]) {
       const [ valid, errors ] = await this.validateJson(issuer, schema_file);
-      console.log('start validation');
       if (valid) {
-          const schema = require('../../schema/' + schema_file);
+          const schema = require(join('..', '..', 'schema', schema_file));
           const required = schema.required;
-          console.log('start stringify');
           return [1, this.myStringify(issuer, required, keys)];
       } else {
           return [0, JSON.stringify(errors, null, 2)];

@@ -2,8 +2,7 @@ import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 
 import {ProtocolService} from "../protocol/protocol.service";
-import {ProtocolLogger} from "../protocol/protocolLogger";
-import { Queue } from 'queue-typescript';
+
 
 
 @Injectable()

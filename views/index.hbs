@@ -146,8 +146,12 @@
 			<button id="btn_enableAll" class="button enableButton">Enable All</button>
 			<button id="btn_disableAll" class="button disableButton">Disable All</button><br><br>
 			<button id="btn_login" class="button loginButton">Login</button><br><br>
+            <button id="btn_protocol" class="button protocol">Check Protocols</button><br><br>
 
 			<script>
+                document.querySelector('#btn_protocol').onclick = function () {
+                    location.href = 'http://localhost:8081/api/protocol/logger';
+                };
 				function setAll(b) {
 									let checkboxes = document.querySelectorAll('input[type="checkbox"]');
 									checkboxes.forEach((checkbox) => {
@@ -201,77 +205,6 @@
 				</div>
 			</div>
 		</div>
-                <tr>
-                    <td>
-                        <input type="checkbox" id="revocation_endpoint_auth_methods_supported_checkbox" name="revocation_endpoint_auth_methods_supported" value="1" {{#if result.previously_checked.revocation_endpoint_auth_methods_supported}} checked{{/if}}>
-                        <label for="revocation_endpoint_auth_methods_supported_box"> revocation_endpoint_auth_methods_supported </label><br>
-                    </td>
-                    <td>
-                        <input type="checkbox" id="scopes_supported_checkbox" name="scopes_supported" value="1" {{#if result.previously_checked.scopes_supported}} checked{{/if}}>
-                        <label for="scopes_supported_box"> scopes_supported </label><br>
-                    </td>
-                    <td>
-                        <input type="checkbox" id="subject_types_supported_checkbox" name="subject_types_supported" value="1" {{#if result.previously_checked.subject_types_supported}} checked{{/if}}>
-                        <label for="subject_types_supported_box"> subject_types_supported </label><br>
-                    </td>
-                    <td>
-                        <input type="checkbox" id="token_endpoint_checkbox" name="token_endpoint" value="1" {{#if result.previously_checked.token_endpoint}} checked{{/if}}>
-                        <label for="token_endpoint_box"> token_endpoint </label><br>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <input type="checkbox" id="token_endpoint_auth_methods_supported_checkbox" name="token_endpoint_auth_methods_supported" value="1" {{#if result.previously_checked.token_endpoint_auth_methods_supported}} checked{{/if}}>
-                        <label for="token_endpoint_auth_methods_supported_box"> token_endpoint_auth_methods_supported </label><br>
-                    </td>
-                    <td>
-                        <input type="checkbox" id="userinfo_endpoint_checkbox" name="userinfo_endpoint" value="1" {{#if result.previously_checked.userinfo_endpoint}} checked{{/if}}>
-                        <label for="userinfo_endpoint_box"> userinfo_endpoint </label><br>
-                    </td>
-                </tr>
-            </table>
-		</form><br>
-        <button id="btn_protocol" class="button protocol">Check Protocols</button><br><br>
-		<button id="btn_enableAll" class="button enableButton">Enable All</button>
-		<button id="btn_disableAll" class="button disableButton">Disable All</button><br><br>
-
-		<script>
-            document.querySelector('#btn_protocol').onclick = function () {
-                location.href = 'http://localhost:8081/api/protocol/logger';
-            };
-
-			function setAll(b) {
-				let checkboxes = document.querySelectorAll('input[type="checkbox"]');
-				checkboxes.forEach((checkbox) => {
-					checkbox.checked = b;
-				});
-			}
-			function enableAll() {
-				setAll(true);
-			}
-			function disableAll() {
-				setAll(false);
-			}
-			const btn_enable = document.querySelector('#btn_enableAll');
-			btn_enable.onclick = enableAll;
-			const btn_disable = document.querySelector('#btn_disableAll');
-			btn_disable.onclick = disableAll;
-		</script>
-		{{#if result.success}}
-		{{#if first_query }}
-            <label for="result_display"><strong style="color: green;font-size: 20px;">Please input provider url</strong></label><br><br>
-		{{else}}
-            <label for="result_display"><strong style="color: green;font-size: 20px;">Provider found:</strong></label><br><br>
-		{{/if}}
-		{{else}}
-			<label for="result_display"><strong style="color: red;font-size: 20px;">Error, could not find provider: </strong></label><br><br>
-		{{/if}}
-        <div class="scroll">
-		<textarea id="result_display" rows="50" cols="100">
-{{ result.info }}
-		</textarea>
-        </div>
     </div>
 	</body>
 	</head>

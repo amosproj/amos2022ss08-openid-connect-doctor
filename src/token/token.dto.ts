@@ -1,5 +1,7 @@
 export class TokenDto {
   issuer: string;
-  keyMaterialEndpoint: string;
   token: string;
+  getKeysFromProvider: boolean;
+  keyMaterialAlgorithm: string;
+  keyMaterialFilepath: string;
 }

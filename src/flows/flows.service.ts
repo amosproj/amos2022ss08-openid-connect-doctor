@@ -23,8 +23,10 @@ export class FlowsService {
     );
     return await this.tokenService.decodeToken(
       process.env.ISSUER_STRING,
-      String(issuer.jwks_uri),
       String(receivedToken.data.access_token),
+      true,
+      '',
+      '',
     );
   }
 }

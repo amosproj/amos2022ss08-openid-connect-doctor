@@ -1,4 +1,4 @@
-import {Injectable, Logger, Res} from '@nestjs/common';
+import {HttpException, Injectable, Logger, Res} from '@nestjs/common';
 import {Response} from "express";
 
 @Injectable()
@@ -9,11 +9,23 @@ export class ProtocolService {
         this.logger = new Logger(ProtocolService.name);
     }
     async toggleWriteStatus(flag:number){
+        if (flag === undefined || flag >1 || flag <0) {
+            throw new HttpException(
+                'Invalid toggle flag values received',
+                400,
+            );
+        }
         this.toggle=flag;
         this.logger.error("Value changed to: "+this.toggle);
     }
 
-    writeLoggerToFile(logMessage:string): void {
+   async writeLoggerToFile(logMessage:string){
+        if (logMessage === undefined || logMessage===null ) {
+            throw new HttpException(
+                'Log can not be empty or null',
+                400,
+            );
+        }
         const fs = require('fs');
         let dateTime = new Date();
         const dirPath="../amos2022ss08-openid-connect-doctor/logfiles/";
@@ -32,7 +44,13 @@ export class ProtocolService {
 
     }
 
-    tempLogStore(logMessage:string, statusCode:number): void {
+   async tempLogStore(logMessage:string, statusCode:number){
+        if (logMessage === undefined || logMessage===null || statusCode===undefined) {
+            throw new HttpException(
+                'Log or Status code can not be empty or null',
+                400,
+            );
+        }
         const fs = require('fs');
         let dateTime = new Date();
         const dirPath="../amos2022ss08-openid-connect-doctor/logfiles/";
@@ -46,7 +64,13 @@ export class ProtocolService {
 
     }
 
-    myStringify(log) {
+    async myStringify(log:any) {
+        if (log === undefined || log===null ) {
+            throw new HttpException(
+                'Log file can not be empty or null',
+                400,
+            );
+        }
         let res = '[\n';
         for (let i = 0; i < log.length; i++) {
             const logEntry = log[i];

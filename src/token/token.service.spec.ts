@@ -1,3 +1,6 @@
+//SDPX-License-Identifier: MIT
+//SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { TokenService } from './token.service';
 import { DiscoveryModule } from '../discovery/discovery.module';
@@ -22,45 +25,23 @@ describe('TokenService', () => {
   describe('decodeToken', () => {
     it('should fail if no issuer is provided', async () => {
       await expect(
-        service.decodeToken(
-          undefined,
-          'http://localhost:8080/.well-known/openid-configuration/jwks',
-          'test',
-        ),
+        service.decodeToken(undefined, 'test', true, '', undefined),
       ).rejects.toThrow('There was no issuer to validate the token against!');
     });
 
     it('should fail if an empty issuer is provided', async () => {
       await expect(
-        service.decodeToken(
-          '',
-          'http://localhost:8080/.well-known/openid-configuration/jwks',
-          'test',
-        ),
+        service.decodeToken('', 'test', true, '', undefined),
       ).rejects.toThrow('There was no issuer to validate the token against!');
-    });
-
-    it('should fail if no keyMaterialEnpoint is provided', async () => {
-      await expect(
-        service.decodeToken('http://localhost:8080', undefined, 'test'),
-      ).rejects.toThrow(
-        'There was no keyMaterialEndpoint to validate the token against!',
-      );
-    });
-
-    it('should fail if an empty keyMaterialEnpoint is provided', async () => {
-      await expect(
-        service.decodeToken('http://localhost:8080', '', 'test'),
-      ).rejects.toThrow(
-        'There was no keyMaterialEndpoint to validate the token against!',
-      );
     });
 
     it('should fail if no token-string is provided', async () => {
       await expect(
         service.decodeToken(
           'http://localhost:8080',
-          'http://localhost:8080/.well-known/openid-configuration/jwks',
+          undefined,
+          true,
+          '',
           undefined,
         ),
       ).rejects.toThrow('There was no tokenString to decode!');
@@ -68,12 +49,68 @@ describe('TokenService', () => {
 
     it('should fail if an empty token-string is provided', async () => {
       await expect(
+        service.decodeToken('http://localhost:8080', '', true, '', undefined),
+      ).rejects.toThrow('There was no tokenString to decode!');
+    });
+
+    it('should fail if no filepath is provided, when using a file', async () => {
+      await expect(
         service.decodeToken(
           'http://localhost:8080',
-          'http://localhost:8080/.well-known/openid-configuration/jwks',
+          'test',
+          false,
+          'RS256',
+          undefined,
+        ),
+      ).rejects.toThrow('Invalid filepath!');
+    });
+
+    it('should fail if an empty filepath is provided, when using a file', async () => {
+      await expect(
+        service.decodeToken(
+          'http://localhost:8080',
+          'test',
+          false,
+          'RS256',
           '',
         ),
-      ).rejects.toThrow('There was no tokenString to decode!');
+      ).rejects.toThrow('Invalid filepath!');
+    });
+
+    it('should fail if no algorithm is provided, when using a file', async () => {
+      await expect(
+        service.decodeToken(
+          'http://localhost:8080',
+          'test',
+          false,
+          undefined,
+          'testfile.pem',
+        ),
+      ).rejects.toThrow('Missing algorithm!');
+    });
+
+    it('should fail if an empty value is provided for the algorithm, when using a file', async () => {
+      await expect(
+        service.decodeToken(
+          'http://localhost:8080',
+          'test',
+          false,
+          '',
+          'testfile.pem',
+        ),
+      ).rejects.toThrow('Missing algorithm!');
+    });
+
+    it('should fail if an invalid filpath is provided, when using a file', async () => {
+      await expect(
+        service.decodeToken(
+          'http://localhost:8080',
+          'test',
+          false,
+          'RS256',
+          'Testfile.json',
+        ),
+      ).rejects.toThrow('Unsupported file-type (Supported formats: .pem)');
     });
   });
 

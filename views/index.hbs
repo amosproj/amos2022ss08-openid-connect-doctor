@@ -146,8 +146,12 @@
 			<button id="btn_enableAll" class="button enableButton">Enable All</button>
 			<button id="btn_disableAll" class="button disableButton">Disable All</button><br><br>
 			<button id="btn_login" class="button loginButton">Login</button><br><br>
+            <button id="btn_protocol" class="button protocol">Check Protocols</button><br><br>
 
 			<script>
+                document.querySelector('#btn_protocol').onclick = function () {
+                    location.href = 'http://localhost:8081/api/protocol/logger';
+                };
 				function setAll(b) {
 									let checkboxes = document.querySelectorAll('input[type="checkbox"]');
 									checkboxes.forEach((checkbox) => {
@@ -201,6 +205,7 @@
 				</div>
 			</div>
 		</div>
+    </div>
 	</body>
 	</head>
 </html>

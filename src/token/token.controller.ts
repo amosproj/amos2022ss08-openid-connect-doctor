@@ -1,3 +1,6 @@
+//SDPX-License-Identifier: MIT
+//SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
+
 import {
   Controller,
   Get,
@@ -70,8 +73,10 @@ export default class TokenController {
     const result = await this.tokenService
       .decodeToken(
         tokenDto.issuer,
-        tokenDto.keyMaterialEndpoint,
         tokenDto.token,
+        tokenDto.getKeysFromProvider,
+        tokenDto.keyMaterialAlgorithm,
+        tokenDto.keyMaterialFilepath,
       )
       .then((result) => {
         return new TokenResultDto({

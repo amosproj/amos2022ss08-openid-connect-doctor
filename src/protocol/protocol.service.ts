@@ -64,7 +64,7 @@ export class ProtocolService {
 
     }
 
-    async myStringify(log:any) {
+    myStringify(log:any){
         if (log === undefined || log===null ) {
             throw new HttpException(
                 'Log file can not be empty or null',
@@ -80,12 +80,12 @@ export class ProtocolService {
                 red = true;
                 res = res + '<span style="color:red">'
             }
-            res = res + JSON.stringify(logEntry, null, 2) + ',\n';
+            res = res +  JSON.stringify(logEntry, null, 2) + ',\n';
             if (red) {
                 res = res + '</span>';
             }
         }
         res = res + '\n]';
-        return res;
+        return  res;
     }
 }

@@ -16,7 +16,7 @@ describe('ProtocolService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('toggleWriteStatus', () => {
+  describe('toggleWriteStatus',  () => {
     it('should fail if no flag is provided', async () => {
       await expect(
           service.toggleWriteStatus(undefined)
@@ -45,7 +45,7 @@ describe('ProtocolService', () => {
 
 
 
-  describe('myStringify', () => {
+  describe('myStringify',  () => {
     it('should fail if no flag is provided', async () => {
       await expect(
           service.myStringify(undefined)

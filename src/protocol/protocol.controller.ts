@@ -32,8 +32,9 @@ export class ProtocolController {
                      listOfObjects.push(obj);
                 }
                 console.log("#####");
-                console.log(listOfObjects);
+               // console.log(listOfObjects);
                 data = this.protocolService.myStringify(listOfObjects);
+                console.log(data);
                 return {result: data};
             })
             .catch((e:any) => {

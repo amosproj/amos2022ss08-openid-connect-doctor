@@ -16,10 +16,9 @@ export class DiscoveryService {
         const issuer = await Issuer.discover(issuer_s);
         return issuer;
     }
-  async validateJson(issuer: object, schema_file: string) {
+  async validateJson(issuer: object, schema: object) {
     const ajv = new Ajv();
-    const schema_file_path = '../../schema/' + schema_file;
-    const validate = ajv.compile(require(schema_file_path));
+    const validate = ajv.compile(schema);
     return [validate(issuer), validate.errors];
   }
 
@@ -43,14 +42,18 @@ export class DiscoveryService {
       return res;
   }
 
-  async coloredFilteredValidation(issuer: object, schema_file: string, keys: any[]) {
-      const [ valid, errors ] = await this.validateJson(issuer, schema_file);
+  async coloredFilteredValidationWithFileContent(issuer: object, schema: any, keys: any[]) {
+      const [ valid, errors ] = await this.validateJson(issuer, schema);
       if (valid) {
-          const schema = require(join('..', '..', 'schema', schema_file));
           const required = schema.required;
           return [1, this.myStringify(issuer, required, keys)];
       } else {
           return [0, JSON.stringify(errors, null, 2)];
       }
+  }
+
+  async coloredFilteredValidation(issuer: object, schema_file: string, keys: any[]) {
+      const schema = require(join('..', '..', 'schema', schema_file));
+      return await this.coloredFilteredValidationWithFileContent(issuer, schema, keys);
   }
 }

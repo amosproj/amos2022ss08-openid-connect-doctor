@@ -118,11 +118,11 @@ export class TokenService {
     ];
   }
 
-  async coloredFilteredValidation(issuer: object, schema_file: string) {
+  async coloredFilteredValidation(issuer: object, schema: object) {
     let keys = [];
     for (const key in issuer) {
       keys.push(key);
     }
-    return this.discoveryService.coloredFilteredValidation(issuer, join('token', schema_file), keys);
+    return this.discoveryService.coloredFilteredValidationWithFileContent(issuer, schema, keys);
   }
 }

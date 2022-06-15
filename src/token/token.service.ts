@@ -183,6 +183,7 @@ export class TokenService {
       key_material,
       {
         issuer: issuer,
+        algorithms: [algorithm]
       },
     );
 

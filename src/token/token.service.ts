@@ -1,9 +1,13 @@
+//SDPX-License-Identifier: MIT
+//SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
+
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import * as jose from 'jose';
-import { GrantBody, Issuer } from 'openid-client';
+import { GrantBody } from 'openid-client';
 import axios from 'axios';
 import * as qs from 'qs';
 import { DiscoveryService } from '../discovery/discovery.service';
+import * as fs from 'fs';
 
 @Injectable()
 export class TokenService {
@@ -80,8 +84,31 @@ export class TokenService {
 
   async decodeToken(
     issuer: string,
-    keyMaterialEndpoint: string,
     tokenString: string,
+    getKeysFromProvider: boolean,
+    keyMaterialAlgorithm: string,
+    keyMaterialFilepath: string,
+  ): Promise<[string, string]> {
+    if (getKeysFromProvider) {
+      const resultWithExternalMaterial =
+        await this.decodeTokenWithExternalKeyMaterial(issuer, tokenString);
+
+      return resultWithExternalMaterial;
+    } else {
+      const results = await this.decodeTokenWithKeyMaterialFile(
+        issuer,
+        tokenString,
+        keyMaterialAlgorithm,
+        keyMaterialFilepath,
+      );
+
+      return results;
+    }
+  }
+
+  private async decodeTokenWithExternalKeyMaterial(
+    issuer: string,
+    token: string,
   ): Promise<[string, string]> {
     if (issuer === undefined || issuer === '') {
       throw new HttpException(
@@ -90,21 +117,17 @@ export class TokenService {
       );
     }
 
-    if (keyMaterialEndpoint === undefined || keyMaterialEndpoint === '') {
-      throw new HttpException(
-        'There was no keyMaterialEndpoint to validate the token against!',
-        400,
-      );
-    }
-
-    if (tokenString === undefined || tokenString === '') {
+    if (token === undefined || token === '') {
       throw new HttpException('There was no tokenString to decode!', 400);
     }
+
+    const discoveryInformation = await this.discoveryService.get_issuer(issuer);
+    const keyMaterialEndpoint = String(discoveryInformation['jwks_uri']);
 
     const key_material = jose.createRemoteJWKSet(new URL(keyMaterialEndpoint));
 
     const { payload, protectedHeader } = await jose.jwtVerify(
-      tokenString,
+      token,
       key_material,
       {
         issuer: issuer,
@@ -115,5 +138,58 @@ export class TokenService {
       JSON.stringify(payload, undefined, 2),
       JSON.stringify(protectedHeader, undefined, 2),
     ];
+  }
+
+  private async decodeTokenWithKeyMaterialFile(
+    issuer: string,
+    token: string,
+    algorithm: string,
+    filepath: string,
+  ): Promise<[string, string]> {
+    if (issuer === undefined || issuer === '') {
+      throw new HttpException(
+        'There was no issuer to validate the token against!',
+        400,
+      );
+    }
+
+    if (token === undefined || token === '') {
+      throw new HttpException('There was no tokenString to decode!', 400);
+    }
+
+    if (algorithm === undefined || algorithm === '') {
+      throw new HttpException('Missing algorithm!', 400);
+    }
+
+    if (filepath === undefined || filepath === '') {
+      throw new HttpException('Invalid filepath!', 400);
+    }
+
+    if (!filepath.endsWith('.pem')) {
+      throw new HttpException(
+        'Unsupported file-type (Supported formats: .pem)',
+        400,
+      );
+    }
+
+    let payloadString = '';
+    let protectedHeaderString = '';
+    const data = fs.readFileSync(filepath, 'utf8');
+
+    const key_material = await jose.importSPKI(data, algorithm);
+
+    const { payload, protectedHeader } = await jose.jwtVerify(
+      token,
+      key_material,
+      {
+        issuer: issuer,
+        algorithms: [algorithm]
+      },
+    );
+
+    payloadString = JSON.stringify(payload, undefined, 2);
+    protectedHeaderString = JSON.stringify(protectedHeader, undefined, 2);
+
+    return [payloadString, protectedHeaderString];
   }
 }

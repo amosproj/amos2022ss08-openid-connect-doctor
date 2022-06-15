@@ -1,3 +1,6 @@
+//SDPX-License-Identifier: MIT
+//SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
+
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';

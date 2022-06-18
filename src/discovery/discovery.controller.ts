@@ -39,7 +39,6 @@ export class DiscoveryController {
             short_message: 'Please input provider url',
             schemas: schemas,
         };
-        console.log(res);
         return res;
     }
 

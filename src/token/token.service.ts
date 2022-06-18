@@ -18,6 +18,10 @@ export class TokenService {
   @Inject(SettingsService)
   private readonly settingsService: SettingsService;
 
+  async getSchemas(schema_s: string) {
+    return this.helperService.getSchemasHelper(schema_s, 'token');
+  }
+
   async getIssuer(issuer_s: string) {
     if (issuer_s === undefined || issuer_s === '') {
       throw new HttpException(
@@ -203,5 +207,27 @@ export class TokenService {
     protectedHeaderString = JSON.stringify(protectedHeader, undefined, 2);
 
     return [payloadString, protectedHeaderString];
+  }
+
+  getKeyAlgorithms() {
+    const all_schemas = [ "", 
+      "EdDSA",
+      "ES256",
+      "ES256K",
+      "ES384",
+      "ES512",
+      "HS256",
+      "HS384",
+      "HS512",
+      "PS256",
+      "PS384",
+      "PS512",
+      "RS256",
+      "RS384",
+      "RS512",
+    ];
+    const default_algo = this.settingsService.config.token.key_algorithm;
+    const default_list = [ default_algo ];
+    return default_list.concat(all_schemas.filter((x) => { return x !== default_algo; }));
   }
 }

@@ -25,5 +25,9 @@
 			"userinfo_endpoint"
 		],
 		"validation_schema": "all.schema.json"
+	},
+	"token": {
+		"validation_schema": "test.schema.json",
+		"key_algorithm": "RS256"
 	}
 }

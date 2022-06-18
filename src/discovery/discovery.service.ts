@@ -1,6 +1,7 @@
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {Issuer} from "openid-client";
 import Ajv, {JSONSchemaType} from "ajv"
+import { join } from 'path';
 
 @Injectable()
 export class DiscoveryService {
@@ -15,10 +16,9 @@ export class DiscoveryService {
         const issuer = await Issuer.discover(issuer_s);
         return issuer;
     }
-  async validateJson(issuer: object, schema_file: string) {
+  async validateJson(issuer: object, schema: object) {
     const ajv = new Ajv();
-    const schema_file_path = '../../schema/' + schema_file;
-    const validate = ajv.compile(require(schema_file_path));
+    const validate = ajv.compile(schema);
     return [validate(issuer), validate.errors];
   }
 
@@ -31,9 +31,9 @@ export class DiscoveryService {
                   res = res + ',\n';
               }
               if (required.includes(key)) {
-                  res = res + `"${key}": ` + '<span style="color:green">' + JSON.stringify(issuer[key]) + '</span>';
+                  res = res + `  "${key}": ` + '<span style="color:green">' + JSON.stringify(issuer[key]) + '</span>';
               } else {
-                  res = res + `"${key}": ` + JSON.stringify(issuer[key], null, 2);
+                  res = res + `  "${key}": ` + JSON.stringify(issuer[key], null, 2);
               }
               first = false;
           }
@@ -42,16 +42,18 @@ export class DiscoveryService {
       return res;
   }
 
-  async coloredFilteredValidation(issuer: object, schema_file: string, keys: any[]) {
-      const [ valid, errors ] = await this.validateJson(issuer, schema_file);
-      console.log('start validation');
+  async coloredFilteredValidationWithFileContent(issuer: object, schema: any, keys: any[]) {
+      const [ valid, errors ] = await this.validateJson(issuer, schema);
       if (valid) {
-          const schema = require('../../schema/' + schema_file);
           const required = schema.required;
-          console.log('start stringify');
           return [1, this.myStringify(issuer, required, keys)];
       } else {
           return [0, JSON.stringify(errors, null, 2)];
       }
+  }
+
+  async coloredFilteredValidation(issuer: object, schema_file: string, keys: any[]) {
+      const schema = require(join('..', '..', 'schema', schema_file));
+      return await this.coloredFilteredValidationWithFileContent(issuer, schema, keys);
   }
 }

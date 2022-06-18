@@ -4,6 +4,7 @@
 export class TokenDto {
   issuer: string;
   token: string;
+  schema: string;
   getKeysFromProvider: boolean;
   keyMaterialAlgorithm: string;
   keyMaterialFilepath: string;

@@ -7,6 +7,7 @@ import { GrantBody } from 'openid-client';
 import axios from 'axios';
 import * as qs from 'qs';
 import { DiscoveryService } from '../discovery/discovery.service';
+import { join } from 'path';
 import * as fs from 'fs';
 
 @Injectable()
@@ -138,6 +139,14 @@ export class TokenService {
       JSON.stringify(payload, undefined, 2),
       JSON.stringify(protectedHeader, undefined, 2),
     ];
+  }
+
+  async coloredFilteredValidation(issuer: object, schema: object) {
+    let keys = [];
+    for (const key in issuer) {
+      keys.push(key);
+    }
+    return this.discoveryService.coloredFilteredValidationWithFileContent(issuer, schema, keys);
   }
 
   private async decodeTokenWithKeyMaterialFile(

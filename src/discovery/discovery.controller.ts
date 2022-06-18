@@ -113,7 +113,7 @@ export class DiscoveryController {
       } else {
         empty_schemas = [schema_s, ''];
       }
-      const uploaded_schemas = await fs.readdir('schema');
+      const uploaded_schemas = await fs.readdir('schema/discovery');
       const schemas = empty_schemas.concat(uploaded_schemas.filter((x) => { return x !== schema_s; }));
         if (issuer_url_s === undefined) {
             return {
@@ -154,7 +154,7 @@ export class DiscoveryController {
         if (issuer_query_res.success === 1 && schema_s !== '') {
             const [success, info] = await this.discoveryService.coloredFilteredValidation(
                 issuer_res,
-                schema_s,
+                join('discovery', schema_s),
                 keys,
             );
             issuer_query_res.success = success;
@@ -173,20 +173,19 @@ export class DiscoveryController {
     @Post('/schema/upload')
     @UseInterceptors(FileInterceptor('upload'))
     async uploadSchema(@UploadedFile() file: Express.Multer.File, @Res() res) {
-        console.log(file);
-        await fs.writeFile(join(process.cwd(), 'schema', file.originalname), file.buffer);
+        await fs.writeFile(join(process.cwd(), 'schema/discovery', file.originalname), file.buffer);
         res.status(302).redirect('/api/discovery/issuer');
     }
 
     @Get('/schema/download')
     downloadSchema(@Query('schema') schema_s: string, @Res() res: Response) {
-        const file = createReadStream(join(process.cwd(), 'schema', schema_s));
+        const file = createReadStream(join(process.cwd(), 'schema/discovery', schema_s));
         file.pipe(res);
     }
 
     @Get('/schema/delete')
     async deleteSchema(@Query('schema') schema_s: string, @Res() res: Response) {
-        await fs.unlink(join(process.cwd(), 'schema', schema_s));
+        await fs.unlink(join(process.cwd(), 'schema/discovery', schema_s));
         res.status(302).redirect('/api/discovery/issuer');
     }
 

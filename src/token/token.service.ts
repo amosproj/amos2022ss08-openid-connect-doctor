@@ -9,11 +9,14 @@ import * as qs from 'qs';
 import { DiscoveryService } from '../discovery/discovery.service';
 import { join } from 'path';
 import * as fs from 'fs';
+import { SettingsService } from '../settings/settings.service';
 
 @Injectable()
 export class TokenService {
   @Inject(DiscoveryService)
   private readonly discoveryService: DiscoveryService;
+  @Inject(SettingsService)
+  private readonly settingsService: SettingsService;
 
   async getIssuer(issuer_s: string) {
     if (issuer_s === undefined || issuer_s === '') {

@@ -1,10 +1,35 @@
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import {HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common';
 import {Issuer} from "openid-client";
 import Ajv, {JSONSchemaType} from "ajv"
 import { join } from 'path';
+import { SettingsService } from '../settings/settings.service';
+import { promises as fs } from 'fs';
 
 @Injectable()
 export class DiscoveryService {
+    @Inject(SettingsService)
+    private readonly settingsService: SettingsService;
+
+    async getSchemas(schema_s: string) {
+        let empty_schemas;
+        if (schema_s === undefined) {
+            empty_schemas = [ this.settingsService.config.discovery.validation_schema, '' ]
+        } else if (schema_s === '') {
+            empty_schemas = [''];
+        } else {
+            empty_schemas = [schema_s, ''];
+        }
+        const uploaded_schemas = await fs.readdir('schema');
+        return empty_schemas.concat(uploaded_schemas.filter((x) => { return x !== schema_s; }));
+    }
+
+    getDefaultCheckboxes() {
+        let x = {};
+        for (const i in this.settingsService.config.discovery.parameter) {
+            x[this.settingsService.config.discovery.parameter[i]] = 1;
+        }
+        return x;
+    }
 
     async get_issuer(issuer_s) {
         if(issuer_s === undefined || issuer_s === ''){

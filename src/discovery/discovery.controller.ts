@@ -26,40 +26,28 @@ export class DiscoveryController {
     constructor(private readonly discoveryService: DiscoveryService) {
     }
 
-    private async getSchemas(schema_s: string) {
-        let empty_schemas;
-        if (schema_s === undefined) {
-            empty_schemas = [''];
-        } else {
-            empty_schemas = [schema_s, ''];
-        }
-        const uploaded_schemas = await fs.readdir('schema');
-        return empty_schemas.concat(uploaded_schemas.filter((x) => { return x !== schema_s; }));
-    }
-
     @Get('issuer')
     @Render('index')
     async discover_issuer() {
-        const schemas = await this.getSchemas(undefined);
-        return {
+        const schemas = await this.discoveryService.getSchemas(undefined);
+        const res =  {
             result: {
                 success: 1,
                 info: null,
-                previously_checked: null,
+                previously_checked: this.discoveryService.getDefaultCheckboxes(),
             },
             short_message: 'Please input provider url',
             schemas: schemas,
         };
+        console.log(res);
+        return res;
     }
 
     @Post('issuer')
     @Render('index')
     async discover_issuer_post(@Body() discoveryDto: DiscoveryDto) {
-        console.log('test');
         let keys = this.rememberSelectedParameters(discoveryDto);
-        console.log(discoveryDto);
         const res = await this.checkIssuerUrlDetails(discoveryDto.schema, discoveryDto.issuer_url, keys, discoveryDto);
-        console.log(res);
         return res;
     }
 
@@ -74,7 +62,7 @@ export class DiscoveryController {
     }
 
     private async checkIssuerUrlDetails(schema_s: string, issuer_url_s: string, keys: any[], checkboxes: DiscoveryDto) {
-        const schemas = await this.getSchemas(schema_s);
+        const schemas = await this.discoveryService.getSchemas(schema_s);
         if (issuer_url_s === undefined) {
             return {
                 result: {

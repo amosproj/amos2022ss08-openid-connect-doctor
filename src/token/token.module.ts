@@ -6,9 +6,10 @@ import { ConfigModule } from '@nestjs/config';
 import { TokenService } from './token.service';
 import TokenController from './token.controller';
 import { DiscoveryModule } from '../discovery/discovery.module';
+import { SettingsModule } from '../settings/settings.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), DiscoveryModule],
+  imports: [ConfigModule.forRoot(), DiscoveryModule, SettingsModule],
   controllers: [TokenController],
   providers: [TokenService],
   exports: [TokenService],

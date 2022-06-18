@@ -6,15 +6,15 @@ import * as jose from 'jose';
 import { GrantBody } from 'openid-client';
 import axios from 'axios';
 import * as qs from 'qs';
-import { DiscoveryService } from '../discovery/discovery.service';
 import { join } from 'path';
 import * as fs from 'fs';
 import { SettingsService } from '../settings/settings.service';
+import { HelperService } from '../helper/helper.service';
 
 @Injectable()
 export class TokenService {
-  @Inject(DiscoveryService)
-  private readonly discoveryService: DiscoveryService;
+  @Inject(HelperService)
+  private readonly helperService: HelperService;
   @Inject(SettingsService)
   private readonly settingsService: SettingsService;
 
@@ -25,7 +25,7 @@ export class TokenService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    return await this.discoveryService.get_issuer(issuer_s);
+    return await this.helperService.get_issuer(issuer_s);
   }
 
   async getToken(token_endpoint: string, grantBody: GrantBody): Promise<any> {
@@ -125,7 +125,7 @@ export class TokenService {
       throw new HttpException('There was no tokenString to decode!', 400);
     }
 
-    const discoveryInformation = await this.discoveryService.get_issuer(issuer);
+    const discoveryInformation = await this.helperService.get_issuer(issuer);
     const keyMaterialEndpoint = String(discoveryInformation['jwks_uri']);
 
     const key_material = jose.createRemoteJWKSet(new URL(keyMaterialEndpoint));
@@ -149,7 +149,7 @@ export class TokenService {
     for (const key in issuer) {
       keys.push(key);
     }
-    return this.discoveryService.coloredFilteredValidationWithFileContent(issuer, schema, keys);
+    return this.helperService.coloredFilteredValidationWithFileContent(issuer, schema, keys);
   }
 
   private async decodeTokenWithKeyMaterialFile(

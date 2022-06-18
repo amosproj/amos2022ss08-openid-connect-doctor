@@ -8,7 +8,6 @@ export class SettingsService {
 
     constructor() {
         this.settings = JSON.parse(fs.readFileSync('settings/default.json').toString());
-        console.log(this.settings);
     }
 
     public get config() {

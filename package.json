@@ -19,7 +19,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "bundle": "ncc build src/main.ts -o bundle",
-    "binary": "pkg bundle/index.js"
+    "binary": "pkg package.json"
   },
   "dependencies": {
     "@nestjs/common": "^8.4.6",
@@ -82,7 +82,9 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   },
+  "bin": "bundle/index.js",
   "pkg": {
+    "assets": ["views/**/*", "schema/**/*", "public/**/*", "logfiles/**/*", "node_modules/**/*.js"],
     "targets": [ "node16-linux-x64", "node16-win-x64", "node16-macos-x64" ]
   }
 }

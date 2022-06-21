@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { TokenService } from '../token/token.service';
 import { DiscoveryService } from '../discovery/discovery.service';
+import { ClientCredentialFlowResultDto } from './Dto/clientCredentialFlowResult.dto';
 
 @Injectable()
 export class FlowsService {
@@ -46,12 +47,33 @@ export class FlowsService {
         audience: process.env.AUDIENCE,
       },
     );
-    return await this.tokenService.decodeToken(
-      issuer_s,
-      String(receivedToken.data.access_token),
-      true,
-      '',
-      '',
-    );
+    const result = await this.tokenService
+      .decodeToken(
+        issuer_s,
+        String(receivedToken.data.access_token),
+        true,
+        '',
+        '',
+      )
+      .then(
+        ([payload, header]) =>
+          new ClientCredentialFlowResultDto({
+            success: true,
+            message: 'Request successful',
+            payload: payload,
+            header: header,
+          }),
+      )
+      .catch(
+        (error) =>
+          new ClientCredentialFlowResultDto({
+            success: true,
+            message: `An error occurred ${error}`,
+            payload: undefined,
+            header: undefined,
+          }),
+      );
+
+    return result;
   }
 }

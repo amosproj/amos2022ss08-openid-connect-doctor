@@ -21,12 +21,23 @@ export class FlowsService {
         audience: process.env.AUDIENCE,
       },
     );
-    return await this.tokenService.decodeToken(
-      process.env.ISSUER_STRING,
-      String(receivedToken.data.access_token),
-      true,
-      '',
-      '',
-    );
+
+    return await this.tokenService
+      .decodeToken(String(receivedToken.data.access_token))
+      .then(async (result) => {
+        const validationResult = await this.tokenService
+          .validateTokenSignature(
+            process.env.ISSUER_STRING,
+            String(receivedToken.data.access_token),
+            true,
+            '',
+            '',
+          )
+          .then(async () => {
+            return result[0], result[1];
+          });
+
+        return validationResult;
+      });
   }
 }

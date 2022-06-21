@@ -145,13 +145,10 @@
 			</form><br>
 			<button id="btn_enableAll" class="button enableButton">Enable All</button>
 			<button id="btn_disableAll" class="button disableButton">Disable All</button><br><br>
-			<button id="btn_login" class="button loginButton">Login</button><br><br>
-            <button id="btn_protocol" class="button protocol">Check Protocols</button><br><br>
+			<a href="/api/flows/cc">Client-Credential-Flow</><br><br>
+            <a href="/api/protocol/logger">Check Protocols</a><br><br>
 
 			<script>
-                document.querySelector('#btn_protocol').onclick = function () {
-                    location.href = 'http://localhost:8081/api/protocol/logger';
-                };
 				function setAll(b) {
 									let checkboxes = document.querySelectorAll('input[type="checkbox"]');
 									checkboxes.forEach((checkbox) => {
@@ -168,8 +165,7 @@
 				btn_enable.onclick = enableAll;
 				const btn_disable = document.querySelector('#btn_disableAll');
 				btn_disable.onclick = disableAll;
-				document.querySelector('#btn_login').onclick = function () {
-					location.href = 'http://localhost:8081/api/user/login';
+				
 				};
 			</script>
 			<form enctype="multipart/form-data" method="post" action="/api/discovery/schema/upload">

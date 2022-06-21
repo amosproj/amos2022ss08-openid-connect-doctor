@@ -160,21 +160,11 @@
                     <div class="multi-input-group">
                         <label id="keyMaterialAlgorithmLabel" for="keyMaterialAlgorithm">Key-Algorithm:</label>
                         <select id="keyMaterialAlgorithm" name="keyMaterialAlgorithm">
-                            <option value=""></option>
-                            <option id="EdDSA" value="EdDSA">EdDSA</option>
-                            <option id="ES256" value="ES256">ES256</option>
-                            <option id="ES256K" value="ES256K">ES256K</option>
-                            <option id="ES384" value="ES384">ES384</option>
-                            <option id="ES512" value="ES512">ES512</option>
-                            <option id="HS256" value="HS256">HS256</option>
-                            <option id="HS384" value="HS384">HS384</option>
-                            <option id="HS512" value="HS512">HS512</option>
-                            <option id="PS256" value="PS256">PS256</option>
-                            <option id="PS384" value="PS384">PS384</option>
-                            <option id="PS512" value="PS512">PS512</option>
-                            <option id="RS256" value="RS256">RS256</option>
-                            <option id="RS384" value="RS384">RS384</option>
-                            <option id="RS512" value="RS512">RS512</option>
+                            {{#if key_algorithms}}
+                            {{#each key_algorithms as |key_alg|}}
+                            <option id="{{key_alg}}" value="{{key_alg}}">{{key_alg}}</option>
+                            {{/each}}
+                            {{/if}}
                         </select>
                         <label id="keyMaterialFilepathLabel" for="keyMaterialFilepath">Key-Filepath:</label>
                         <input type="text" id="keyMaterialFilepath" name="keyMaterialFilepath" />

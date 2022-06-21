@@ -13,6 +13,8 @@ import { ProtocolModule } from './protocol/protocol.module';
 import {ProtocolService} from "./protocol/protocol.service";
 import {ProtocolController} from "./protocol/protocol.controller";
 import {LoggerMiddleware} from "./utils/logger.middleware";
+import { SettingsModule } from './settings/settings.module';
+import { HelperModule } from './helper/helper.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import {LoggerMiddleware} from "./utils/logger.middleware";
     TokenModule,
     ProtocolModule,
     FlowsModule,
+    SettingsModule,
+    HelperModule,
   ],
   providers: [AppService, ProtocolService],
   controllers: [AppController, ProtocolController],

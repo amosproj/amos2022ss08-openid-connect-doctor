@@ -30,18 +30,12 @@ export default class TokenController {
   @Get('decode')
   @Render('decode')
   async get(@Query('schema') schema_s: string) {
-    let empty_schemas;
-    if (schema_s === undefined) {
-      empty_schemas = [''];
-    } else {
-      empty_schemas = [schema_s, ''];
-    }
-    const uploaded_schemas = await fs.readdir('schema/token');
-    const schemas = empty_schemas.concat(uploaded_schemas.filter((x) => { return x !== schema_s; }));
+    const schemas = await this.tokenService.getSchemas(undefined);
     return {
       message: 'Please enter the wanted information!',
       showResults: false,
       schemas: schemas,
+      key_algorithms: this.tokenService.getKeyAlgorithms(),
     };
   }
 
@@ -50,14 +44,7 @@ export default class TokenController {
   @UseInterceptors(FileInterceptor('schema_file'))
   async post(@Body() tokenDto: TokenDto, @UploadedFile() schema_file: Express.Multer.File) {
     const schema_s = tokenDto.schema;
-    let empty_schemas;
-    if (schema_s === undefined) {
-      empty_schemas = [''];
-    } else {
-      empty_schemas = [schema_s, ''];
-    }
-    const uploaded_schemas = await fs.readdir('schema/token');
-    const schemas = empty_schemas.concat(uploaded_schemas.filter((x) => { return x !== schema_s; }));
+    const schemas = await this.tokenService.getSchemas(schema_s);
 
     if (schema_file && schema_s !== '') {
       return {
@@ -67,6 +54,7 @@ export default class TokenController {
         payload: null,
         header: null,
         schemas: schemas,
+        key_algorithms: this.tokenService.getKeyAlgorithms(),
       };
     }
 
@@ -117,6 +105,7 @@ export default class TokenController {
         payload: colored_payload,
         header: result.header,
         schemas: schemas,
+        key_algorithms: this.tokenService.getKeyAlgorithms(),
       };
     }
     else {
@@ -127,6 +116,7 @@ export default class TokenController {
         payload: result.payload,
         header: result.header,
         schemas: schemas,
+        key_algorithms: this.tokenService.getKeyAlgorithms(),
       };
     }
   }

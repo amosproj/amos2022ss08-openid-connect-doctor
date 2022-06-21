@@ -23,10 +23,10 @@ jobs:
         run: npm run bundle
       - name: Generate Binary
         run: npm run binary
-      - run: chmod -R +x index-*
+      - run: chmod -R +x openid-*
       - name: Upload artifacts
         uses: skx/github-action-publish-binaries@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          args: 'index-*'
+          args: 'openid-*'

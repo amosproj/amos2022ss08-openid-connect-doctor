@@ -6,8 +6,9 @@ import * as jose from 'jose';
 import { GrantBody } from 'openid-client';
 import axios from 'axios';
 import * as qs from 'qs';
-import { join } from 'path';
+import { DiscoveryService } from '../discovery/discovery.service';
 import * as fs from 'fs';
+import { GetKeyFunction } from 'jose/dist/types/types';
 import { SettingsService } from '../settings/settings.service';
 import { HelperService } from '../helper/helper.service';
 
@@ -17,6 +18,8 @@ export class TokenService {
   private readonly helperService: HelperService;
   @Inject(SettingsService)
   private readonly settingsService: SettingsService;
+  @Inject(DiscoveryService)
+  private readonly discoveryService: DiscoveryService;
 
   async getSchemas(schema_s: string) {
     return this.helperService.getSchemasHelper(schema_s, 'token');
@@ -90,144 +93,184 @@ export class TokenService {
     return await this.getToken(String(issuer.token_endpoint), grantBody);
   }
 
-  async decodeToken(
-    issuer: string,
-    tokenString: string,
-    getKeysFromProvider: boolean,
-    keyMaterialAlgorithm: string,
-    keyMaterialFilepath: string,
-  ): Promise<[string, string]> {
-    if (getKeysFromProvider) {
-      const resultWithExternalMaterial =
-        await this.decodeTokenWithExternalKeyMaterial(issuer, tokenString);
+  async decodeToken(tokenString: string): Promise<[string, string]> {
+    const [header, payload] = this.decodeTokenString(tokenString);
 
-      return resultWithExternalMaterial;
-    } else {
-      const results = await this.decodeTokenWithKeyMaterialFile(
-        issuer,
-        tokenString,
-        keyMaterialAlgorithm,
-        keyMaterialFilepath,
-      );
+    const formattedHeader = JSON.stringify(header, undefined, 2);
+    const formattedPayload = JSON.stringify(payload, undefined, 2);
 
-      return results;
-    }
+    return [formattedHeader, formattedPayload];
   }
 
-  private async decodeTokenWithExternalKeyMaterial(
-    issuer: string,
-    token: string,
-  ): Promise<[string, string]> {
-    if (issuer === undefined || issuer === '') {
-      throw new HttpException(
-        'There was no issuer to validate the token against!',
-        400,
+  async validateTokenSignature(
+    issuerUrl: string,
+    tokenString: string,
+    getKeysFromProvider: boolean,
+    algorithm: string,
+    filepath: string,
+  ): Promise<[boolean, string]> {
+    if (getKeysFromProvider) {
+      return await this.validateTokenStringWithExternalKeys(
+        tokenString,
+        issuerUrl,
+      );
+    } else {
+      return await this.validateTokenStringWithFileKeys(
+        tokenString,
+        algorithm,
+        filepath,
+        issuerUrl,
       );
     }
-
-    if (token === undefined || token === '') {
-      throw new HttpException('There was no tokenString to decode!', 400);
-    }
-
-    const discoveryInformation = await this.helperService.get_issuer(issuer);
-    const keyMaterialEndpoint = String(discoveryInformation['jwks_uri']);
-
-    const key_material = jose.createRemoteJWKSet(new URL(keyMaterialEndpoint));
-
-    const { payload, protectedHeader } = await jose.jwtVerify(
-      token,
-      key_material,
-      {
-        issuer: issuer,
-      },
-    );
-
-    return [
-      JSON.stringify(payload, undefined, 2),
-      JSON.stringify(protectedHeader, undefined, 2),
-    ];
   }
 
   async coloredFilteredValidation(issuer: object, schema: object) {
-    let keys = [];
+    const keys = [];
     for (const key in issuer) {
       keys.push(key);
     }
-    return this.helperService.coloredFilteredValidationWithFileContent(issuer, schema, keys);
+    return this.helperService.coloredFilteredValidationWithFileContent(
+      issuer,
+      schema,
+      keys,
+    );
   }
 
-  private async decodeTokenWithKeyMaterialFile(
+  private decodeTokenString(tokenString: string): [string, string] {
+    if (tokenString === undefined || tokenString === '') {
+      throw new HttpException('There was no token to decode!', 400);
+    }
+
+    const tokenParts = tokenString.split('.');
+
+    if (tokenParts.length !== 3) {
+      throw new HttpException('The token-string is incomplete!', 400);
+    }
+
+    const header = this.decodeBase64EncodedString(tokenParts[0]);
+    const body = this.decodeBase64EncodedString(tokenParts[1]);
+
+    return [header, body];
+  }
+
+  private decodeBase64EncodedString(input: string): string {
+    return JSON.parse(new TextDecoder().decode(jose.base64url.decode(input)));
+  }
+
+  private async validateTokenStringWithExternalKeys(
+    tokenString: string,
     issuer: string,
-    token: string,
+  ): Promise<[boolean, string]> {
+    let isValid = true;
+    let message = '';
+
+    try {
+      const keyMaterial = await this.getExternalKeyMaterial(issuer);
+
+      const { payload, protectedHeader } = await jose.jwtVerify(
+        tokenString,
+        keyMaterial,
+        {
+          issuer: issuer,
+        },
+      );
+
+      if (payload !== undefined && protectedHeader !== undefined) {
+        message = 'The token-signature is valid!';
+      } else {
+        isValid = false;
+        message = 'Validation was not possible';
+      }
+    } catch (error) {
+      isValid = false;
+      message = `The validation failed: ${error}`;
+    }
+
+    return [isValid, message];
+  }
+
+  private async getExternalKeyMaterial(
+    issuerUrl: string,
+  ): Promise<
+    GetKeyFunction<jose.JoseHeaderParameters, jose.FlattenedJWSInput>
+  > {
+    const discoveryInformation = await this.discoveryService.get_issuer(
+      issuerUrl,
+    );
+    const keyMaterialEndpoint = String(discoveryInformation['jwks_uri']);
+
+    const keys = jose.createRemoteJWKSet(new URL(keyMaterialEndpoint));
+    return keys;
+  }
+
+  private async validateTokenStringWithFileKeys(
+    tokenString: string,
     algorithm: string,
     filepath: string,
-  ): Promise<[string, string]> {
-    if (issuer === undefined || issuer === '') {
-      throw new HttpException(
-        'There was no issuer to validate the token against!',
-        400,
+    issuer: string,
+  ): Promise<[boolean, string]> {
+    let isValid = true;
+    let message = '';
+
+    try {
+      const keyMaterial = await this.getFileKeyMaterial(algorithm, filepath);
+
+      const { payload, protectedHeader } = await jose.jwtVerify(
+        tokenString,
+        keyMaterial,
+        {
+          issuer: issuer,
+        },
       );
+
+      if (payload !== undefined && protectedHeader !== undefined) {
+        message = 'The token-signature is valid!';
+      } else {
+        isValid = false;
+        message = 'Validation was not possible';
+      }
+    } catch (error) {
+      isValid = false;
+      message = `The validation failed: ${error}`;
     }
 
-    if (token === undefined || token === '') {
-      throw new HttpException('There was no tokenString to decode!', 400);
-    }
+    return [isValid, message];
+  }
 
-    if (algorithm === undefined || algorithm === '') {
-      throw new HttpException('Missing algorithm!', 400);
-    }
-
-    if (filepath === undefined || filepath === '') {
-      throw new HttpException('Invalid filepath!', 400);
-    }
-
-    if (!filepath.endsWith('.pem')) {
-      throw new HttpException(
-        'Unsupported file-type (Supported formats: .pem)',
-        400,
-      );
-    }
-
-    let payloadString = '';
-    let protectedHeaderString = '';
+  private async getFileKeyMaterial(
+    algorithm: string,
+    filepath: string,
+  ): Promise<jose.KeyLike> {
     const data = fs.readFileSync(filepath, 'utf8');
 
-    const key_material = await jose.importSPKI(data, algorithm);
-
-    const { payload, protectedHeader } = await jose.jwtVerify(
-      token,
-      key_material,
-      {
-        issuer: issuer,
-        algorithms: [algorithm]
-      },
-    );
-
-    payloadString = JSON.stringify(payload, undefined, 2);
-    protectedHeaderString = JSON.stringify(protectedHeader, undefined, 2);
-
-    return [payloadString, protectedHeaderString];
+    const keys = await jose.importSPKI(data, algorithm);
+    return keys;
   }
 
   getKeyAlgorithms() {
-    const all_schemas = [ "", 
-      "EdDSA",
-      "ES256",
-      "ES256K",
-      "ES384",
-      "ES512",
-      "HS256",
-      "HS384",
-      "HS512",
-      "PS256",
-      "PS384",
-      "PS512",
-      "RS256",
-      "RS384",
-      "RS512",
+    const all_schemas = [
+      '',
+      'EdDSA',
+      'ES256',
+      'ES256K',
+      'ES384',
+      'ES512',
+      'HS256',
+      'HS384',
+      'HS512',
+      'PS256',
+      'PS384',
+      'PS512',
+      'RS256',
+      'RS384',
+      'RS512',
     ];
     const default_algo = this.settingsService.config.token.key_algorithm;
-    const default_list = [ default_algo ];
-    return default_list.concat(all_schemas.filter((x) => { return x !== default_algo; }));
+    const default_list = [default_algo];
+    return default_list.concat(
+      all_schemas.filter((x) => {
+        return x !== default_algo;
+      }),
+    );
   }
 }

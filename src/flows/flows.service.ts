@@ -47,23 +47,39 @@ export class FlowsService {
         audience: process.env.AUDIENCE,
       },
     );
+
     const result = await this.tokenService
-      .decodeToken(
-        issuer_s,
-        String(receivedToken.data.access_token),
-        true,
-        '',
-        '',
-      )
-      .then(
-        ([payload, header]) =>
-          new ClientCredentialFlowResultDto({
-            success: true,
-            message: 'Request successful',
-            payload: payload,
-            header: header,
-          }),
-      )
+      .decodeToken(String(receivedToken.data.access_token))
+      .then(async ([payload, header]) => {
+        const validationResult = await this.tokenService
+          .validateTokenSignature(
+            process.env.ISSUER_STRING,
+            String(receivedToken.data.access_token),
+            true,
+            '',
+            '',
+          )
+          .then(
+            ([isValid, message]) =>
+              new ClientCredentialFlowResultDto({
+                success: isValid,
+                message: message,
+                payload: payload,
+                header: header,
+              }),
+          )
+          .catch(
+            () =>
+              new ClientCredentialFlowResultDto({
+                success: false,
+                message: 'An unexpected failure happend during validation!',
+                payload: payload,
+                header: header,
+              }),
+          );
+
+        return validationResult;
+      })
       .catch(
         (error) =>
           new ClientCredentialFlowResultDto({

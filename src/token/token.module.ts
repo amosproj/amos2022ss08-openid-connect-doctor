@@ -10,7 +10,12 @@ import { SettingsModule } from '../settings/settings.module';
 import { HelperModule } from '../helper/helper.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), DiscoveryModule, SettingsModule, HelperModule],
+  imports: [
+    ConfigModule.forRoot(),
+    DiscoveryModule,
+    SettingsModule,
+    HelperModule,
+  ],
   controllers: [TokenController],
   providers: [TokenService],
   exports: [TokenService],

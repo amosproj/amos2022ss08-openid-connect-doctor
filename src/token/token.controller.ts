@@ -42,14 +42,17 @@ export default class TokenController {
   @Post('decode')
   @Render('decode')
   @UseInterceptors(FileInterceptor('schema_file'))
-  async post(@Body() tokenDto: TokenDto, @UploadedFile() schema_file: Express.Multer.File) {
+  async decode(
+    @Body() tokenDto: TokenDto,
+    @UploadedFile() schema_file: Express.Multer.File,
+  ) {
     const schema_s = tokenDto.schema;
     const schemas = await this.tokenService.getSchemas(schema_s);
 
     if (schema_file && schema_s !== '') {
       return {
         showResults: false,
-        message: "Please choose only one schema for validation",
+        message: 'Please choose only one schema for validation',
 
         payload: null,
         header: null,
@@ -59,20 +62,34 @@ export default class TokenController {
     }
 
     const result = await this.tokenService
-      .decodeToken(
-        tokenDto.issuer,
-        tokenDto.token,
-        tokenDto.getKeysFromProvider,
-        tokenDto.keyMaterialAlgorithm,
-        tokenDto.keyMaterialFilepath,
-      )
-      .then((result) => {
-        return new TokenResultDto({
-          success: true,
-          message: 'Decoding successful',
-          payload: result[0],
-          header: result[1],
-        });
+      .decodeToken(tokenDto.token)
+      .then(async (result) => {
+        const validationResult = await this.tokenService
+          .validateTokenSignature(
+            tokenDto.issuer,
+            tokenDto.token,
+            tokenDto.getKeysFromProvider,
+            tokenDto.keyMaterialAlgorithm,
+            tokenDto.keyMaterialFilepath,
+          )
+          .then(async (validationResult) => {
+            return new TokenResultDto({
+              success: validationResult[0],
+              message: validationResult[1],
+              header: result[0],
+              payload: result[1],
+            });
+          })
+          .catch((err) => {
+            return new TokenResultDto({
+              success: false,
+              message: err.message,
+              header: result[0],
+              payload: result[1],
+            });
+          });
+
+        return validationResult;
       })
       .catch((err) => {
         return new TokenResultDto({
@@ -93,10 +110,10 @@ export default class TokenController {
         await this.tokenService.coloredFilteredValidation(
           JSON.parse(result.payload),
           schema_body,
-      );
+        );
       let message = result.message;
       if (success === 0) {
-        message = "Decoding was successful, but schema did not match";
+        message = 'Decoding was successful, but schema did not match';
       }
       return {
         showResults: result.success,
@@ -107,10 +124,10 @@ export default class TokenController {
         schemas: schemas,
         key_algorithms: this.tokenService.getKeyAlgorithms(),
       };
-    }
-    else {
+    } else {
       return {
-        showResults: result.success,
+        showResults:
+          result.payload !== undefined && result.header !== undefined,
         message: result.message,
 
         payload: result.payload,
@@ -161,28 +178,33 @@ export default class TokenController {
   @UseInterceptors(FileInterceptor('upload'))
   async uploadSchema(@UploadedFile() file: Express.Multer.File, @Res() res) {
     if (file == null) {
-        res.status(302).redirect('/api/token/decode');
-        return;
+      res.status(302).redirect('/api/token/decode');
+      return;
     }
-    await fs.writeFile(join(process.cwd(), 'schema/token', file.originalname), file.buffer);
+    await fs.writeFile(
+      join(process.cwd(), 'schema/token', file.originalname),
+      file.buffer,
+    );
     res.status(302).redirect('/api/token/decode');
   }
 
   @Get('/schema/download')
   downloadSchema(@Query('schema') schema_s: string, @Res() res: Response) {
     if (schema_s === '') {
-        res.status(302).redirect('/api/token/decode');
-        return;
+      res.status(302).redirect('/api/token/decode');
+      return;
     }
-    const file = createReadStream(join(process.cwd(), 'schema/token', schema_s));
+    const file = createReadStream(
+      join(process.cwd(), 'schema/token', schema_s),
+    );
     file.pipe(res);
   }
 
   @Get('/schema/delete')
   async deleteSchema(@Query('schema') schema_s: string, @Res() res: Response) {
     if (schema_s === '') {
-        res.status(302).redirect('/api/token/decode');
-        return;
+      res.status(302).redirect('/api/token/decode');
+      return;
     }
     await fs.unlink(join(process.cwd(), 'schema/token', schema_s));
     res.status(302).redirect('/api/token/decode');

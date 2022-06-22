@@ -21,14 +21,7 @@ OpenID-Doctor currently supports the following OAuth2- and OpenID-Connect-flows:
 * Client-Credentials
 
 ### Client-Credentials
-To request a token via the client-credential-flow open your terminal of choice, copy the following command into the terminal and replace the placeholders with the corresponding information:
-```bash
-curl --request POST --url http://localhost:8081/api/token?issuer=$ISSUER_STRING --header 'content-type: application/json' --data '{"client_id":$CLIENT_ID,"client_secret":$CLIENT_SECRET,"audience":$AUDIENCE,"grant_type":"client_credentials"}'
-```
-* ISSUER_STRING: The root-URL of the identity-provider
-* CLIENT_ID: The client-id of your application
-* CLIENT_SECRET: The client-secret of your application
-* AUDIENCE: The audience that would request the token (often a duplicate of the client-id)
+To request a token via the client-credential-flow click on the link on the first page or directly go to `http://localhost:8081/api/flows/cc`. Then you just have to input the the issuer of the token, the ID of your clients and the corresponding secret and submit them. The application will then use these information to request and decode a token for the specified client from the issuer.
 
 ## Decoding and validating a token
 To decode a returned access-token open your browser and go to `http://localhost:8081/api/token/decode`. This will open a user-interface, where you can enter the following information:

@@ -5,13 +5,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TokenService } from './token.service';
 import { DiscoveryModule } from '../discovery/discovery.module';
 import { FlowsModule } from '../flows/flows.module';
+import { SettingsModule } from '../settings/settings.module';
+import { HelperModule } from '../helper/helper.module';
 
 describe('TokenService', () => {
   let service: TokenService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [DiscoveryModule, FlowsModule],
+      imports: [DiscoveryModule, FlowsModule, SettingsModule, HelperModule],
       providers: [TokenService],
     }).compile();
 

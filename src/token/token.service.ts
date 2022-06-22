@@ -9,11 +9,21 @@ import * as qs from 'qs';
 import { DiscoveryService } from '../discovery/discovery.service';
 import * as fs from 'fs';
 import { GetKeyFunction } from 'jose/dist/types/types';
+import { SettingsService } from '../settings/settings.service';
+import { HelperService } from '../helper/helper.service';
 
 @Injectable()
 export class TokenService {
+  @Inject(HelperService)
+  private readonly helperService: HelperService;
+  @Inject(SettingsService)
+  private readonly settingsService: SettingsService;
   @Inject(DiscoveryService)
   private readonly discoveryService: DiscoveryService;
+
+  async getSchemas(schema_s: string) {
+    return this.helperService.getSchemasHelper(schema_s, 'token');
+  }
 
   async getIssuer(issuer_s: string) {
     if (issuer_s === undefined || issuer_s === '') {
@@ -22,7 +32,7 @@ export class TokenService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    return await this.discoveryService.get_issuer(issuer_s);
+    return await this.helperService.get_issuer(issuer_s);
   }
 
   async getToken(token_endpoint: string, grantBody: GrantBody): Promise<any> {
@@ -119,7 +129,7 @@ export class TokenService {
     for (const key in issuer) {
       keys.push(key);
     }
-    return this.discoveryService.coloredFilteredValidationWithFileContent(
+    return this.helperService.coloredFilteredValidationWithFileContent(
       issuer,
       schema,
       keys,
@@ -235,5 +245,32 @@ export class TokenService {
 
     const keys = await jose.importSPKI(data, algorithm);
     return keys;
+  }
+
+  getKeyAlgorithms() {
+    const all_schemas = [
+      '',
+      'EdDSA',
+      'ES256',
+      'ES256K',
+      'ES384',
+      'ES512',
+      'HS256',
+      'HS384',
+      'HS512',
+      'PS256',
+      'PS384',
+      'PS512',
+      'RS256',
+      'RS384',
+      'RS512',
+    ];
+    const default_algo = this.settingsService.config.token.key_algorithm;
+    const default_list = [default_algo];
+    return default_list.concat(
+      all_schemas.filter((x) => {
+        return x !== default_algo;
+      }),
+    );
   }
 }

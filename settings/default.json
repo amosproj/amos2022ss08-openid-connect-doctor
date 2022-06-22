@@ -1,0 +1,33 @@
+{
+	"discovery": {
+		"parameter": [
+			"authorization_endpoint",
+			"claim_types_supported",
+			"claims_parameter_supported",
+			"claims_supported",
+			"code_challenge_methods_supported",
+			"device_authorization_endpoint",
+			"grant_types_supported",
+			"id_token_signing_alg_values_supported",
+			"issuer",
+			"jwks_uri",
+			"request_parameter_supported",
+			"request_uri_parameter_supported",
+			"require_request_uri_registration",
+			"response_modes_supported",
+			"response_types_supported",
+			"revocation_endpoint",
+			"revocation_endpoint_auth_methods_supported",
+			"scopes_supported",
+			"subject_types_supported",
+			"token_endpoint",
+			"token_endpoint_auth_methods_supported",
+			"userinfo_endpoint"
+		],
+		"validation_schema": "all.schema.json"
+	},
+	"token": {
+		"validation_schema": "test.schema.json",
+		"key_algorithm": "RS256"
+	}
+}

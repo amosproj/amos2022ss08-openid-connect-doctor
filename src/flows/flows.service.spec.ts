@@ -1,3 +1,6 @@
+//SDPX-License-Identifier: MIT
+//SDPX-FileCopyrightText: 2022 Raghunandan Arava <raghunandan.arava@fau.de>
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { FlowsService } from './flows.service';
 import { TokenModule } from '../token/token.module';

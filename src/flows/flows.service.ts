@@ -1,8 +1,10 @@
+//SDPX-License-Identifier: MIT
+//SDPX-FileCopyrightText: 2022 Raghunandan Arava <raghunandan.arava@fau.de>
+
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { TokenService } from '../token/token.service';
 import { DiscoveryService } from '../discovery/discovery.service';
 import { ClientCredentialFlowResultDto } from './Dto/clientCredentialFlowResult.dto';
-import axios from 'axios';
 
 @Injectable()
 export class FlowsService {
@@ -46,7 +48,7 @@ export class FlowsService {
         client_id: clientId,
         client_secret: clientSecret,
         audience: process.env.AUDIENCE,
-      }
+      },
     );
     const result = await this.tokenService
       .decodeToken(String(receivedToken.data.access_token))

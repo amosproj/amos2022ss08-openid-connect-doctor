@@ -19,11 +19,12 @@ import { join } from 'path';
 
 import { DiscoveryService } from "./discovery.service";
 import { DiscoveryDto } from "./discovery.dto";
+import {UtilsService} from "../utils/utils.service";
 
 
 @Controller('discovery')
 export class DiscoveryController {
-    constructor(private readonly discoveryService: DiscoveryService) {
+    constructor(private readonly discoveryService: DiscoveryService,private  readonly utilsService:UtilsService) {
     }
 
     @Get('issuer')
@@ -47,6 +48,7 @@ export class DiscoveryController {
     async discover_issuer_post(@Body() discoveryDto: DiscoveryDto) {
         let keys = this.rememberSelectedParameters(discoveryDto);
         const res = await this.checkIssuerUrlDetails(discoveryDto.schema, discoveryDto.issuer_url, keys, discoveryDto);
+        await this.utilsService.writeOutput(res.result.info);
         return res;
     }
 

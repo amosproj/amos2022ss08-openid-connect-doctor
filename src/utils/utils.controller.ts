@@ -7,11 +7,26 @@ import { join } from 'path';
 export class UtilsController {
   @Get('/downloadFile')
   downloadFile(@Res() res: Response) {
+    const dateTime = new Date();
     const fileName = 'program-output.txt';
-    const file = createReadStream(join(process.cwd(), '/logfiles', fileName));
+    const file = createReadStream(join(process.cwd(), '/output', fileName));
     res.setHeader(
       'Content-Disposition',
-      'attachment; filename="' + fileName + '"',
+      'attachment; filename="' +
+        dateTime.getDate() +
+        '-' +
+        dateTime.getMonth() +
+        '-' +
+        dateTime.getFullYear() +
+        '-' +
+        dateTime.getHours() +
+        '-' +
+        dateTime.getMinutes() +
+        '-' +
+        dateTime.getSeconds() +
+        '-' +
+        fileName +
+        '"',
     );
     file.pipe(res);
   }

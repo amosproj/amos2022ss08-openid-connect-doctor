@@ -147,7 +147,6 @@
     <button id="btn_disableAll" class="button disableButton">Disable All</button><br><br>
     <a href="/api/flows/cc">Client-Credential-Flow</><br><br>
     <a href="/api/protocol/logger">Check Protocols</a><br><br>
-
     <script>
         function setAll(b) {
             let checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -190,6 +189,9 @@
                 {{/each}}
             </select>
             <input type="submit">
+        </form>
+        <form action="/api/utils/downloadFile">
+            <input type="submit" name="Download File"  value="Download File">
         </form>
     {{/if}}
     <label for="result_display"><strong style="color: {{#if result.success}}green{{else}}red{{/if}};font-size: 20px;">{{ short_message }}</strong></label><br><br>

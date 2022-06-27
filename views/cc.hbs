@@ -77,36 +77,13 @@
             color: #1a1;
             border: 2px solid #1a1;
         }
-        .result-container {
-            display: flex;
-            flex-direction: column;
-            flex-wrap: nowrap;
-            margin:3px;
-            padding: 10px;
-            border: 2px solid black;
-            border-radius: 3px 2px;
-        }
-        .results-item {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-        }
-        .result-group {
-            display: flex;
-            flex: 45%;
-            flex-direction: column;
-            flex-wrap: nowrap;
-            margin:3px;
-            padding: 10px;
-            border: 1px dotted black;
-            border-radius: 3px 2px;
-        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="input-container">
         <h2>Client-Credential-Flow</h2>
+        <a href="/api/discovery/issuer">Go back to Discovery</a>
         <p>Please enter the necessary information:</p>
         <form class="input-form" method="post" action="/api/flows/cc">
             <div class="input-group">
@@ -118,27 +95,16 @@
                 <input type="text" id="clientId" name="clientId" />
             </div>
             <div class="input-group">
-                <label for="clientSecret"><b>Password: </b></label>
+                <label for="clientSecret"><b>Client-Secret: </b></label>
                 <input type="password" id="clientSecret" name="clientSecret" />
+            </div>
+            <div class="input-group">
+                <label for="audience"><b>Audience: </b></label>
+                <input type="text" id="audience" name="audience" />
             </div>
             <button id="submit"  type="submit"  value="submit" >Submit</button>
         </form>
-        <button id="btn_back" onclick="location.href = 'http://localhost:8081/api/discovery/issuer';" class="button backButton">Back to Discovery</button><br><br>
-    </div>
-    <div class="result-container">
-        <p class="message-item">{{message}}</p>
-        {{#if showResults}}
-            <div class="results-item">
-                <div class="result-group">
-                    <h2>Header</h2>
-                    <pre>{{ header }}</pre>
-                </div>
-                <div class="result-group">
-                    <h2>Payload</h2>
-                    <pre>{{{ payload }}}</pre>
-                </div>
-            </div>
-        {{/if}}
+        
     </div>
 </div>
 </body>

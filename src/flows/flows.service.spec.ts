@@ -1,5 +1,6 @@
 //SDPX-License-Identifier: MIT
 //SDPX-FileCopyrightText: 2022 Raghunandan Arava <raghunandan.arava@fau.de>
+//SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { FlowsService } from './flows.service';
@@ -25,37 +26,52 @@ describe('FlowsService', () => {
   describe('clientCredentials', () => {
     it('should fail if no issuer is provided', async () => {
       await expect(
-        service.clientCredentials(undefined, 'client_id', 'client_secret'),
+        service.clientCredentials(
+          undefined,
+          'client_id',
+          'client_secret',
+          'audience',
+        ),
       ).rejects.toThrow('There was no issuer to validate the token against!');
     });
 
     it('should fail if issuer is empty', async () => {
       await expect(
-        service.clientCredentials('', 'client_id', 'client_secret'),
+        service.clientCredentials('', 'client_id', 'client_secret', 'audience'),
       ).rejects.toThrow('There was no issuer to validate the token against!');
     });
 
     it('should fail if no client id is provided', async () => {
       await expect(
-        service.clientCredentials('issuer_s', undefined, 'client_secret'),
+        service.clientCredentials(
+          'issuer_s',
+          undefined,
+          'client_secret',
+          'audience',
+        ),
       ).rejects.toThrow('There was no client id provided');
     });
 
     it('should fail if client id is empty', async () => {
       await expect(
-        service.clientCredentials('issuer_s', '', 'client_secret'),
+        service.clientCredentials('issuer_s', '', 'client_secret', 'audience'),
       ).rejects.toThrow('There was no client id provided');
     });
 
     it('should fail if no client secret is provided', async () => {
       await expect(
-        service.clientCredentials('issuer_s', 'client_id', undefined),
+        service.clientCredentials(
+          'issuer_s',
+          'client_id',
+          undefined,
+          'audience',
+        ),
       ).rejects.toThrow('There was no client secret provided');
     });
 
     it('should fail if client secret is empty', async () => {
       await expect(
-        service.clientCredentials('issuer_s', 'client_id', ''),
+        service.clientCredentials('issuer_s', 'client_id', '', 'audience'),
       ).rejects.toThrow('There was no client secret provided');
     });
   });

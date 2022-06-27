@@ -17,7 +17,7 @@ export class FlowsController {
   }
 
   @Post('cc')
-  @Render('cc')
+  @Render('cc-result')
   async post(
     @Body() clientCredentialFlowInputDto: ClientCredentialFlowInputDto,
   ) {
@@ -26,14 +26,26 @@ export class FlowsController {
         clientCredentialFlowInputDto.issuerUrl,
         clientCredentialFlowInputDto.clientId,
         clientCredentialFlowInputDto.clientSecret,
+        clientCredentialFlowInputDto.audience,
       )
-      .then((result) => {
+      .then(([discoveryResult, decodingResult]) => {
         return {
-          showResults: result.success,
-          message: result.message,
+          showResults: decodingResult.success,
+          message: decodingResult.message,
 
-          payload: result.payload,
-          header: result.header,
+          discoveryResult: discoveryResult,
+          payload: decodingResult.payload,
+          header: decodingResult.header,
+        };
+      })
+      .catch((error) => {
+        return {
+          showResults: false,
+          message: error,
+
+          discoveryResult: '',
+          payload: '',
+          header: '',
         };
       });
 

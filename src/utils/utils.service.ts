@@ -17,14 +17,14 @@ export class UtilsService {
                 400,
             );
         }
-        console.log(programOutput)
+
         const fs = require('fs');
         const dateTime = new Date();
-        const fileName="program-output-"+".txt"
+        const fileName="program-output"+".txt"  
         const dirPath = '../amos2022ss08-openid-connect-doctor/logfiles/';
         if (fs.existsSync(dirPath)) {
             fs.writeFileSync(
-                dirPath + '/'+fileName, + JSON.parse(programOutput)+ '\n',
+                dirPath + '/'+fileName, + String(programOutput)+ '\n',
                 { flag: 'a' },
             );
             return this.logger.log('write Successful');

@@ -26,13 +26,6 @@ export class UtilsService {
       '--------------------------------------------------------------------------------' +
       '\n';
     const fileName = 'program-output.txt';
-    // const fileName =
-    //   'program-output-' +
-    //   dateTime.getHours() +
-    //   dateTime.getMinutes() +
-    //   dateTime.getSeconds() +
-    //   dateTime.getMilliseconds() +
-    //   '.txt';
     const dirPath = '../amos2022ss08-openid-connect-doctor/output/';
     if (fs.existsSync(dirPath)) {
       const writeSteam = fs.createWriteStream(dirPath + fileName);

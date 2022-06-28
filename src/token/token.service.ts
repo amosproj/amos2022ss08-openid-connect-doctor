@@ -11,7 +11,7 @@ import * as qs from 'qs';
 import { DiscoveryService } from '../discovery/discovery.service';
 import * as fs from 'fs';
 import { GetKeyFunction } from 'jose/dist/types/types';
-import { generateKeyPair } from 'jose/util/generate_key_pair';
+import { generateKeyPair } from 'jose/util/generate_key_pair.ts';
 import { SettingsService } from '../settings/settings.service';
 import { HelperService } from '../helper/helper.service';
 

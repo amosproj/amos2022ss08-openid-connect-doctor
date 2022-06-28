@@ -173,7 +173,7 @@ export class TokenService {
     let isValid = true;
     try {
       const keyMaterial = await this.getFileKeyMaterial (algorithm, filepath);
-      const { publicKey, privateKey } = await generateKeyPair(keyMaterial.algorithm);
+      const { publicKey, privateKey } = await jose.generateKeyPair(keyMaterial.algorithm);
 
       return [algorithm, privateKey, publicKey];
     } catch (error) {

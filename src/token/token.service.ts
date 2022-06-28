@@ -139,7 +139,7 @@ export class TokenService {
     );
   }
 
-  private decodeTokenString(tokenString: string): [string, string] {
+  private decodeTokenString(tokenString: string): [string, string, string] {
     if (tokenString === undefined || tokenString === '') {
       throw new HttpException('There was no token to decode!', 400);
     }

@@ -1,3 +1,6 @@
+//SDPX-License-Identifier: MIT
+//SDPX-FileCopyrightText: 2022 Raghunandan Arava <raghunandan.arava@fau.de>
+
 import { Module } from '@nestjs/common';
 import { FlowsController } from './flows.controller';
 import { FlowsService } from './flows.service';

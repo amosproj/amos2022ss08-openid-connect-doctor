@@ -11,6 +11,7 @@ import * as qs from 'qs';
 import { DiscoveryService } from '../discovery/discovery.service';
 import * as fs from 'fs';
 import { GetKeyFunction } from 'jose/dist/types/types';
+import { generateKeyPair } from 'jose/util/generate_key_pair';
 import { SettingsService } from '../settings/settings.service';
 import { HelperService } from '../helper/helper.service';
 
@@ -152,13 +153,34 @@ export class TokenService {
 
     const header = this.decodeBase64EncodedString(tokenParts[0]);
     const body = this.decodeBase64EncodedString(tokenParts[1]);
-    const signature = this.decodeBase64EncodedString(tokenParts[2]);
+    const signature = this.extractSignature(tokenParts[2]);
+
 
     return [header, body, signature];
   }
 
   private decodeBase64EncodedString(input: string): string {
     return JSON.parse(new TextDecoder().decode(jose.base64url.decode(input)));
+  }
+
+  private async extractSignature(
+    algorithm: string,
+    filepath: string,
+    publicKey: KeyObject,
+    privateKey: KeyObject
+  ): Promise<GenerateKeyPairResult> {
+    let message = '';
+    let isValid = true;
+    try {
+      const keyMaterial = await this.getFileKeyMaterial (algorithm, filepath);
+      const { publicKey, privateKey } = await generateKeyPair(keyMaterial.algorithm);
+
+      return [algorithm, privateKey, publicKey];
+    } catch (error) {
+      isValid = false;
+      message = `The signature is invalid: ${error}`;
+    }
+
   }
 
   private async validateTokenStringWithExternalKeys(

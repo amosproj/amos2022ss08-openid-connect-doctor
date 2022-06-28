@@ -166,16 +166,17 @@ export class TokenService {
   private async extractSignature(
     algorithm: string,
     filepath: string,
-    publicKey: KeyObject,
-    privateKey: KeyObject
-  ): Promise<GenerateKeyPairResult> {
+    publicKey: KeyLike,
+    privateKey: KeyLike
+  ): Promise<string, string, string> {
     let message = '';
     let isValid = true;
     try {
       const keyMaterial = await this.getFileKeyMaterial (algorithm, filepath);
-      const { publicKey, privateKey } = await jose.generateKeyPair(keyMaterial.algorithm);
+      const pubKey = await jose.exportSPKI(publicKey);
+      const privKey = await jose.exportPKCS8(privateKey);
 
-      return [algorithm, privateKey, publicKey];
+      return [algorithm, privKey, pubKey];
     } catch (error) {
       isValid = false;
       message = `The signature is invalid: ${error}`;

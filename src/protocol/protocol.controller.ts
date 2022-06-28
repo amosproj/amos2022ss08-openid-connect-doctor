@@ -20,27 +20,28 @@ export class ProtocolController {
     async showLogMessage(){
         const readLastLines = require('read-last-lines');
         let data:any;
-        return readLastLines.read('./logfiles/tempLogger.txt', 50)
-            .then((lines) =>{
+        const request_logs = await readLastLines.read('./logfiles/tempLogger.txt', 50)
+            .then(async(lines) =>{
                 let listOfObjects = [];
                 let splitLines = lines.split("\n");
-                console.log(splitLines.length)
                 let counter=0;
                 for(let i=splitLines.length-2; i>=0; i--){
                     let decode=splitLines[i].split(">>");
                     let obj= new ProtocolLogger(decode[1],decode[0],++counter);
                      listOfObjects.push(obj);
                 }
-                console.log("#####");
-               // console.log(listOfObjects);
-                data = this.protocolService.myStringify(listOfObjects);
-                console.log(data);
-                return {result: data};
+                data = await this.protocolService.myStringify(listOfObjects);
+                return data;
             })
             .catch((e:any) => {
                 throw new InternalServerErrorException('Could not create user');
                 return e;
         });
+
+        return {
+            requests: request_logs,
+            protocol: await this.protocolService.getExtLog(),
+        };
 
     }
 

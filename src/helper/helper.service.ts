@@ -4,11 +4,14 @@ import Ajv, { JSONSchemaType } from "ajv"
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import { SettingsService } from '../settings/settings.service';
+import { ExtendedProtocolService } from '../extended-protocol/extended-protocol.service';
 
 @Injectable()
 export class HelperService {
     @Inject(SettingsService)
     private readonly settingsService: SettingsService;
+    @Inject(ExtendedProtocolService)
+    private readonly protocolService: ExtendedProtocolService;
 
     async getSchemasHelper(schema_s: string, sub_system: string) {
         let empty_schemas;
@@ -30,7 +33,15 @@ export class HelperService {
                 HttpStatus.BAD_REQUEST,
             );
         }
-        const issuer = await Issuer.discover(issuer_s);
+        this.protocolService.extendedLog(`Query issuer at url ${issuer_s}`);
+        const issuer = await Issuer.discover(issuer_s)
+        .then((issuer) => {
+            this.protocolService.extendedLogSuccess(`Information for issuer ${issuer_s} successfully received`);
+            return issuer;
+        }).catch((err) => {
+            this.protocolService.extendedLogError(`Unable to retrieve info for issuer ${issuer_s}: ${err}`);
+            return null;
+        });
         return issuer;
     }
     async validateJson(issuer: object, schema: object) {

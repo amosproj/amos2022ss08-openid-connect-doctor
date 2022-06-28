@@ -1,10 +1,18 @@
-import { HttpException, Injectable, Logger, Res } from '@nestjs/common';
+import { HttpException, Inject, Injectable, Logger, Res } from '@nestjs/common';
 import { Response } from 'express';
+import { promises as fsPromises } from 'fs';
+import { join } from 'path';
+import { ExtendedProtocolService } from '../extended-protocol/extended-protocol.service';
 
 @Injectable()
 export class ProtocolService {
+
+  @Inject(ExtendedProtocolService)
+  private readonly extendedProtocolService: ExtendedProtocolService;
+
   logger: Logger;
   toggle = 1;
+
   constructor() {
     this.logger = new Logger(ProtocolService.name);
   }
@@ -22,7 +30,7 @@ export class ProtocolService {
     }
     const fs = require('fs');
     const dateTime = new Date();
-    const dirPath = '../amos2022ss08-openid-connect-doctor/logfiles/';
+    const dirPath = './logfiles/';
     this.logger.warn('value of toggle before writing : ' + this.toggle);
     if (this.toggle == 1) {
       if (fs.existsSync(dirPath)) {
@@ -55,7 +63,7 @@ export class ProtocolService {
     }
     const fs = require('fs');
     const dateTime = new Date();
-    const dirPath = '../amos2022ss08-openid-connect-doctor/logfiles/';
+    const dirPath = './logfiles/';
     if (fs.existsSync(dirPath)) {
       fs.writeFileSync(
         dirPath + '/tempLogger.txt',
@@ -66,6 +74,10 @@ export class ProtocolService {
     } else {
       return this.logger.error(`${dirPath} not found`);
     }
+  }
+
+  getExtLog() {
+      return this.extendedProtocolService.extLog;
   }
 
   async myStringify(log: any) {

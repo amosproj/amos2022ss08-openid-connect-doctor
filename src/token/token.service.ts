@@ -11,6 +11,7 @@ import * as fs from 'fs';
 import { GetKeyFunction } from 'jose/dist/types/types';
 import { SettingsService } from '../settings/settings.service';
 import { HelperService } from '../helper/helper.service';
+import { ExtendedProtocolService } from '../extended-protocol/extended-protocol.service';
 
 @Injectable()
 export class TokenService {
@@ -20,6 +21,8 @@ export class TokenService {
   private readonly settingsService: SettingsService;
   @Inject(DiscoveryService)
   private readonly discoveryService: DiscoveryService;
+    @Inject(ExtendedProtocolService)
+    private readonly protocolService: ExtendedProtocolService;
 
   async getSchemas(schema_s: string) {
     return this.helperService.getSchemasHelper(schema_s, 'token');
@@ -48,13 +51,19 @@ export class TokenService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    this.protocolService.extendedLog(`Get token from endpoint ${token_endpoint}`);
     return await axios
       .post(token_endpoint, qs.stringify(grantBody), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
       })
+      .then((res) => {
+        this.protocolService.extendedLogSuccess(`Successfully retrieved token from ${token_endpoint}`);
+        return res;
+      })
       .catch(() => {
+        this.protocolService.extendedLogError(`Unable to retrieve token from ${token_endpoint}`);
         throw new HttpException(
           {
             status: HttpStatus.UNAUTHORIZED,
@@ -109,19 +118,32 @@ export class TokenService {
     algorithm: string,
     filepath: string,
   ): Promise<[boolean, string]> {
+    this.protocolService.extendedLog(`Validate token signature for ${issuerUrl}`);
+    let success : boolean;
+    let info : string;
     if (getKeysFromProvider) {
-      return await this.validateTokenStringWithExternalKeys(
+      const [ success_t, info_t ] = await this.validateTokenStringWithExternalKeys(
         tokenString,
         issuerUrl,
       );
+      success = success_t;
+      info = info_t;
     } else {
-      return await this.validateTokenStringWithFileKeys(
+      const [ success_t, info_t ] = await this.validateTokenStringWithFileKeys(
         tokenString,
         algorithm,
         filepath,
         issuerUrl,
       );
+      success = success_t;
+      info = info_t;
     }
+    if (success === true) {
+      this.protocolService.extendedLogSuccess('Token validation succeeded');
+    } else {
+      this.protocolService.extendedLogError(`Token validation failed: ${info}`);
+    }
+    return [ success, info ];
   }
 
   async coloredFilteredValidation(issuer: object, schema: object) {
@@ -129,11 +151,17 @@ export class TokenService {
     for (const key in issuer) {
       keys.push(key);
     }
-    return this.helperService.coloredFilteredValidationWithFileContent(
+    const [ success, info ] = await this.helperService.coloredFilteredValidationWithFileContent(
       issuer,
       schema,
       keys,
     );
+    if (success === 1) {
+      this.protocolService.extendedLogSuccess('Validation success');
+    } else {
+      this.protocolService.extendedLogError(`Validation failed: ${info}`);
+    }
+    return [ success, info ];
   }
 
   private decodeTokenString(tokenString: string): [string, string] {

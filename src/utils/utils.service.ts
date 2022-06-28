@@ -29,11 +29,10 @@ export class UtilsService {
     const dirPath = '../amos2022ss08-openid-connect-doctor/output/';
     if (fs.existsSync(dirPath)) {
       const writeSteam = fs.createWriteStream(dirPath + fileName);
-      writeSteam.write(header + '\n' + programOutput);
+      writeSteam.write(header + '\n' + programOutput + '\n');
       writeSteam.end();
     } else {
       return this.logger.error(`${dirPath} not found`);
     }
   }
-
 }

@@ -17,6 +17,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { TokenService } from './token.service';
+import { UtilsService } from '../utils/utils.service';
 import { TokenDto } from './token.dto';
 import { TokenResultDto } from './tokenResult.dto';
 import { GrantBody } from 'openid-client';
@@ -26,7 +27,10 @@ import { createReadStream, promises as fs } from 'fs';
 
 @Controller('token')
 export default class TokenController {
-  constructor(private readonly tokenService: TokenService) {}
+  constructor(
+    private readonly tokenService: TokenService,
+    private readonly utilsService: UtilsService,
+  ) {}
 
   @Get('decode')
   @Render('decode')
@@ -74,6 +78,9 @@ export default class TokenController {
             tokenDto.keyMaterialFilepath,
           )
           .then(async (validationResult) => {
+            await this.utilsService.writeOutput(
+              result[0] + '\n' + result[1] + '\n' + validationResult[1],
+            );
             return new TokenResultDto({
               success: validationResult[0],
               message: validationResult[1],

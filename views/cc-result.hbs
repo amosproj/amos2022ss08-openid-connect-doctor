@@ -42,11 +42,12 @@
 </head>
 <body>
 <div class="container">
-    <div class="result-container">
+    <a class="result-container">
         <h2>Client-Credential-Flow</h2>
 
         <p class="message-item">{{message}}</p>
 
+        <a href="/api/utils/downloadFile"> Download Program Output</a>
         <a href="/api/flows/cc">Go back to the input</a>
         {{#if showResults}}
             <div class="results-item">

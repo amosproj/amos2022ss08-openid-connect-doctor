@@ -6,9 +6,10 @@ import { FlowsController } from './flows.controller';
 import { FlowsService } from './flows.service';
 import { TokenModule } from '../token/token.module';
 import { DiscoveryModule } from '../discovery/discovery.module';
+import { UtilsModule } from '../utils/utils.module';
 
 @Module({
-  imports: [TokenModule, DiscoveryModule],
+  imports: [TokenModule, DiscoveryModule, UtilsModule],
   controllers: [FlowsController],
   providers: [FlowsService],
   exports: [FlowsService],

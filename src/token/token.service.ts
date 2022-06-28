@@ -1,6 +1,7 @@
 //SDPX-License-Identifier: MIT
 //SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
 //SDPX-FileCopyrightText: 2022 Raghunandan Arava <raghunandan.arava@fau.de>
+//SDPX-FileCopyrightText: 2022 Sarah Julia Kriesch <sarah.j.kriesch@fau.de>
 
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import * as jose from 'jose';
@@ -94,13 +95,14 @@ export class TokenService {
     return await this.getToken(String(issuer.token_endpoint), grantBody);
   }
 
-  async decodeToken(tokenString: string): Promise<[string, string]> {
-    const [header, payload] = this.decodeTokenString(tokenString);
+  async decodeToken(tokenString: string): Promise<[string, string, string]> {
+    const [header, payload, signature] = this.decodeTokenString(tokenString);
 
     const formattedHeader = JSON.stringify(header, undefined, 2);
     const formattedPayload = JSON.stringify(payload, undefined, 2);
+    const formattedSignature = JSON.stringify(signature, undefined, 2);
 
-    return [formattedHeader, formattedPayload];
+    return [formattedHeader, formattedPayload, formattedSignature];
   }
 
   async validateTokenSignature(
@@ -150,8 +152,9 @@ export class TokenService {
 
     const header = this.decodeBase64EncodedString(tokenParts[0]);
     const body = this.decodeBase64EncodedString(tokenParts[1]);
+    const signature = this.decodeBase64EncodedString(tokenParts[2]);
 
-    return [header, body];
+    return [header, body, signature];
   }
 
   private decodeBase64EncodedString(input: string): string {

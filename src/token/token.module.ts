@@ -9,6 +9,7 @@ import TokenController from './token.controller';
 import { DiscoveryModule } from '../discovery/discovery.module';
 import { SettingsModule } from '../settings/settings.module';
 import { HelperModule } from '../helper/helper.module';
+import { ExtendedProtocolModule } from '../extended-protocol/extended-protocol.module';
 import { UtilsModule } from '../utils/utils.module';
 
 @Module({
@@ -17,6 +18,7 @@ import { UtilsModule } from '../utils/utils.module';
     DiscoveryModule,
     SettingsModule,
     HelperModule,
+    ExtendedProtocolModule,
     UtilsModule,
   ],
   controllers: [TokenController],

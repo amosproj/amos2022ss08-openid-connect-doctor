@@ -5,6 +5,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { TokenService } from '../token/token.service';
 import { DiscoveryService } from '../discovery/discovery.service';
+import { ExtendedProtocolService } from '../extended-protocol/extended-protocol.service';
 import { ClientCredentialFlowResultDto } from './Dto/clientCredentialFlowResult.dto';
 import { UtilsService } from '../utils/utils.service';
 
@@ -12,6 +13,8 @@ import { UtilsService } from '../utils/utils.service';
 export class FlowsService {
   @Inject(TokenService)
   private readonly tokenService: TokenService;
+  @Inject(ExtendedProtocolService)
+  private readonly protocolService: ExtendedProtocolService;
 
   @Inject(DiscoveryService)
   private readonly discoveryService: DiscoveryService;
@@ -50,6 +53,8 @@ export class FlowsService {
       audience = clientId;
     }
 
+    this.protocolService.extendedLog("Start retrieving client credentials");
+
     let discoveryResult = '';
     let receivedTokenString = '';
 
@@ -67,7 +72,9 @@ export class FlowsService {
 
       discoveryResult = JSON.stringify(issuer, undefined, 2);
       receivedTokenString = String(receivedToken.data.access_token);
+      this.protocolService.extendedLogSuccess("Client credentials successfully retrieved");
     } catch (error) {
+      this.protocolService.extendedLogError("Failed to retrieve client credentials");
       return [
         '',
         new ClientCredentialFlowResultDto({
@@ -79,6 +86,7 @@ export class FlowsService {
       ];
     }
 
+    this.protocolService.extendedLog("Decode retrieved token");
     const result = await this.tokenService
       .decodeToken(receivedTokenString)
       .then(async ([header, payload]) => {
@@ -89,6 +97,7 @@ export class FlowsService {
               await this.utilsService.writeOutput(
                 header + '\n' + payload + '\n' + message,
               );
+              this.protocolService.extendedLogSuccess("Token decoded");
               return new ClientCredentialFlowResultDto({
                 success: true,
                 message: 'Request and validation successful',
@@ -96,6 +105,7 @@ export class FlowsService {
                 header: header,
               });
             } else {
+              this.protocolService.extendedLogError("Token validation failed");
               return new ClientCredentialFlowResultDto({
                 success: true,
                 message: `Request successful, but validation failed: ${message}`,

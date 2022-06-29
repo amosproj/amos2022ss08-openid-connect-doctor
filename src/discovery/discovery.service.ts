@@ -6,6 +6,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { join } from 'path';
 import { SettingsService } from '../settings/settings.service';
 import { HelperService } from '../helper/helper.service';
+import { ExtendedProtocolService } from '../extended-protocol/extended-protocol.service';
 
 @Injectable()
 export class DiscoveryService {
@@ -13,6 +14,8 @@ export class DiscoveryService {
   private readonly settingsService: SettingsService;
   @Inject(HelperService)
   private readonly helperService: HelperService;
+  @Inject(ExtendedProtocolService)
+  private readonly protocolService: ExtendedProtocolService;
 
   async getSchemas(schema_s: string) {
     return this.helperService.getSchemasHelper(schema_s, 'discovery');
@@ -30,16 +33,15 @@ export class DiscoveryService {
     return x;
   }
 
-  async coloredFilteredValidation(
-    issuer: object,
-    schema_file: string,
-    keys: any[],
-  ) {
+  async coloredFilteredValidation(issuer: any, schema_file: string, keys: any[]) {
+    this.protocolService.extendedLog(`Validate issuer ${issuer.issuer} against ${schema_file}`);
     const schema = require(join('..', '..', 'schema', schema_file));
-    return await this.helperService.coloredFilteredValidationWithFileContent(
-      issuer,
-      schema,
-      keys,
-    );
+    const [ success, info ] = await this.helperService.coloredFilteredValidationWithFileContent(issuer, schema, keys);
+    if (success === 1) {
+      this.protocolService.extendedLogSuccess('Validation success');
+    } else {
+      this.protocolService.extendedLogError(`Validation failed: ${info}`);
+    }
+    return [ success, info ];
   }
 }

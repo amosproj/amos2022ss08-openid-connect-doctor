@@ -1,11 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProtocolService } from './protocol.service';
+import { ExtendedProtocolModule } from '../extended-protocol/extended-protocol.module';
 
 describe('ProtocolService', () => {
   let service: ProtocolService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [ExtendedProtocolModule],
       providers: [ProtocolService],
     }).compile();
 

@@ -14,6 +14,7 @@ import {
   Body,
   UploadedFile,
   UseInterceptors,
+  Inject,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { TokenService } from './token.service';
@@ -24,9 +25,13 @@ import { GrantBody } from 'openid-client';
 import { join } from 'path';
 import { Express, Response } from 'express';
 import { createReadStream, promises as fs } from 'fs';
+import { ExtendedProtocolService } from '../extended-protocol/extended-protocol.service';
 
 @Controller('token')
 export default class TokenController {
+  @Inject(ExtendedProtocolService)
+  private readonly protocolService: ExtendedProtocolService;
+
   constructor(
     private readonly tokenService: TokenService,
     private readonly utilsService: UtilsService,
@@ -53,6 +58,7 @@ export default class TokenController {
   ) {
     const schema_s = tokenDto.schema;
     const schemas = await this.tokenService.getSchemas(schema_s);
+    this.protocolService.extendedLog("Start decoding token");
 
     if (schema_file && schema_s !== '') {
       return {
@@ -106,6 +112,12 @@ export default class TokenController {
         });
       });
 
+    if (result.success) {
+      this.protocolService.extendedLogError("Protocol decoding failed");
+    } else {
+      this.protocolService.extendedLogSuccess("Protocol decoding succeeded");
+    }
+
     if (result.success && (schema_s !== '' || schema_file)) {
       // color the payload according to schema if decoding succeeded
       let schema_body;
@@ -121,7 +133,10 @@ export default class TokenController {
         );
       let message = result.message;
       if (success === 0) {
+        this.protocolService.extendedLogError("Schema did not match");
         message = 'Decoding was successful, but schema did not match';
+      } else {
+        this.protocolService.extendedLogSuccess("Decoded token matched schema");
       }
       return {
         showResults: result.success,

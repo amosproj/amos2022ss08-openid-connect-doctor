@@ -7,13 +7,14 @@ import { FlowsService } from './flows.service';
 import { TokenModule } from '../token/token.module';
 import { DiscoveryModule } from '../discovery/discovery.module';
 import {UtilsModule} from "../utils/utils.module";
+import { ExtendedProtocolModule } from '../extended-protocol/extended-protocol.module';
 
 describe('FlowsService', () => {
   let service: FlowsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TokenModule, DiscoveryModule, UtilsModule],
+      imports: [TokenModule, DiscoveryModule, UtilsModule, ExtendedProtocolModule],
       providers: [FlowsService],
     }).compile();
 

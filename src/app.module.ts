@@ -15,6 +15,7 @@ import { ProtocolController } from './protocol/protocol.controller';
 import { LoggerMiddleware } from './utils/logger.middleware';
 import { SettingsModule } from './settings/settings.module';
 import { HelperModule } from './helper/helper.module';
+import { ExtendedProtocolModule } from './extended-protocol/extended-protocol.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { HelperModule } from './helper/helper.module';
     FlowsModule,
     SettingsModule,
     HelperModule,
+    ExtendedProtocolModule,
   ],
   providers: [AppService, ProtocolService],
   controllers: [AppController, ProtocolController],

@@ -166,7 +166,7 @@ export class TokenService {
     return parse(new TextDecoder().decode(jose.base64url.decode(input)));
   }
 
-  private extractSignature(
+  private async extractSignature(
     algorithm: string,
     filepath: string,
     publicKey: jose.KeyLike,

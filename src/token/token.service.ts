@@ -152,7 +152,7 @@ export class TokenService {
 
     const header = this.decodeBase64EncodedString(tokenParts[0]);
     const body = this.decodeBase64EncodedString(tokenParts[1]);
-    const signature = this.extractSignature(tokenParts[2]);
+    const signature = this.decodeBase64EncodedStringKey(tokenParts[2]).extractSignature();
 
 
     return [header, body, signature];
@@ -162,12 +162,16 @@ export class TokenService {
     return JSON.parse(new TextDecoder().decode(jose.base64url.decode(input)));
   }
 
-  private async extractSignature(
+  private decodeBase64EncodedStringKey(input: string): string {
+    return parse(new TextDecoder().decode(jose.base64url.decode(input)));
+  }
+
+  private extractSignature(
     algorithm: string,
     filepath: string,
     publicKey: jose.KeyLike,
     privateKey: jose.KeyLike
-  ): Promise<string, string, string> {
+  ): [string, string, string] {
     let message = '';
     let isValid = true;
     try {

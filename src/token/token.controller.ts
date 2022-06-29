@@ -48,6 +48,7 @@ export default class TokenController {
   ) {
     const schema_s = tokenDto.schema;
     const schemas = await this.tokenService.getSchemas(schema_s);
+    this.protocolService.extendedLog("Start decoding token");
 
     if (schema_file && schema_s !== '') {
       return {
@@ -98,6 +99,12 @@ export default class TokenController {
         });
       });
 
+    if (result.success) {
+      this.protocolService.extendedLogError("Protocol decoding failed");
+    } else {
+      this.protocolService.extendedLogSuccess("Protocol decoding succeeded");
+    }
+
     if (result.success && (schema_s !== '' || schema_file)) {
       // color the payload according to schema if decoding succeeded
       let schema_body;
@@ -113,7 +120,10 @@ export default class TokenController {
         );
       let message = result.message;
       if (success === 0) {
+        this.protocolService.extendedLogError("Schema did not match");
         message = 'Decoding was successful, but schema did not match';
+      } else {
+        this.protocolService.extendedLogSuccess("Decoded token matched schema");
       }
       return {
         showResults: result.success,

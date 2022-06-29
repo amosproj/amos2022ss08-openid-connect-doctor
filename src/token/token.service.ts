@@ -21,8 +21,8 @@ export class TokenService {
   private readonly settingsService: SettingsService;
   @Inject(DiscoveryService)
   private readonly discoveryService: DiscoveryService;
-    @Inject(ExtendedProtocolService)
-    private readonly protocolService: ExtendedProtocolService;
+  @Inject(ExtendedProtocolService)
+  private readonly protocolService: ExtendedProtocolService;
 
   async getSchemas(schema_s: string) {
     return this.helperService.getSchemasHelper(schema_s, 'token');
@@ -172,6 +172,7 @@ export class TokenService {
     const tokenParts = tokenString.split('.');
 
     if (tokenParts.length !== 3) {
+      this.protocolService.extendedLogError('Token string is incomplete');
       throw new HttpException('The token-string is incomplete!', 400);
     }
 

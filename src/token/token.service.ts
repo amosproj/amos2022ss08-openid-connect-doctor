@@ -163,7 +163,7 @@ export class TokenService {
   }
 
   private async decodeBase64EncodedStringKey(input: string): Promise <string> { 
-    return await jose.JWK.asKey(new TextDecoder().decode(jose.base64url.decode(input)));
+    return Promise.string(await jose.JWK.asKey(new TextDecoder().decode(jose.base64url.decode(input))));
   }
 
   private async validateTokenStringWithExternalKeys(

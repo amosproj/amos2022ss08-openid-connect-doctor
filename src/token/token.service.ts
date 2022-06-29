@@ -152,7 +152,7 @@ export class TokenService {
 
     const header = this.decodeBase64EncodedString(tokenParts[0]);
     const body = this.decodeBase64EncodedString(tokenParts[1]);
-    const signature = this.decodeBase64EncodedStringKey(tokenParts[2]).extractSignature();
+    const signature = this.decodeBase64EncodedStringKey(tokenParts[2]);
 
 
     return [header, body, signature];
@@ -163,27 +163,8 @@ export class TokenService {
   }
 
   private decodeBase64EncodedStringKey(input: string): string {
-    return parse(new TextDecoder().decode(jose.base64url.decode(input)));
+    return JWSObject.parse(new TextDecoder().decode(jose.base64url.decode(input)));
   }
-
-  private async extractSignature(
-    algorithm: string,
-    filepath: string,
-    publicKey: jose.KeyLike,
-    privateKey: jose.KeyLike
-  ): [string, string, string] {
-    let message = '';
-    let isValid = true;
-    try {
-      const keyMaterial = await this.getFileKeyMaterial (algorithm, filepath);
-      const pubKey = await jose.exportSPKI(publicKey);
-      const privKey = await jose.exportPKCS8(privateKey);
-
-      return [algorithm, privKey, pubKey];
-    } catch (error) {
-      isValid = false;
-      message = `The signature is invalid: ${error}`;
-    }
 
   }
 

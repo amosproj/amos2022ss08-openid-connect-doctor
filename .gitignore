@@ -6,6 +6,7 @@
 logs
 logfiles/logger.txt
 logfiles/tempLogger.txt
+output/program-output.txt
 *.log
 npm-debug.log*
 pnpm-debug.log*

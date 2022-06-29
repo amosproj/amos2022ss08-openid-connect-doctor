@@ -1,0 +1,71 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Client-Credential-Flow</title>
+
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+
+            margin: 3px;
+            padding: 10px;
+            border: 2px solid black;
+            border-radius: 3px 2px;
+        }
+        .result-container {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            margin:3px;
+            padding: 10px;
+            border: 2px solid black;
+            border-radius: 3px 2px;
+        }
+        .results-item {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+        .result-group {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            width: 100%;
+            margin:3px;
+            padding: 10px;
+            border: 1px dotted black;
+            border-radius: 3px 2px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a class="result-container">
+        <h2>Client-Credential-Flow</h2>
+
+        <p class="message-item">{{message}}</p>
+
+        <a href="/api/utils/downloadFile"> Download Program Output</a>
+        <a href="/api/flows/cc">Go back to the input</a>
+        {{#if showResults}}
+            <div class="results-item">
+                <div class="result-group">
+                    <h2>Header</h2>
+                    <pre>{{ header }}</pre>
+                </div>
+                <div class="result-group">
+                    <h2>Payload</h2>
+                    <pre>{{{ payload }}}</pre>
+                </div>
+                 <div class="result-group">
+                    <h2>Discovery-Endpoint</h2>
+                    <pre>{{ discoveryResult }}</pre>
+                </div>
+            </div>
+        {{/if}}
+    </div>
+</div>
+</body>
+</html>

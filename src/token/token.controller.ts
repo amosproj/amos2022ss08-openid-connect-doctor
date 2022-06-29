@@ -1,5 +1,6 @@
 //SDPX-License-Identifier: MIT
 //SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
+//SDPX-FileCopyrightText: 2022 Raghunandan Arava <raghunandan.arava@fau.de>
 
 import {
   Controller,
@@ -13,19 +14,28 @@ import {
   Body,
   UploadedFile,
   UseInterceptors,
+  Inject,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { TokenService } from './token.service';
+import { UtilsService } from '../utils/utils.service';
 import { TokenDto } from './token.dto';
 import { TokenResultDto } from './tokenResult.dto';
 import { GrantBody } from 'openid-client';
 import { join } from 'path';
 import { Express, Response } from 'express';
 import { createReadStream, promises as fs } from 'fs';
+import { ExtendedProtocolService } from '../extended-protocol/extended-protocol.service';
 
 @Controller('token')
 export default class TokenController {
-  constructor(private readonly tokenService: TokenService) {}
+  @Inject(ExtendedProtocolService)
+  private readonly protocolService: ExtendedProtocolService;
+
+  constructor(
+    private readonly tokenService: TokenService,
+    private readonly utilsService: UtilsService,
+  ) {}
 
   @Get('decode')
   @Render('decode')
@@ -74,6 +84,9 @@ export default class TokenController {
             tokenDto.keyMaterialFilepath,
           )
           .then(async (validationResult) => {
+            await this.utilsService.writeOutput(
+              result[0] + '\n' + result[1] + '\n' + validationResult[1],
+            );
             return new TokenResultDto({
               success: validationResult[0],
               message: validationResult[1],

@@ -1,15 +1,15 @@
 import {
-    Controller,
-    Get,
-    InternalServerErrorException,
-    Logger,
-    NestMiddleware,
-    Query,
-    Render,
-    Res
+  Controller,
+  Get,
+  InternalServerErrorException,
+  Logger,
+  NestMiddleware,
+  Query,
+  Render,
+  Res,
 } from '@nestjs/common';
-import {ProtocolService} from "./protocol.service";
-import {ProtocolLogger} from "./protocolLogger";
+import { ProtocolService } from './protocol.service';
+import { ProtocolLogger } from './protocolLogger';
 
 @Controller('protocol')
 export class ProtocolController {
@@ -50,9 +50,4 @@ export class ProtocolController {
         @Query('toggleLogger') toggleLogger: number){
          await this.protocolService.toggleWriteStatus(toggleLogger);
     }
-
-
-
-
-
 }

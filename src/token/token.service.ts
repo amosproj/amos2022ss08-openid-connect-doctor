@@ -152,10 +152,10 @@ export class TokenService {
 
     const header = this.decodeBase64EncodedString(tokenParts[0]);
     const body = this.decodeBase64EncodedString(tokenParts[1]);
-    const signature = this.decodeBase64EncodedStringKey(tokenParts[2]);
+    const signatures = this.decodeBase64EncodedStringKey(tokenParts[2]);
 
 
-    return [header, body, signature];
+    return [header, body, signatures];
   }
 
   private decodeBase64EncodedString(input: string): string {
@@ -163,8 +163,7 @@ export class TokenService {
   }
 
   private decodeBase64EncodedStringKey(input: string): string { 
-     JWSObject jwsObject = new JWSObject(input);
-    return jwsObject.parse(new TextDecoder().decode(jose.base64url.decode(input)));
+    return await jose.JWK.asKey(new TextDecoder().decode(jose.base64url.decode(input)));
   }
 
   private async validateTokenStringWithExternalKeys(

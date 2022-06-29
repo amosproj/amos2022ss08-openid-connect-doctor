@@ -162,7 +162,7 @@ export class TokenService {
     return JSON.parse(new TextDecoder().decode(jose.base64url.decode(input)));
   }
 
-  private decodeBase64EncodedStringKey(input: string): string { 
+  private async decodeBase64EncodedStringKey(input: string): Promise <string> { 
     return await jose.JWK.asKey(new TextDecoder().decode(jose.base64url.decode(input)));
   }
 

@@ -7,13 +7,14 @@ import { DiscoveryModule } from '../discovery/discovery.module';
 import { FlowsModule } from '../flows/flows.module';
 import { SettingsModule } from '../settings/settings.module';
 import { HelperModule } from '../helper/helper.module';
+import { ExtendedProtocolModule } from '../extended-protocol/extended-protocol.module';
 
 describe('TokenService', () => {
   let service: TokenService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [DiscoveryModule, FlowsModule, SettingsModule, HelperModule],
+      imports: [DiscoveryModule, FlowsModule, SettingsModule, HelperModule, ExtendedProtocolModule],
       providers: [TokenService],
     }).compile();
 

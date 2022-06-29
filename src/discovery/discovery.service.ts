@@ -1,5 +1,6 @@
 //SDPX-License-Identifier: MIT
 //SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
+//SDPX-FileCopyrightText: 2022 Raghunandan Arava <raghunandan.arava@fau.de>
 
 import { Inject, Injectable } from '@nestjs/common';
 import { join } from 'path';
@@ -22,7 +23,7 @@ export class DiscoveryService {
   }
 
   getDefaultCheckboxes() {
-    let x = {};
+    const x = {};
     for (const i in this.settingsService.config.discovery.parameter) {
       x[this.settingsService.config.discovery.parameter[i]] = 1;
     }
@@ -34,7 +35,7 @@ export class DiscoveryService {
     schema_file: string,
     keys: any[],
   ) {
-    const schema = join('..', '..', 'schema', schema_file);
+    const schema = require(join('..', '..', 'schema', schema_file));
     return await this.helperService.coloredFilteredValidationWithFileContent(
       issuer,
       schema,

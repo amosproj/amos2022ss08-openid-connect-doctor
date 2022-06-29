@@ -6,6 +6,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { TokenService } from '../token/token.service';
 import { DiscoveryService } from '../discovery/discovery.service';
 import { ClientCredentialFlowResultDto } from './Dto/clientCredentialFlowResult.dto';
+import { UtilsService } from '../utils/utils.service';
 
 @Injectable()
 export class FlowsService {
@@ -14,6 +15,9 @@ export class FlowsService {
 
   @Inject(DiscoveryService)
   private readonly discoveryService: DiscoveryService;
+
+  @Inject(UtilsService)
+  private readonly utilsService: UtilsService;
 
   async clientCredentials(
     issuer_s: string,
@@ -80,8 +84,11 @@ export class FlowsService {
       .then(async ([header, payload]) => {
         const validationResult = await this.tokenService
           .validateTokenSignature(issuer_s, receivedTokenString, true, '', '')
-          .then(([isValid, message]) => {
+          .then(async ([isValid, message]) => {
             if (isValid) {
+              await this.utilsService.writeOutput(
+                header + '\n' + payload + '\n' + message,
+              );
               return new ClientCredentialFlowResultDto({
                 success: true,
                 message: 'Request and validation successful',

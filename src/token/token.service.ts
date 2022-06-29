@@ -162,8 +162,9 @@ export class TokenService {
     return JSON.parse(new TextDecoder().decode(jose.base64url.decode(input)));
   }
 
-  private decodeBase64EncodedStringKey(input: string): string {
-    return jose.JWSObject.parse(new TextDecoder().decode(jose.base64url.decode(input)));
+  private decodeBase64EncodedStringKey(input: string): string { 
+     JWSObject jwsObject = new JWSObject(input);
+    return jwsObject.parse(new TextDecoder().decode(jose.base64url.decode(input)));
   }
 
   private async validateTokenStringWithExternalKeys(

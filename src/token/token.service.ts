@@ -165,8 +165,8 @@ export class TokenService {
   private async extractSignature(
     algorithm: string,
     filepath: string,
-    publicKey: KeyLike,
-    privateKey: KeyLike
+    publicKey: jose.KeyLike,
+    privateKey: jose.KeyLike
   ): Promise<string, string, string> {
     let message = '';
     let isValid = true;

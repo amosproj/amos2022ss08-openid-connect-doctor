@@ -120,9 +120,13 @@ export class FlowsService {
 
       discoveryResult = JSON.stringify(issuer, undefined, 2);
       receivedTokenString = String(receivedToken.data.access_token);
-      this.protocolService.extendedLogSuccess("Client credentials successfully retrieved");
+      this.protocolService.extendedLogSuccess(
+        'Client credentials successfully retrieved',
+      );
     } catch (error) {
-      this.protocolService.extendedLogError("Failed to retrieve client credentials");
+      this.protocolService.extendedLogError(
+        'Failed to retrieve client credentials',
+      );
       return [
         '',
         new FlowResultDto({
@@ -217,5 +221,27 @@ export class FlowsService {
       discoveryResult,
       await this.decodeToken(issuer_s, receivedTokenString),
     ];
+  }
+
+  async authorizeURI(
+    authIssuer: string,
+    clientId: string,
+    clientSecret: string,
+    responseType: string,
+    redirectUri: string,
+    state: string,
+  ) {
+    return {
+      url:
+        authIssuer +
+        '?client_id=' +
+        clientId +
+        '&response_type=' +
+        responseType +
+        '&redirect_uri=' +
+        redirectUri +
+        '&state=' +
+        state,
+    };
   }
 }

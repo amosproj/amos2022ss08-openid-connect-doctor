@@ -5,6 +5,7 @@
 import { Controller, Get, Post, Body, Render } from '@nestjs/common';
 import { ClientCredentialFlowInputDto } from './Dto/clientCredentialFlowInput.dto';
 import { FlowsService } from './flows.service';
+import { AuthInputDto } from './Dto/authInput.dto';
 
 @Controller('flows')
 export class FlowsController {
@@ -13,6 +14,12 @@ export class FlowsController {
   @Get('cc')
   @Render('cc')
   async get() {
+    return;
+  }
+
+  @Get('auth')
+  @Render('authorization-flow')
+  async getAuth() {
     return;
   }
 
@@ -48,6 +55,20 @@ export class FlowsController {
           header: '',
         };
       });
+
+    return result;
+  }
+
+  @Post('auth')
+  async postAuth(@Body() authInputDto: AuthInputDto) {
+    const result = await this.flowsService.authorizeURI(
+      authInputDto.authIssuer,
+      authInputDto.clientId,
+      authInputDto.clientSecret,
+      authInputDto.responseType,
+      authInputDto.redirectUri,
+      authInputDto.state,
+    );
 
     return result;
   }

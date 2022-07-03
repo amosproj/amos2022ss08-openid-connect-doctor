@@ -1,0 +1,143 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Client-Credential-Flow</title>
+
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+
+            margin: 3px;
+            padding: 10px;
+            border: 2px solid black;
+            border-radius: 3px 2px;
+        }
+        .input-container {
+            margin:3px;
+            padding: 10px;
+            border: 2px solid black;
+            border-radius: 3px 2px;
+        }
+        .input-form {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+        }
+        .input-group {
+            display: inline-flex;
+            padding: 10px;
+        }
+        .input-group > label {
+            flex: 25%;
+        }
+
+        .input-group > input,
+        .input-group > select,
+        .input-group > .input-container,
+        .input-group > textarea {
+            flex: 75%;
+        }
+        .multi-input-group {
+            display: inline-flex;
+            padding: 10px;
+        }
+        .multi-input-group > label {
+            flex: 15%;
+        }
+
+        .multi-input-group > input,
+        .multi-input-group > select,
+        .multi-input-group > textarea {
+            flex: 35%;
+            margin-right: 10px;
+        }
+        .button-group {
+            display: inline-flex;
+        }
+        .reset-button,
+        .submit-button {
+            flex: 45%;
+            padding: 5px;
+            margin: 5px;
+            color: #000;
+            background-color: #e4e4e4;
+            border: 2px solid #000;
+            border-radius: 3px 2px;
+        }
+        .reset-button:hover,
+        .reset-button:focus {
+            color: #a11;
+            border: 2px solid #a11;
+        }
+
+        .submit-button:hover,
+        .submit-button:focus {
+            color: #1a1;
+            border: 2px solid #1a1;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="input-container">
+        <h2>Client-Credential-Flow</h2>
+        <a href="/api/discovery/issuer">Go back to Discovery</a>
+        <p>Please enter the necessary information:</p>
+        <form class="input-form">
+            <div class="input-group">
+                <label for="authIssuer"><b>Issuer: </b></label>
+                <input type="text" id="authIssuer" name="authIssuer" />
+            </div>
+            <div class="input-group">
+                <label for="clientId"><b>Client-ID: </b></label>
+                <input type="text" id="clientId" name="clientId" />
+            </div>
+            <div class="input-group">
+                <label for="clientSecret"><b>Client-Secret: </b></label>
+                <input type="password" id="clientSecret" name="clientSecret" />
+            </div>
+            <div class="input-group">
+                <label for="responseType"><b>Response-Type: </b></label>
+                <input type="text" id="responseType" name="responseType" />
+            </div>
+            <div class="input-group">
+                <label for="redirectUri"><b>Redirect URI: </b></label>
+                <input type="text" id="redirectUri" name="redirectUri" />
+            </div>
+            <div class="input-group">
+                <label for="state"><b>State: </b></label>
+                <input type="text" id="state" name="state" />
+            </div>
+            <button id="submit" onclick="authFlow()"  type="submit"  value="submit" >Submit</button>
+        </form>
+        <script type="text/javascript">
+            function authFlow(result) {
+                let authIssuer = document.getElementById("authIssuer").value;
+                let clientId = document.getElementById("clientId").value;
+                let clientSecret = document.getElementById("clientSecret").value;
+                let responseType = document.getElementById("responseType").value;
+                let redirectUri = document.getElementById("redirectUri").value;
+                let state = document.getElementById("state").value;
+
+                window.open(authURL(authIssuer, clientId, clientSecret, responseType, redirectUri, state), "_blank");
+                let url = window.location.href;
+            }
+
+            function authURL(authIssuer, clientId, clientSecret, responseType, redirectUri, state) {
+                return authIssuer +
+                        '?client_id=' +
+                        clientId +
+                        '&response_type=' +
+                        responseType +
+                        '&redirect_uri=' +
+                        redirectUri +
+                        '&state=' +
+                        state;
+            }
+        </script>
+    </div>
+</div>
+</body>
+</html>

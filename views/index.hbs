@@ -145,7 +145,7 @@
     </form><br>
     <button id="btn_enableAll" class="button enableButton">Enable All</button>
     <button id="btn_disableAll" class="button disableButton">Disable All</button><br><br>
-    <a href="/api/flows/cc">Client-Credential-Flow</><br><br>
+    <a href="/api/flows/cc">Client-Credential-Flow</a><br><br>
     <a href="/api/protocol/logger">Check Protocols</a><br><br>
     <script>
         function setAll(b) {
@@ -164,8 +164,6 @@
         btn_enable.onclick = enableAll;
         const btn_disable = document.querySelector('#btn_disableAll');
         btn_disable.onclick = disableAll;
-
-        };
     </script>
     <form enctype="multipart/form-data" method="post" action="/api/discovery/schema/upload">
         <input type="file" id="file_upload" name="upload">
@@ -203,7 +201,5 @@
         </div>
     </div>
 </div>
-</div>
 </body>
-</head>
 </html>

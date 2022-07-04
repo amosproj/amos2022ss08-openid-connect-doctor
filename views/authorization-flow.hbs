@@ -124,6 +124,15 @@
                 window.open(authURL(authIssuer, clientId, clientSecret, responseType, redirectUri, state));
                 let myURL = document.location.href;
                 console.log(myURL);
+                let data = {element: myURL.code};
+
+                fetch("/post/data/here", {
+                    method: "POST",
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                }).then(res => {
+                    console.log("Request complete! response:", res);
+                });
             }
 
             function authURL(authIssuer, clientId, clientSecret, responseType, redirectUri, state) {

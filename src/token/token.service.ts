@@ -52,7 +52,9 @@ export class TokenService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    this.protocolService.extendedLog(`Get token from endpoint ${token_endpoint}`);
+    this.protocolService.extendedLog(
+      `Get token from endpoint ${token_endpoint}`,
+    );
     return await axios
       .post(token_endpoint, qs.stringify(grantBody), {
         headers: {
@@ -60,11 +62,15 @@ export class TokenService {
         },
       })
       .then((res) => {
-        this.protocolService.extendedLogSuccess(`Successfully retrieved token from ${token_endpoint}`);
+        this.protocolService.extendedLogSuccess(
+          `Successfully retrieved token from ${token_endpoint}`,
+        );
         return res;
       })
       .catch(() => {
-        this.protocolService.extendedLogError(`Unable to retrieve token from ${token_endpoint}`);
+        this.protocolService.extendedLogError(
+          `Unable to retrieve token from ${token_endpoint}`,
+        );
         throw new HttpException(
           {
             status: HttpStatus.UNAUTHORIZED,
@@ -119,18 +125,18 @@ export class TokenService {
     algorithm: string,
     filepath: string,
   ): Promise<[boolean, string]> {
-    this.protocolService.extendedLog(`Validate token signature for ${issuerUrl}`);
-    let success : boolean;
-    let info : string;
+    this.protocolService.extendedLog(
+      `Validate token signature for ${issuerUrl}`,
+    );
+    let success: boolean;
+    let info: string;
     if (getKeysFromProvider) {
-      const [ success_t, info_t ] = await this.validateTokenStringWithExternalKeys(
-        tokenString,
-        issuerUrl,
-      );
+      const [success_t, info_t] =
+        await this.validateTokenStringWithExternalKeys(tokenString, issuerUrl);
       success = success_t;
       info = info_t;
     } else {
-      const [ success_t, info_t ] = await this.validateTokenStringWithFileKeys(
+      const [success_t, info_t] = await this.validateTokenStringWithFileKeys(
         tokenString,
         algorithm,
         filepath,
@@ -144,7 +150,7 @@ export class TokenService {
     } else {
       this.protocolService.extendedLogError(`Token validation failed: ${info}`);
     }
-    return [ success, info ];
+    return [success, info];
   }
 
   async coloredFilteredValidation(issuer: object, schema: object) {
@@ -152,17 +158,18 @@ export class TokenService {
     for (const key in issuer) {
       keys.push(key);
     }
-    const [ success, info ] = await this.helperService.coloredFilteredValidationWithFileContent(
-      issuer,
-      schema,
-      keys,
-    );
+    const [success, info] =
+      await this.helperService.coloredFilteredValidationWithFileContent(
+        issuer,
+        schema,
+        keys,
+      );
     if (success === 1) {
       this.protocolService.extendedLogSuccess('Validation success');
     } else {
       this.protocolService.extendedLogError(`Validation failed: ${info}`);
     }
-    return [ success, info ];
+    return [success, info];
   }
 
   private decodeTokenString(tokenString: string): [string, string] {
@@ -302,5 +309,54 @@ export class TokenService {
         return x !== default_algo;
       }),
     );
+  }
+
+  filterToken(
+    headerString: string,
+    payloadString: string,
+    filters: string[],
+  ): [string, string] {
+    if (headerString === undefined) {
+      throw new Error('The header-string was undefined');
+    }
+
+    if (payloadString === undefined) {
+      throw new Error('The payload-string was undefined');
+    }
+
+    if (filters === undefined) {
+      throw new Error('The filter-list was undefined');
+    }
+
+    if (headerString === '' && payloadString === '') return ['', ''];
+
+    const headerResult = this.filterJsonStringByList(headerString, filters);
+    const payloadResult = this.filterJsonStringByList(payloadString, filters);
+
+    return [headerResult, payloadResult];
+  }
+
+  private filterJsonStringByList(
+    jsonString: string,
+    filters: string[],
+  ): string {
+    if (jsonString === '') return jsonString;
+
+    let jsonObject = JSON.parse(jsonString);
+
+    if (filters.length > 0) {
+      const tempJsonObject = JSON.parse('{}');
+
+      filters.forEach((filter) => {
+        const objectValue = jsonObject[filter];
+
+        if (objectValue !== undefined) {
+          tempJsonObject[filter] = objectValue;
+        }
+      });
+      jsonObject = tempJsonObject;
+    }
+
+    return JSON.stringify(jsonObject, undefined, 2);
   }
 }

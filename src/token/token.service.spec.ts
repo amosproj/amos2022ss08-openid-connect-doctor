@@ -14,7 +14,13 @@ describe('TokenService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [DiscoveryModule, FlowsModule, SettingsModule, HelperModule, ExtendedProtocolModule],
+      imports: [
+        DiscoveryModule,
+        FlowsModule,
+        SettingsModule,
+        HelperModule,
+        ExtendedProtocolModule,
+      ],
       providers: [TokenService],
     }).compile();
 
@@ -54,7 +60,7 @@ describe('TokenService', () => {
         '{\n  "alg": "RS256",\n  "typ": "JWT",\n  "kid": "t7bamxfCrB2TEwe_j9EPJAhZAq0FGWUnXBNxiHbuPQE"\n}',
       );
       expect(result[1]).toBe(
-        '{\n  "exp": 1654491380,\n  "iat": 1654491320,\n  "jti": "b39009bf-eef5-42e9-8346-39b52308f2bb",\n  "iss": "http://localhost:8080/realms/master",\n  "aud": "account",\n  "sub": "9fedbc29-423c-4907-8c68-c843b99c74f9",\n  "typ": "Bearer",\n  "azp": "openid-doc",\n  "acr": "1",\n  "realm_access": {\n    "roles": [\n      "default-roles-master",\n      "offline_access",\n      "uma_authorization"\n    ]\n  },\n  "resource_access": {\n    "account": {\n      "roles": [\n        "manage-account",\n        "manage-account-links",\n        "view-profile"\n      ]\n    }\n  },\n  "scope": "profile email",\n  "clientHost": "172.17.0.1",\n  "clientId": "openid-doc",\n  "email_verified": false,\n  "preferred_username": "service-account-openid-doc",\n  "clientAddress": "172.17.0.1"\n}'
+        '{\n  "exp": 1654491380,\n  "iat": 1654491320,\n  "jti": "b39009bf-eef5-42e9-8346-39b52308f2bb",\n  "iss": "http://localhost:8080/realms/master",\n  "aud": "account",\n  "sub": "9fedbc29-423c-4907-8c68-c843b99c74f9",\n  "typ": "Bearer",\n  "azp": "openid-doc",\n  "acr": "1",\n  "realm_access": {\n    "roles": [\n      "default-roles-master",\n      "offline_access",\n      "uma_authorization"\n    ]\n  },\n  "resource_access": {\n    "account": {\n      "roles": [\n        "manage-account",\n        "manage-account-links",\n        "view-profile"\n      ]\n    }\n  },\n  "scope": "profile email",\n  "clientHost": "172.17.0.1",\n  "clientId": "openid-doc",\n  "email_verified": false,\n  "preferred_username": "service-account-openid-doc",\n  "clientAddress": "172.17.0.1"\n}',
       );
     });
   });
@@ -69,6 +75,90 @@ describe('TokenService', () => {
     it('should fail if empty issuer is provided', async () => {
       await expect(service.requestToken('')).rejects.toThrow(
         'There was no issuer string passed to get the issuer',
+      );
+    });
+  });
+
+  describe('filterToken', () => {
+    it('should raise an error if the header is undefined', () => {
+      const headerString = undefined;
+      const payloadString = '';
+      const testfilters = [];
+
+      expect(() =>
+        service.filterToken(headerString, payloadString, testfilters),
+      ).toThrow('The header-string was undefined');
+    });
+    it('should raise an error if the payload is undefined', () => {
+      const headerString = '';
+      const payloadString = undefined;
+      const testfilters = [];
+
+      expect(() =>
+        service.filterToken(headerString, payloadString, testfilters),
+      ).toThrow('The payload-string was undefined');
+    });
+    it('should raise an error if the filter-list is undefined', () => {
+      const headerString = '';
+      const payloadString = '';
+      const testfilters = undefined;
+
+      expect(() =>
+        service.filterToken(headerString, payloadString, testfilters),
+      ).toThrow('The filter-list was undefined');
+    });
+    it('should return empty strings if the header and payload are empty', () => {
+      const headerString = '';
+      const payloadString = '';
+      const testfilters = [];
+
+      const [headerResult, payloadResult] = service.filterToken(
+        headerString,
+        payloadString,
+        testfilters,
+      );
+
+      expect(headerResult).toBe('');
+      expect(payloadResult).toBe('');
+    });
+    it('should return the same strings if the filters are empty', () => {
+      const headerString = '{"alg": "RS256","typ": "JWT"}';
+      const payloadString =
+        '{"exp": 1656942591,"iat": 1656942531,"aud": "account","typ": "Bearer",' +
+        '"azp": "openid-doc","acr": "1","realm_access": {"roles": ["offline_access","uma_authorization"]},' +
+        '"scope": "profile email","clientHost": "172.17.0.1","clientId": "openid-doc"}';
+      const testfilters = [];
+
+      const [headerResult, payloadResult] = service.filterToken(
+        headerString,
+        payloadString,
+        testfilters,
+      );
+
+      expect(headerResult).toBe('{\n  "alg": "RS256",\n  "typ": "JWT"\n}');
+      expect(payloadResult).toBe(
+        '{\n  "exp": 1656942591,\n  "iat": 1656942531,\n  "aud": "account",\n  "typ": "Bearer",\n  ' +
+          '"azp": "openid-doc",\n  "acr": "1",\n  "realm_access": {\n    "roles": [\n      "offline_access",\n      "uma_authorization"\n    ]\n  },\n  ' +
+          '"scope": "profile email",\n  "clientHost": "172.17.0.1",\n  "clientId": "openid-doc"\n}',
+      );
+    });
+    it('should return only the wanted parameters if the filters are set', () => {
+      const headerString = '{"alg": "RS256","typ": "JWT"}';
+      const payloadString =
+        '{"exp": 1656942591,"iat": 1656942531,"aud": "account","typ": "Bearer",' +
+        '"azp": "openid-doc","acr": "1","realm_access": {"roles": ["offline_access","uma_authorization"]},' +
+        '"scope": "profile email","clientHost": "172.17.0.1","clientId": "openid-doc"}';
+      const testfilters = ['alg', 'scope', 'exp'];
+
+      const [headerResult, payloadResult] = service.filterToken(
+        headerString,
+        payloadString,
+        testfilters,
+      );
+
+      expect(headerResult).toBe('{\n  "alg": "RS256"\n}');
+      expect(payloadResult).toBe(
+        '{\n  "scope": "profile email",\n  "exp": 1656942591\n}',
       );
     });
   });

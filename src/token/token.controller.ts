@@ -20,6 +20,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { TokenService } from './token.service';
 import { UtilsService } from '../utils/utils.service';
 import { TokenDto } from './token.dto';
+import { TokenFilterDto } from './tokenfilter.dto';
 import { TokenResultDto } from './tokenResult.dto';
 import { GrantBody } from 'openid-client';
 import { join } from 'path';
@@ -58,7 +59,7 @@ export default class TokenController {
   ) {
     const schema_s = tokenDto.schema;
     const schemas = await this.tokenService.getSchemas(schema_s);
-    this.protocolService.extendedLog("Start decoding token");
+    this.protocolService.extendedLog('Start decoding token');
 
     if (schema_file && schema_s !== '') {
       return {
@@ -113,9 +114,9 @@ export default class TokenController {
       });
 
     if (result.success) {
-      this.protocolService.extendedLogError("Protocol decoding failed");
+      this.protocolService.extendedLogError('Protocol decoding failed');
     } else {
-      this.protocolService.extendedLogSuccess("Protocol decoding succeeded");
+      this.protocolService.extendedLogSuccess('Protocol decoding succeeded');
     }
 
     if (result.success && (schema_s !== '' || schema_file)) {
@@ -133,10 +134,10 @@ export default class TokenController {
         );
       let message = result.message;
       if (success === 0) {
-        this.protocolService.extendedLogError("Schema did not match");
+        this.protocolService.extendedLogError('Schema did not match');
         message = 'Decoding was successful, but schema did not match';
       } else {
-        this.protocolService.extendedLogSuccess("Decoded token matched schema");
+        this.protocolService.extendedLogSuccess('Decoded token matched schema');
       }
       return {
         showResults: result.success,
@@ -231,5 +232,14 @@ export default class TokenController {
     }
     await fs.unlink(join(process.cwd(), 'schema/token', schema_s));
     res.status(302).redirect('/api/token/decode');
+  }
+
+  @Post('filter')
+  async filter(@Body() tokenfilterDto: TokenFilterDto) {
+    return this.tokenService.filterToken(
+      tokenfilterDto.headerString,
+      tokenfilterDto.payloadString,
+      tokenfilterDto.filters,
+    );
   }
 }

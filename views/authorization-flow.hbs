@@ -110,10 +110,10 @@
                 <label for="state"><b>State: </b></label>
                 <input type="text" id="state" name="state" />
             </div>
-            <button id="submit" onclick="authFlow()"  type="submit"  value="submit" >Submit</button>
+            <button id="submit" onclick="login()"  type="submit"  value="submit" >Submit</button>
         </form>
         <script type="text/javascript">
-            function authFlow(result) {
+            function login() {
                 let authIssuer = document.getElementById("authIssuer").value;
                 let clientId = document.getElementById("clientId").value;
                 let clientSecret = document.getElementById("clientSecret").value;
@@ -121,20 +121,24 @@
                 let redirectUri = document.getElementById("redirectUri").value;
                 let state = document.getElementById("state").value;
 
-                window.open(authURL(authIssuer, clientId, clientSecret, responseType, redirectUri, state), "_blank");
-                let url = window.location.href;
+                window.open(authURL(authIssuer, clientId, clientSecret, responseType, redirectUri, state));
+                let myURL = document.location.href;
+                console.log(myURL);
             }
 
             function authURL(authIssuer, clientId, clientSecret, responseType, redirectUri, state) {
                 return authIssuer +
                         '?client_id=' +
                         clientId +
+                        '&client_secret=' +
+                        clientSecret +
                         '&response_type=' +
                         responseType +
                         '&redirect_uri=' +
                         redirectUri +
                         '&state=' +
-                        state;
+                        state +
+                        '&prompt=consent&scope=openid';
             }
         </script>
     </div>

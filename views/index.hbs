@@ -179,13 +179,10 @@
         </div>
         <div class="col-md-12">
             <div class="container" >
-                <div class="row">
-                    <div class="col-sm-4">Upload Schema</div>
-                    <div class="col-sm-4">Download Schema</div>
-                    <div class="col-sm-4">Delete Schema</div>
-
-                </div>
-
+                <form enctype="multipart/form-data" method="post" action="/api/discovery/schema/upload">
+                    <input type="file" id="file_upload" name="upload">
+                    <input type="submit">
+                </form>
                 {{#if schemas}}
                     <form action="/api/discovery/schema/download">
                         <label for="schema_download_selector"> Download schema: </label>

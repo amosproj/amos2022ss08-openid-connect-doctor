@@ -1,28 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Open Id Connect Doctor</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
 </head>
 <body>
-<!--{{#each this}}
-    {{log}} {{index}}
-{{/each}}-->
+<div style="margin-top: 20px">
+</div>
+<div class="container" style="border: 2px solid black;margin-bottom: 20px">
+    <!-- Content here -->
+    <div class="row" style="padding-bottom:10px ; border-bottom: 2px solid black">
+        <div class="container" style="color: black">
+            <div class="col-md-6" ><h2>Open ID Connect Doctor</h2></div>
+            <div class="col-md-2" style="margin-top: 10px">
+                <form action="/api/flows/cc">
+                    <input type="submit" value="Client-Credential-Flow" />
+                </form>
+            </div>
+            <div class="col-md-2" style="margin-top: 10px">
+                <form action="/api/protocol/logger">
+                    <input type="submit" value="Check Protocols" />
+                </form>
+            </div>
+            <div class="col-md-2" ><img src="/images/logo-amos.png" height="100" width="100"></div>
+        </div>
+    </div>
+    <div class="container">
+        <label for="myCheck"><b>Save Protocol Logs in File</b></label>
+        <input type="checkbox" id="toggleProtocol" name="toggleProtocol" checked onclick="toggleProtocol()"><br><br>
+        <button id="btn_back" onclick="location.href = 'http://localhost:8081/api/discovery/issuer';" class="button backButton">Back to Discovery</button><br><br>
+        <h2>List of last 50 Request Logger </h2>
+        <div class="scroll" style="height:400px; width:500px; overflow-y:auto;">
+	    <pre>
+            {{{ requests }}}
+        </pre>
+        </div>
+        <h2>Protocol</h2>
+        <div class="scroll" style="height:400px; width:500px; overflow-y:auto;">
+	    <pre>
+            {{{ protocol }}}
+        </pre>
+        </div>
+    </div>
+</div>
 
-<label for="myCheck"><b>Save Protocol Logs in File</b></label>
-<input type="checkbox" id="toggleProtocol" name="toggleProtocol" checked onclick="toggleProtocol()"><br><br>
-<button id="btn_back" onclick="location.href = 'http://localhost:8081/api/discovery/issuer';" class="button backButton">Back to Discovery</button><br><br>
-    <h2>List of last 50 Request Logger </h2>
-    <div class="scroll" style="height:400px; width:500px; overflow-y:auto;">
-	    <pre>
-{{{ requests }}}
-	    </pre>
-    </div>
-    <h2>Protocol</h2>
-    <div class="scroll" style="height:400px; width:500px; overflow-y:auto;">
-	    <pre>
-{{{ protocol }}}
-	    </pre>
-    </div>
 
 <script>
     var checkBox = document.getElementById("toggleProtocol");
@@ -36,5 +60,9 @@
         }
     }
     </script>
+
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
 </body>
 </html>

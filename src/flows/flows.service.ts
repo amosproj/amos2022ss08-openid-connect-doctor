@@ -134,25 +134,126 @@ export class FlowsService {
     return [discoveryResult, result];
   }
 
-  async authorizeURI(
-    authIssuer: string,
+  async authorizationFlow(
+    issuer_s: string,
     clientId: string,
     clientSecret: string,
-    responseType: string,
-    redirectUri: string,
-    state: string,
-  ) {
-    return {
-      url:
-        authIssuer +
-        '?client_id=' +
-        clientId +
-        '&response_type=' +
-        responseType +
-        '&redirect_uri=' +
-        redirectUri +
-        '&state=' +
-        state,
-    };
+    code: string,
+    redirectURI: string,
+  ) : Promise<[string, ClientCredentialFlowResultDto]> {
+    if (issuer_s === undefined || issuer_s === '') {
+      throw new HttpException(
+        'There was no issuer to validate the token against!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (clientId === undefined || clientId === '') {
+      throw new HttpException(
+        'There was no client id provided',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    if (clientSecret === undefined || clientSecret === '') {
+      throw new HttpException(
+        'There was no client secret provided',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    if (code === undefined || code === '') {
+      throw new HttpException(
+        'There is no code provided for the authorization flow!',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    if (redirectURI == undefined || redirectURI === '') {
+      throw new HttpException(
+        'There was no redirectURI provided!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    this.protocolService.extendedLog('Start authorization flow');
+
+    let discoveryResult = '';
+    let tokenString = '';
+
+    try {
+      const issuer = await this.discoveryService.get_issuer(issuer_s);
+      const token = await this.tokenService.getToken(
+        String(issuer.token_endpoint),
+        {
+          grant_type: 'authorization_code',
+          client_id: clientId,
+          client_secret: clientSecret,
+          code: code,
+          redirect_uri: redirectURI,
+          audience: 'oidc-app',
+        },
+      );
+
+      discoveryResult = JSON.stringify(issuer, undefined, 2);
+      tokenString = String(token.data.access_token);
+      this.protocolService.extendedLog(
+        'Successfully retrieved access token for authorization code flow',
+      );
+    } catch (error) {
+      this.protocolService.extendedLogError('Failed authorization code flow');
+      return [
+        '',
+        new ClientCredentialFlowResultDto({
+          success: false,
+          message: `An error occurred ${error}`,
+          payload: undefined,
+          header: undefined,
+        }),
+      ];
+    }
+
+    this.protocolService.extendedLog('Decode retrieved token');
+    const result = await this.tokenService
+      .decodeToken(tokenString)
+      .then(async ([header, payload]) => {
+        const validationResult = await this.tokenService
+          .validateTokenSignature(issuer_s, tokenString, true, '', '')
+          .then(async ([isValid, message]) => {
+            if (isValid) {
+              await this.utilsService.writeOutput(
+                header + '\n' + payload + '\n' + message,
+              );
+              this.protocolService.extendedLogSuccess('Token decoded');
+              return new ClientCredentialFlowResultDto({
+                success: true,
+                message: 'Request and validation successful',
+                payload: payload,
+                header: header,
+              });
+            } else {
+              this.protocolService.extendedLogError('Token validation failed');
+              return new ClientCredentialFlowResultDto({
+                success: true,
+                message: `Request successful, but validation failed: ${message}`,
+                payload: payload,
+                header: header,
+              });
+            }
+          });
+
+        return validationResult;
+      })
+      .catch(
+        (error) =>
+          new ClientCredentialFlowResultDto({
+            success: true,
+            message: `An error occurred ${error}`,
+            payload: undefined,
+            header: undefined,
+          }),
+      );
+
+    return [discoveryResult, result];
   }
 }

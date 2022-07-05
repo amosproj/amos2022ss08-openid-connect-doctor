@@ -100,15 +100,36 @@ export class FlowsController {
     }
 
   @Post('auth')
+  @Render('cc-result')
   async postAuth(@Body() authInputDto: AuthInputDto) {
-    const result = await this.flowsService.authorizeURI(
-      authInputDto.authIssuer,
-      authInputDto.clientId,
-      authInputDto.clientSecret,
-      authInputDto.responseType,
-      authInputDto.redirectUri,
-      authInputDto.state,
-    );
+    const result = await this.flowsService
+      .authorizationFlow(
+        process.env.ISSUER_STRING,
+        authInputDto.clientId,
+        authInputDto.clientSecret,
+        authInputDto.code,
+        authInputDto.redirectUri,
+      )
+      .then(([discoveryResult, decodingResult]) => {
+        return {
+          showResults: decodingResult.success,
+          message: decodingResult.message,
+
+          discoveryResult: discoveryResult,
+          payload: decodingResult.payload,
+          header: decodingResult.header,
+        };
+      })
+      .catch((error) => {
+        return {
+          showResults: false,
+          message: error,
+
+          discoveryResult: '',
+          payload: '',
+          header: '',
+        };
+      });
     return result;
   }
 }

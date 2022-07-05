@@ -115,18 +115,25 @@
         <script type="text/javascript">
             function login() {
                 let authIssuer = document.getElementById("authIssuer").value;
-                let clientId = document.getElementById("clientId").value;
-                let clientSecret = document.getElementById("clientSecret").value;
-                let responseType = document.getElementById("responseType").value;
-                let redirectUri = document.getElementById("redirectUri").value;
+                let client_id = document.getElementById("clientId").value;
+                let client_secret = document.getElementById("clientSecret").value;
+                let response_type = document.getElementById("responseType").value;
+                let redirect_uri = document.getElementById("redirectUri").value;
                 let state = document.getElementById("state").value;
 
-                window.open(authURL(authIssuer, clientId, clientSecret, responseType, redirectUri, state));
+                window.open(authURL(authIssuer, client_id, client_secret, response_type, redirect_uri, state));
                 let myURL = document.location.href;
-                console.log(myURL);
-                let data = {element: myURL.code};
+                let myParameters = myURL.split("?")[1]
+                JSON.parse('{"' + myParameters.replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
 
-                fetch("/post/data/here", {
+                let data = {
+                    clientId: client_id,
+                    clientSecret: client_secret,
+                    code: myParameters.code,
+                    redirectUri: redirect_uri,
+                };
+
+                fetch("/api/flows/auth", {
                     method: "POST",
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(data)

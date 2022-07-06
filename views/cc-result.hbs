@@ -38,6 +38,14 @@
             border: 1px dotted black;
             border-radius: 3px 2px;
         }
+
+        .filtered-header-output {
+            display: none;
+        }
+
+        .filtered-output {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -49,23 +57,80 @@
 
         <a href="/api/utils/downloadFile"> Download Program Output</a>
         <a href="/api/flows/cc">Go back to the input</a>
+
+        <div>
+            <label for="filter-input">Filtern:</label>
+            <input id="filter-input" name="filter-input" type="text" />
+
+            <button id="filter-button" type="button" onclick="filterElements();">Filter</button>
+            <button id="filter-button" type="button" onclick="resetFilters();">Reset</button>
+        </div>
         {{#if showResults}}
             <div class="results-item">
                 <div class="result-group">
                     <h2>Header</h2>
-                    <pre>{{ header }}</pre>
+                    <pre id="header-output">{{ header }}</pre>
+                    <pre id="filtered-header-output" class="filtered-output"></pre>
                 </div>
                 <div class="result-group">
                     <h2>Payload</h2>
-                    <pre>{{{ payload }}}</pre>
+                    <pre id="payload-output">{{{ payload }}}</pre>
+                    <pre id="filtered-payload-output" class="filtered-output"></pre>
                 </div>
                  <div class="result-group">
                     <h2>Discovery-Endpoint</h2>
-                    <pre>{{ discoveryResult }}</pre>
+                    <pre id="discovery-output">{{ discoveryResult }}</pre>
                 </div>
             </div>
         {{/if}}
     </div>
 </div>
+<script>
+    function filterElements() {
+        let headerText = document.getElementById('header-output').innerText;
+        let payloadText = document.getElementById('payload-output').innerText;
+        let filterValues = document.getElementById('filter-input').value;
+
+        let filters = filterValues.split(',');
+
+        const params = {
+            headerString: headerText,
+            payloadString: payloadText,
+            filters: filters,
+        }
+
+        let xhttp = new XMLHttpRequest();
+        xhttp.open('POST','/api/token/filter');
+        xhttp.setRequestHeader('Content-Type', 'application/json')
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 201) {
+                let responseJson = JSON.parse(this.responseText);
+
+                let headerResponse = responseJson[0];
+                let payloadResponse = responseJson[1];
+
+                document.getElementById('header-output').style.display = 'none';
+                document.getElementById('payload-output').style.display = 'none';
+
+                document.getElementById('filtered-header-output').innerText = headerResponse;
+                document.getElementById('filtered-header-output').style.display = 'block';
+                document.getElementById('filtered-payload-output').innerText = payloadResponse;
+                document.getElementById('filtered-payload-output').style.display = 'block';
+            }
+        };
+        body = JSON.stringify(params)
+        xhttp.send(body);
+    }
+
+    function resetFilters() {
+        document.getElementById('header-output').style.display = 'block';
+        document.getElementById('payload-output').style.display = 'block';
+
+        document.getElementById('filtered-header-output').innerText = '';
+        document.getElementById('filtered-header-output').style.display = 'none';
+        document.getElementById('filtered-payload-output').innerText = '';
+        document.getElementById('filtered-payload-output').style.display = 'none';
+    }
+</script>
 </body>
 </html>

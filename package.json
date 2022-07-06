@@ -32,6 +32,7 @@
     "depcheck": "^1.4.3",
     "hbs": "^4.2.0",
     "jose": "^4.8.1",
+    "open": "^8.4.0",
     "openid-client": "^5.1.6",
     "pkg": "^5.7.0",
     "queue-typescript": "^1.0.1",

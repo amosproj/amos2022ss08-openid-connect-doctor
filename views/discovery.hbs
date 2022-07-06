@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Open Id Connect Doctor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+<body>
+
+<main>
+	<div class="container">
+		<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+			<a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+                <span class="fs-4 btn btn-outline-primary me-2">Back</span>
+			</a>
+
+			<ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+				<li><a href="#" class="nav-link">Protocol</a></li>
+			</ul>
+
+			<a class="col-md-3 text-end">
+                <span class="fs-4 btn btn-primary me-2">Test Authentication</span>
+			</a>
+		</header>
+	</div>
+    <div class="container">
+        <p>
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#advancedSettings" role="button" aria-expanded="false" aria-controls="advancedSettings">
+            Advanced Settings
+        </a>
+        </p>
+        <div class="collapse" id="advancedSettings">
+            <div class="card card-body">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">Filter</button>
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Schema</button>
+                <div class="modal fade bg-secondary" tabindex="-1" role="dialog" id="filterModal" aria-labelledby="filterModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content rounded-4 shadow">
+                            <div class="modal-header border-bottom-0">
+                                <h5 class="modal-title">Select filters</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body py-0">
+                                <p>Select the fields you want to see</p>
+                                <div class="btn-group-vertical" role="group" aria-label="Filter checkboxes">
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="authorization_endpoint_checkbox" name="authorization_endpoint" value="1" {{#if result.previously_checked.authorization_endpoint}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="authorization_endpoint_checkbox"> authorization_endpoint </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="claim_types_supported_checkbox" name="claim_types_supported" value="1" {{#if result.previously_checked.claim_types_supported}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="claim_types_supported_checkbox"> claim_types_supported </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="claims_parameter_supported_checkbox" name="claims_parameter_supported" value="1" {{#if result.previously_checked.claims_parameter_supported}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="claims_parameter_supported_checkbox"> claims_parameter_supported </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="claims_supported_checkbox" name="claims_supported" value="1" {{#if result.previously_checked.claims_supported}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="claims_supported_checkbox"> claims_supported </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="code_challenge_methods_supported_checkbox" name="code_challenge_methods_supported" value="1" {{#if result.previously_checked.code_challenge_methods_supported}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="code_challenge_methods_supported_checkbox"> code_challenge_methods_supported </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="device_authorization_endpoint_checkbox" name="device_authorization_endpoint" value="1" {{#if result.previously_checked.device_authorization_endpoint}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="device_authorization_endpoint_checkbox"> device_authorization_endpoint </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="grant_types_supported_checkbox" name="grant_types_supported" value="1" {{#if result.previously_checked.grant_types_supported}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="grant_types_supported_checkbox"> grant_types_supported </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="id_token_signing_alg_values_supported_checkbox" name="id_token_signing_alg_values_supported" value="1" {{#if result.previously_checked.id_token_signing_alg_values_supported}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="id_token_signing_alg_values_supported_checkbox"> id_token_signing_alg_values_supported </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="issuer_checkbox" name="issuer" value="1" {{#if result.previously_checked.issuer}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="issuer_checkbox"> issuer </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="jwks_uri_checkbox" name="jwks_uri" value="1" {{#if result.previously_checked.jwks_uri}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="jwks_uri_checkbox"> jwks_uri </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="request_parameter_supported_checkbox" name="request_parameter_supported" value="1" {{#if result.previously_checked.request_parameter_supported}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="request_parameter_supported_checkbox"> request_parameter_supported </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="request_uri_parameter_supported_checkbox" name="request_uri_parameter_supported" value="1" {{#if result.previously_checked.request_uri_parameter_supported}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="request_uri_parameter_supported_checkbox"> request_uri_parameter_supported </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="require_request_uri_registration_checkbox" name="require_request_uri_registration" value="1" {{#if result.previously_checked.require_request_uri_registration}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="require_request_uri_registration_checkbox"> require_request_uri_registration </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="response_modes_supported_checkbox" name="response_modes_supported" value="1" {{#if result.previously_checked.response_modes_supported}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="response_modes_supported_checkbox"> response_modes_supported </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="response_types_supported_checkbox" name="response_types_supported" value="1" {{#if result.previously_checked.response_types_supported}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="response_types_supported_checkbox"> response_types_supported </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="revocation_endpoint_checkbox" name="revocation_endpoint" value="1" {{#if result.previously_checked.revocation_endpoint}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="revocation_endpoint_checkbox"> revocation_endpoint </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="revocation_endpoint_auth_methods_supported_checkbox" name="revocation_endpoint_auth_methods_supported" value="1" {{#if result.previously_checked.revocation_endpoint_auth_methods_supported}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="revocation_endpoint_auth_methods_supported_checkbox"> revocation_endpoint_auth_methods_supported </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="scopes_supported_checkbox" name="scopes_supported" value="1" {{#if result.previously_checked.scopes_supported}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="scopes_supported_checkbox"> scopes_supported </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="subject_types_supported_checkbox" name="subject_types_supported" value="1" {{#if result.previously_checked.subject_types_supported}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="subject_types_supported_checkbox"> subject_types_supported </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="token_endpoint_checkbox" name="token_endpoint" value="1" {{#if result.previously_checked.token_endpoint}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="token_endpoint_checkbox"> token_endpoint </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="token_endpoint_auth_methods_supported_checkbox" name="token_endpoint_auth_methods_supported" value="1" {{#if result.previously_checked.token_endpoint_auth_methods_supported}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="token_endpoint_auth_methods_supported_checkbox"> token_endpoint_auth_methods_supported </label>
+
+                                    <input type="checkbox" class="btn-check" autocomplete="off" id="userinfo_endpoint_checkbox" name="userinfo_endpoint" value="1" {{#if result.previously_checked.userinfo_endpoint}} checked{{/if}}>
+                                    <label class="btn btn-outline-primary" for="userinfo_endpoint_checkbox"> userinfo_endpoint </label>
+                                </div>
+                            </div>
+                            <div class="modal-footer flex-column border-top-0">
+                                <button type="button" class="btn btn-lg btn-primary w-100 mx-0 mb-2">Save changes</button>
+                                <button type="button" class="btn btn-lg btn-light w-100 mx-0" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <p>
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Toggle Results
+        </a>
+        </p>
+        <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+                <pre>
+{{{result.info}}}
+                </pre>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -140,7 +140,7 @@ export class DiscoveryController {
       join(process.cwd(), 'schema/discovery', file.originalname),
       file.buffer,
     );
-    res.status(302).redirect('/api/discovery/issuer');
+    res.status(201).end();
   }
 
   @Get('/schema/download')
@@ -154,6 +154,6 @@ export class DiscoveryController {
   @Get('/schema/delete')
   async deleteSchema(@Query('schema') schema_s: string, @Res() res: Response) {
     await fs.unlink(join(process.cwd(), 'schema/discovery', schema_s));
-    res.status(302).redirect('/api/discovery/issuer');
+    res.status(200).end();
   }
 }

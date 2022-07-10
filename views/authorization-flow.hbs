@@ -110,54 +110,60 @@
                 <label for="state"><b>State: </b></label>
                 <input type="text" id="state" name="state" />
             </div>
-            <button id="submit" onclick="login()"  type="submit"  value="submit" >Submit</button>
+            <button id="submit"  type="submit"  value="submit" >Submit</button>
         </form>
-        <script type="text/javascript">
-            function login() {
-                let authIssuer = document.getElementById("authIssuer").value;
-                let client_id = document.getElementById("clientId").value;
-                let client_secret = document.getElementById("clientSecret").value;
-                let response_type = document.getElementById("responseType").value;
-                let redirect_uri = document.getElementById("redirectUri").value;
-                let state = document.getElementById("state").value;
-
-                window.open(authURL(authIssuer, client_id, client_secret, response_type, redirect_uri, state));
-                let myURL = document.location.href;
-                let myParameters = myURL.split("?")[1]
-                JSON.parse('{"' + myParameters.replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
-
-                let data = {
-                    clientId: client_id,
-                    clientSecret: client_secret,
-                    code: myParameters.code,
-                    redirectUri: redirect_uri,
-                };
-
-                fetch("/api/flows/auth", {
-                    method: "POST",
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(data)
-                }).then(res => {
-                    console.log("Request complete! response:", res);
-                });
-            }
-
-            function authURL(authIssuer, clientId, clientSecret, responseType, redirectUri, state) {
-                return authIssuer +
-                        '?client_id=' +
-                        clientId +
-                        '&client_secret=' +
-                        clientSecret +
-                        '&response_type=' +
-                        responseType +
-                        '&redirect_uri=' +
-                        redirectUri +
-                        '&state=' +
-                        state +
-                        '&prompt=consent&scope=openid';
-            }
-        </script>
     </div>
 </div>
+<script type="text/javascript">
+    function checkUrl(){
+        console.log("###################");
+        console.log("Hello Login");
+        let authIssuer = document.getElementById("authIssuer").value;
+        let client_id = document.getElementById("clientId").value;
+        let client_secret = document.getElementById("clientSecret").value;
+        let response_type = document.getElementById("responseType").value;
+        let redirect_uri = document.getElementById("redirectUri").value;
+        let state = document.getElementById("state").value;
+        window.open(authURL(authIssuer, client_id, client_secret, response_type, redirect_uri, state));
+        let myURL = document.location.href;
+        let myParameters = myURL.split("?")[1]
+        console.log("################");
+        JSON.parse('{"' + myParameters.replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
+
+        let data = {
+            clientId: client_id,
+            clientSecret: client_secret,
+            code: myParameters.code,
+            redirectUri: redirect_uri,
+        };
+
+        /*    fetch(myURL)
+                    .then(response => response.json()).then( json => setData(json))
+                    .catch(error => console.error(error))
+                    .finally(() => {
+                        console.log("Data received 1 --> ", data);
+                        data = null;
+                    });*/
+
+
+    }
+    const btn_disable = document.querySelector('#submit');
+    btn_disable.onclick = disableAll;
+
+    function authURL(authIssuer, clientId, clientSecret, responseType, redirectUri, state) {
+        return authIssuer +
+                '?client_id=' +
+                clientId +
+                '&client_secret=' +
+                clientSecret +
+                '&response_type=' +
+                responseType +
+                '&redirect_uri=' +
+                redirectUri +
+                '&state=' +
+                state +
+                '&prompt=consent&scope=openid';
+    }
+</script>
 </body>
 </html>

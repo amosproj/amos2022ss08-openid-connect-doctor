@@ -110,12 +110,12 @@
                 <label for="state"><b>State: </b></label>
                 <input type="text" id="state" name="state" />
             </div>
-            <button id="submit"  type="submit"  value="submit" >Submit</button>
+            <button id="submit" onclick="checkUrl()" type="submit"  value="submit" >Submit</button>
         </form>
     </div>
 </div>
 <script type="text/javascript">
-    function checkUrl(){
+    function checkUrl() {
         console.log("###################");
         console.log("Hello Login");
         let authIssuer = document.getElementById("authIssuer").value;
@@ -124,11 +124,19 @@
         let response_type = document.getElementById("responseType").value;
         let redirect_uri = document.getElementById("redirectUri").value;
         let state = document.getElementById("state").value;
-        window.open(authURL(authIssuer, client_id, client_secret, response_type, redirect_uri, state));
-        let myURL = document.location.href;
+        let popupWindow = window.open(authURL(authIssuer, client_id, client_secret, response_type, redirect_uri, state), 'popUpWindow', 'height=300,width=700,left=50,top=50,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
+
+
+        /*
+        Pop up window getting loaded a little late, because of this the url fetches about:blank which causes error, this can be fixed by fetching the URL after the popup load is successful
+        The below code needs to run oly after the above popUpWindow is completely loaded*/
+        let myURL = popupWindow.location.href;
+
         let myParameters = myURL.split("?")[1]
-        console.log("################");
-        JSON.parse('{"' + myParameters.replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
+        console.log(popupWindow.location.href);
+        console.log(JSON.parse('{"' + myParameters.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) {
+            return key === "" ? value : decodeURIComponent(value)
+        }));
 
         let data = {
             clientId: client_id,
@@ -136,6 +144,17 @@
             code: myParameters.code,
             redirectUri: redirect_uri,
         };
+
+        fetch("/api/flows/auth", {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        }).then(res => {
+            console.log("Request complete! response:", res);
+        });
+
+
+
 
         /*    fetch(myURL)
                     .then(response => response.json()).then( json => setData(json))
@@ -147,8 +166,6 @@
 
 
     }
-    const btn_disable = document.querySelector('#submit');
-    btn_disable.onclick = disableAll;
 
     function authURL(authIssuer, clientId, clientSecret, responseType, redirectUri, state) {
         return authIssuer +

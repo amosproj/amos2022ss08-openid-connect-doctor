@@ -26,7 +26,7 @@ export class DiscoveryController {
   ) {}
 
   @Get('issuer')
-  @Render('index')
+  @Render('start')
   async discover_issuer() {
     const schemas = await this.discoveryService.getSchemas(undefined);
     const res = {

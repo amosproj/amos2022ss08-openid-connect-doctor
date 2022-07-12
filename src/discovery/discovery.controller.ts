@@ -34,6 +34,7 @@ export class DiscoveryController {
         success: 1,
         info: null,
         previously_checked: this.discoveryService.getDefaultCheckboxes(),
+		previous_issuer: null,
       },
       short_message: 'Please input provider url',
       schemas: schemas,
@@ -42,7 +43,7 @@ export class DiscoveryController {
   }
 
   @Post('issuer')
-  @Render('index')
+  @Render('discovery')
   async discover_issuer_post(@Body() discoveryDto: DiscoveryDto) {
     const keys = this.rememberSelectedParameters(discoveryDto);
     const res = await this.checkIssuerUrlDetails(
@@ -78,6 +79,7 @@ export class DiscoveryController {
           success: 1,
           info: null,
           previously_checked: null,
+		  previous_issuer: issuer_url_s,
         },
         short_message: 'Please input provider url',
         schemas: schemas,
@@ -92,6 +94,7 @@ export class DiscoveryController {
             success: 1,
             info: JSON.stringify(issuer, keys, 2),
             previously_checked: checkboxes,
+			previous_issuer: issuer_url_s,
           },
           issuer,
         ];
@@ -102,6 +105,7 @@ export class DiscoveryController {
             success: 0,
             info: err,
             previously_checked: null,
+		    previous_issuer: issuer_url_s,
           },
           null,
         ];
@@ -136,7 +140,7 @@ export class DiscoveryController {
       join(process.cwd(), 'schema/discovery', file.originalname),
       file.buffer,
     );
-    res.status(302).redirect('/api/discovery/issuer');
+    res.status(201).end();
   }
 
   @Get('/schema/download')
@@ -150,6 +154,6 @@ export class DiscoveryController {
   @Get('/schema/delete')
   async deleteSchema(@Query('schema') schema_s: string, @Res() res: Response) {
     await fs.unlink(join(process.cwd(), 'schema/discovery', schema_s));
-    res.status(302).redirect('/api/discovery/issuer');
+    res.status(200).end();
   }
 }

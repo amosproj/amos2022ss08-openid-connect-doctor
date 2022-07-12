@@ -40,6 +40,7 @@ export class HelperService {
             return issuer;
         }).catch((err) => {
             this.protocolService.extendedLogError(`Unable to retrieve info for issuer ${issuer_s}: ${err}`);
+            throw new HttpException('No issuer found!', 404);
             return null;
         });
         return issuer;

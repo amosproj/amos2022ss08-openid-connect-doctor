@@ -21,7 +21,7 @@
                         <span class="fs-4 btn btn-outline-primary me-2">Back</span>
                     </a>
 
-                    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+                    <ul class="fs-4 nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
                         <li><a href="/api/protocol/logger" class="nav-link">Protocol</a></li>
                     </ul>
 
@@ -117,8 +117,10 @@
                                                 <input type="checkbox" class="btn-check" autocomplete="off" id="userinfo_endpoint_checkbox" name="userinfo_endpoint" value="1" {{#if result.previously_checked.userinfo_endpoint}} checked{{/if}}>
                                                 <label class="btn btn-outline-primary" for="userinfo_endpoint_checkbox"> userinfo_endpoint </label>
                                             </div>
-                                            <button type="button" id="btn_enableAll" class="btn btn-light enableButton">Enable All</button>
-                                            <button type="button" id="btn_disableAll" class="btn btn-light disableButton">Disable All</button><br><br>
+					    <div class="d-flex flex-row">
+						    <button type="button" id="btn_disableAll" class="btn btn-light w-50 mx-2">Disable All</button><br><br>
+						    <button type="button" id="btn_enableAll" class="btn btn-light w-50 mx-2">Enable All</button>
+					    </div>
                                         </div>
                                         <div class="modal-footer flex-column border-top-0">
                                             <button type="submit" class="btn btn-lg btn-primary w-100 mx-0 mb-2">Apply filters</button>

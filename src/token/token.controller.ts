@@ -133,9 +133,11 @@ export default class TokenController {
           schema_body,
         );
       let message = result.message;
+      let schema_error = false;
       if (success === 0) {
         this.protocolService.extendedLogError('Schema did not match');
         message = 'Decoding was successful, but schema did not match';
+        schema_error = true;
       } else {
         this.protocolService.extendedLogSuccess('Decoded token matched schema');
       }
@@ -147,6 +149,7 @@ export default class TokenController {
         header: result.header,
         schemas: schemas,
         key_algorithms: this.tokenService.getKeyAlgorithms(),
+        schema_error: schema_error,
       };
     } else {
       return {
@@ -158,6 +161,7 @@ export default class TokenController {
         header: result.header,
         schemas: schemas,
         key_algorithms: this.tokenService.getKeyAlgorithms(),
+        schema_error: false,
       };
     }
   }

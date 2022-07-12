@@ -42,9 +42,25 @@ export class DiscoveryController {
     return res;
   }
 
+  @Post('issuer/find')
+  @Render('discovery')
+  async discover_issuer_find_post(@Body() body) {
+    const dto = new DiscoveryDto();
+    dto.issuer_url = body.issuer_url;
+
+    const res = await this.checkIssuerUrlDetails(
+      '',
+      body.issuer_url,
+      undefined,
+      dto,
+    );
+    await this.utilsService.writeOutput(res.result.info);
+    return res;
+  }
+
   @Post('issuer')
   @Render('discovery')
-  async discover_issuer_post(@Body() discoveryDto: DiscoveryDto) {
+  async discover_issuer_analyze_post(@Body() discoveryDto: DiscoveryDto) {
     const keys = this.rememberSelectedParameters(discoveryDto);
     const res = await this.checkIssuerUrlDetails(
       discoveryDto.schema,

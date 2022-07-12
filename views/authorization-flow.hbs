@@ -118,22 +118,36 @@
     function checkUrl() {
         console.log("###################");
         console.log("Hello Login");
-        let authIssuer = document.getElementById("authIssuer").value;
-        let client_id = document.getElementById("clientId").value;
-        let client_secret = document.getElementById("clientSecret").value;
-        let response_type = document.getElementById("responseType").value;
-        let redirect_uri = document.getElementById("redirectUri").value;
-        let state = document.getElementById("state").value;
-        let popupWindow = window.open(authURL(authIssuer, client_id, client_secret, response_type, redirect_uri, state), 'popUpWindow', 'height=300,width=700,left=50,top=50,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
-
-
+        extractURL();
         /*
         Pop up window getting loaded a little late, because of this the url fetches about:blank which causes error, this can be fixed by fetching the URL after the popup load is successful
         The below code needs to run oly after the above popUpWindow is completely loaded*/
-        let myURL = popupWindow.location.href;
+
+    }
+    function loadPopUpWindow() {
+        return new Promise((resolve, reject) => {
+            let authIssuer = document.getElementById("authIssuer").value;
+            let client_id = document.getElementById("clientId").value;
+            let client_secret = document.getElementById("clientSecret").value;
+            let response_type = document.getElementById("responseType").value;
+            let redirect_uri = document.getElementById("redirectUri").value;
+            let state = document.getElementById("state").value;
+            let popupWindow = window.open(authURL(authIssuer, client_id, client_secret, response_type, redirect_uri, state),
+                    'popUpWindow', 'height=300,width=700,left=50,top=50,resizable=yes,' +
+                    'scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
+           resolve(popupWindow);
+        });
+    }
+    async function extractURL() {
+        console.log('Before promise call.')
+        //3. Await for the first function to complete
+        const result = await loadPopUpWindow();
+        console.log('Promise resolved: ');
+        console.log('Next step.')
+        let myURL = result.location.href;
 
         let myParameters = myURL.split("?")[1]
-        console.log(popupWindow.location.href);
+        console.log(result.location.href);
         console.log(JSON.parse('{"' + myParameters.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) {
             return key === "" ? value : decodeURIComponent(value)
         }));
@@ -153,19 +167,7 @@
             console.log("Request complete! response:", res);
         });
 
-
-
-
-        /*    fetch(myURL)
-                    .then(response => response.json()).then( json => setData(json))
-                    .catch(error => console.error(error))
-                    .finally(() => {
-                        console.log("Data received 1 --> ", data);
-                        data = null;
-                    });*/
-
-
-    }
+    };
 
     function authURL(authIssuer, clientId, clientSecret, responseType, redirectUri, state) {
         return authIssuer +

@@ -37,6 +37,7 @@
             </p>
             <div class="collapse flex-wrap align-items-center w-100" id="protocol">
                 <button class="btn btn-primary" onclick="download('protocol.txt', $('#protocolLog').text())">Download</button>
+                <button class="btn btn-primary" onclick="clipboard($('#protocolLog').text())">Copy results</button>
                 <pre id="protocolLog">
 {{{ protocol }}}
                 </pre>
@@ -69,6 +70,9 @@
         document.body.appendChild(tmp_element);
         tmp_element.click();
         document.body.removeChild(tmp_element);
+    }
+    function clipboard(text) {
+	navigator.clipboard.writeText(text);
     }
     </script>
 

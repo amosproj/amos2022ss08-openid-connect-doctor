@@ -116,10 +116,10 @@
         <div class="container">
             <p>{{message}}</p>
             {{#if showResults}}
-            {{#if schema_error}}
+            {{#if decoding_error}}
                 <p>
                 <a class="btn btn-danger" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                    Toggle Error
+                    Toggle Results
                 </a>
                 </p>
             {{else}}
@@ -130,21 +130,39 @@
                 </p>
             {{/if}}
             <div class="collapse show" id="collapseExample">
+                <button class="btn btn-primary" onclick="download('header.txt', $('#headerDisplay').text())">Download header</button>
+                <button class="btn btn-primary" onclick="download('payload.txt', $('#payloadDisplay').text())">Download payload</button>
+                <button class="btn btn-primary" onclick="clipboard($('#headerDisplay').text())">Copy header</button>
+                <button class="btn btn-primary" onclick="clipboard($('#payloadDisplay').text())">Copy payload</button>
                 <div class="card card-body">
                     <h2>Header</h2>
-                    <pre>
+                    <pre id="headerDisplay">
 {{header}}
                     </pre>
                 </div>
                 <div class="card card-body">
                     <h2>Payload</h2>
-                    <pre>
+                    <pre id="payloadDisplay">
 {{{payload}}}
                     </pre>
                 </div>
             </div>
             {{/if}}
         </div>
+        <script>
+            function download(filename, text) {
+                var tmp_element = document.createElement('a');
+                tmp_element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+                tmp_element.setAttribute('download', filename);
+                tmp_element.style.display = 'none';
+                document.body.appendChild(tmp_element);
+                tmp_element.click();
+                document.body.removeChild(tmp_element);
+            }
+            function clipboard(text) {
+                navigator.clipboard.writeText(text);
+            }
+        </script>
         <script
                 src="https://code.jquery.com/jquery-3.6.0.js"
                 integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="

@@ -110,10 +110,14 @@ export class TokenService {
   }
 
   async decodeToken(tokenString: string): Promise<[string, string]> {
+    this.protocolService.extendedLog(`Start decoding token:\n${tokenString}`);
     const [header, payload] = this.decodeTokenString(tokenString);
 
     const formattedHeader = JSON.stringify(header, undefined, 2);
     const formattedPayload = JSON.stringify(payload, undefined, 2);
+
+    this.protocolService.extendedLogSuccess(`Successfully decoded header:\n${header}`);
+    this.protocolService.extendedLogSuccess(`Successfully decoded payload:\n${payload}`);
 
     return [formattedHeader, formattedPayload];
   }
@@ -164,11 +168,6 @@ export class TokenService {
         schema,
         keys,
       );
-    if (success === 1) {
-      this.protocolService.extendedLogSuccess('Validation success');
-    } else {
-      this.protocolService.extendedLogError(`Validation failed: ${info}`);
-    }
     return [success, info];
   }
 

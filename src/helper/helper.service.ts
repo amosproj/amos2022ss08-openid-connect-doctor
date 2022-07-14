@@ -36,7 +36,7 @@ export class HelperService {
         this.protocolService.extendedLog(`Query issuer at url ${issuer_s}`);
         const issuer = await Issuer.discover(issuer_s)
         .then((issuer) => {
-            this.protocolService.extendedLogSuccess(`Information for issuer ${issuer_s} successfully received`);
+            this.protocolService.extendedLogSuccess(`Information for issuer ${issuer_s} successfully received:\n${JSON.stringify(issuer, undefined, 2)}`);
             return issuer;
         }).catch((err) => {
             this.protocolService.extendedLogError(`Unable to retrieve info for issuer ${issuer_s}: ${err}`);
@@ -47,8 +47,17 @@ export class HelperService {
     }
     async validateJson(issuer: object, schema: object) {
         const ajv = new Ajv();
+        this.protocolService.extendedLog("Start validation against schema");
+        this.protocolService.extendedLog(`Object to validate:\n${JSON.stringify(issuer, undefined, 2)}`);
+        this.protocolService.extendedLog(`Schema to validate against:\n${JSON.stringify(schema, undefined, 2)}`);
         const validate = ajv.compile(schema);
-        return [validate(issuer), validate.errors];
+        let success = validate(issuer);
+        if (success) {
+            this.protocolService.extendedLogSuccess("Validation successful");
+        } else {
+            this.protocolService.extendedLogError(`Validation failed with error:\n${validate.errors}`);
+        }
+        return [success, validate.errors];
     }
 
     myStringify(issuer, required, keys) {

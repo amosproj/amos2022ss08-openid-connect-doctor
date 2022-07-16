@@ -227,9 +227,9 @@ export class FlowsService {
     issuer_s: string,
     clientId: string,
     clientSecret: string,
-    code: string,
+    url: string,
     redirectURI: string,
-  ) : Promise<[string, ClientCredentialFlowResultDto]> {
+  ): Promise<[string, ClientCredentialFlowResultDto]> {
     if (issuer_s === undefined || issuer_s === '') {
       throw new HttpException(
         'There was no issuer to validate the token against!',
@@ -251,7 +251,7 @@ export class FlowsService {
       );
     }
 
-    if (code === undefined || code === '') {
+    if (url === undefined || url === '') {
       throw new HttpException(
         'There is no code provided for the authorization flow!',
         HttpStatus.UNAUTHORIZED,
@@ -267,6 +267,14 @@ export class FlowsService {
 
     this.protocolService.extendedLog('Start authorization flow');
 
+    const myParameters = url.split('?')[1];
+    const parameters = JSON.parse(
+      '{"' + myParameters.replace(/&/g, '","').replace(/=/g, '":"') + '"}',
+      function (key, value) {
+        return key === '' ? value : decodeURIComponent(value);
+      },
+    );
+
     let discoveryResult = '';
     let tokenString = '';
 
@@ -278,7 +286,7 @@ export class FlowsService {
           grant_type: 'authorization_code',
           client_id: clientId,
           client_secret: clientSecret,
-          code: code,
+          code: parameters.code,
           redirect_uri: redirectURI,
           audience: 'oidc-app',
         },

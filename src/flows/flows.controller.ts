@@ -2,7 +2,7 @@
 //SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
 //SDPX-FileCopyrightText: 2022 Raghunandan Arava <raghunandan.arava@fau.de>
 
-import { Controller, Get, Post, Body, Render } from '@nestjs/common';
+import { Controller, Get, Post, Body, Render, Query } from '@nestjs/common';
 import { ClientCredentialFlowInputDto } from './Dto/clientCredentialFlowInput.dto';
 import { PasswordGrantFlowInputDto } from './Dto/passwordGrantFlowInput.dto';
 import { FlowsService } from './flows.service';
@@ -22,6 +22,41 @@ export class FlowsController {
   @Render('authorization-flow')
   async getAuth() {
     return;
+  }
+
+  @Post('callback')
+  @Render('cc-result')
+  async authCallback(@Body() authInputDto: AuthInputDto) {
+    let result;
+      try{
+      const [discoveryResult, decodingResult] = await this.flowsService
+        .authorizationFlow(
+          process.env.ISSUER_STRING,
+          authInputDto.clientId,
+          authInputDto.clientSecret,
+          authInputDto.url,
+          authInputDto.redirectUri,
+        )
+        console.log(discoveryResult);
+        console.log(decodingResult);
+        result = {
+            showResults: decodingResult.success,
+            message: decodingResult.message,
+
+            discoveryResult: discoveryResult,
+            payload: decodingResult.payload,
+            header: decodingResult.header,
+          };
+        }catch(error) {
+          result = {
+            showResults: false,
+            message: error,
+
+            discoveryResult: '',
+            payload: '',
+            header: '',
+          }; }
+    return result;
   }
 
   @Post('cc')
@@ -99,7 +134,7 @@ export class FlowsController {
       });
     }
 
-  @Post('auth')
+  @Post('authorize')
   @Render('cc-result')
   async postAuth(@Body() authInputDto: AuthInputDto) {
     const result = await this.flowsService
@@ -107,7 +142,7 @@ export class FlowsController {
         process.env.ISSUER_STRING,
         authInputDto.clientId,
         authInputDto.clientSecret,
-        authInputDto.code,
+        authInputDto.url,
         authInputDto.redirectUri,
       )
       .then(([discoveryResult, decodingResult]) => {

@@ -1,4 +1,4 @@
-<html>
+ <html>
 <head>
     <meta charset="utf-8" />
     <title>Client-Credential-Flow</title>
@@ -87,10 +87,6 @@
         <p>Please enter the necessary information:</p>
         <form class="input-form">
             <div class="input-group">
-                <label for="authIssuer"><b>Issuer: </b></label>
-                <input type="text" id="authIssuer" name="authIssuer" />
-            </div>
-            <div class="input-group">
                 <label for="clientId"><b>Client-ID: </b></label>
                 <input type="text" id="clientId" name="clientId" />
             </div>
@@ -99,78 +95,122 @@
                 <input type="password" id="clientSecret" name="clientSecret" />
             </div>
             <div class="input-group">
-                <label for="responseType"><b>Response-Type: </b></label>
-                <input type="text" id="responseType" name="responseType" />
-            </div>
-            <div class="input-group">
                 <label for="redirectUri"><b>Redirect URI: </b></label>
                 <input type="text" id="redirectUri" name="redirectUri" />
             </div>
-            <div class="input-group">
-                <label for="state"><b>State: </b></label>
-                <input type="text" id="state" name="state" />
-            </div>
-            <button id="submit" onclick="checkUrl()" type="submit"  value="submit" >Submit</button>
+            <button id="submit" onclick="login()" type="submit"  value="submit" >Submit</button>
         </form>
     </div>
 </div>
 <script type="text/javascript">
-    function checkUrl() {
-        console.log("###################");
-        console.log("Hello Login");
-        extractURL();
-        /*
-        Pop up window getting loaded a little late, because of this the url fetches about:blank which causes error, this can be fixed by fetching the URL after the popup load is successful
-        The below code needs to run oly after the above popUpWindow is completely loaded*/
+    function login() {
+        const authIssuer = "http://localhost:8080/realms/master/protocol/openid-connect/auth";
+        const client_id = document.getElementById("clientId").value;
+        const client_secret = document.getElementById("clientSecret").value;
+        const redirect_uri = document.getElementById("redirectUri").value;
+        const responseType = "code";
+        const state = randomString(10);
 
-    }
-    function loadPopUpWindow() {
-        return new Promise((resolve, reject) => {
-            let authIssuer = document.getElementById("authIssuer").value;
-            let client_id = document.getElementById("clientId").value;
-            let client_secret = document.getElementById("clientSecret").value;
-            let response_type = document.getElementById("responseType").value;
-            let redirect_uri = document.getElementById("redirectUri").value;
-            let state = document.getElementById("state").value;
-            let popupWindow = window.open(authURL(authIssuer, client_id, client_secret, response_type, redirect_uri, state),
-                    'popUpWindow', 'height=300,width=700,left=50,top=50,resizable=yes,' +
-                    'scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
-           resolve(popupWindow);
-        });
-    }
-    async function extractURL() {
-        console.log('Before promise call.')
-        //3. Await for the first function to complete
-        const result = await loadPopUpWindow();
-        console.log('Promise resolved: ');
-        console.log('Next step.')
-        let myURL = result.location.href;
+        let popUpWindow = authURL(authIssuer, client_id, client_secret, redirect_uri, responseType, state)
+        let myURL = extractURL(popUpWindow);
 
-        let myParameters = myURL.split("?")[1]
-        console.log(result.location.href);
-        console.log(JSON.parse('{"' + myParameters.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) {
-            return key === "" ? value : decodeURIComponent(value)
-        }));
+        setTimeout(function () {
+            console.log("myURL");
+        }, 3000);
 
-        let data = {
-            clientId: client_id,
-            clientSecret: client_secret,
-            code: myParameters.code,
-            redirectUri: redirect_uri,
-        };
-
-        fetch("/api/flows/auth", {
-            method: "POST",
+        const response = await fetch('callback', {
+            method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        }).then(res => {
-            console.log("Request complete! response:", res);
-        });
+            body: JSON.stringify({
+                clientId: client_id,
+                clientSecret: client_secret,
+                url: myURL,
+                redirectUri: redirect_uri,
+            }),
+            redirect: 'follow',
+        })
+        console.log(response);
 
-    };
+        /*let interval = setInterval(() => {
+            console.log('.....')
+            if (!myURL.includes('blank')) {
+                console.log('I am here in the interval')
+                const response = fetch('/callback', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                clientId: client_id,
+                clientSecret: client_secret,
+                url: myURL,
+                redirectUri: redirect_uri,
+            }),
+            redirect: 'follow',
+        })
+        console.log(response);
+                clearInterval(interval);
+            } else {
+                myURL = extractURL(popUpWindow);
+                console.log("In else block")
+            }
+        }, 1000);*/
+    }
 
-    function authURL(authIssuer, clientId, clientSecret, responseType, redirectUri, state) {
-        return authIssuer +
+    function extractURL(window) {
+        return window.location.href;
+    }
+    // function checkUrl() {
+    //     console.log("###################");
+    //     console.log("Hello Login");
+    //     extractURL();
+    //     /*
+    //     Pop up window getting loaded a little late, because of this the url fetches about:blank which causes error, this can be fixed by fetching the URL after the popup load is successful
+    //     The below code needs to run oly after the above popUpWindow is completely loaded*/
+    //
+    // }
+    // function loadPopUpWindow(authIssuer, client_id, client_secret, redirect_uri, responseType, state) {
+    //     return new Promise(async (resolve, reject) => {
+    //         let popupWindow = await authURL(authIssuer, client_id, client_secret, redirect_uri, responseType, state);
+    //         // let popupWindow = window.open(authURL(authIssuer, client_id, client_secret, response_type, redirect_uri, state),
+    //         //         'popUpWindow', 'height=300,width=700,left=50,top=50,resizable=yes,' +
+    //         //         'scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
+    //         resolve(popupWindow);
+    //     });
+    // }
+    // async function extractURL() {
+    //     console.log('Before promise call.')
+    //     //3. Await for the first function to complete
+    //     const result = await loadPopUpWindow(authIssuer, client_id, client_secret, redirect_uri, responseType, state);
+    //     console.log('Promise resolved: ');
+    //     console.log('Next step.')
+    //     let myURL = result.location.href;
+    //
+    //     let myParameters = myURL.split("?")[1]
+    //     console.log(myParameters);
+    //     myParameters = JSON.parse('{"' + myParameters.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) {
+    //         return key === "" ? value : decodeURIComponent(value)
+    //     });
+    //
+    //     console.log(myParameters);
+    //
+    //     let data = {
+    //         clientId: client_id,
+    //         clientSecret: client_secret,
+    //         code: myParameters.code,
+    //         redirectUri: redirect_uri,
+    //     };
+    //
+    //     fetch("/api/flows/auth", {
+    //         method: "POST",
+    //         headers: {'Content-Type': 'application/json'},
+    //         body: JSON.stringify(data)
+    //     }).then(res => {
+    //         console.log("Request complete! response:", res);
+    //     });
+    //
+    // };
+
+    function authURL(authIssuer, clientId, clientSecret, redirectUri, responseType, state) {
+        return window.open(authIssuer +
                 '?client_id=' +
                 clientId +
                 '&client_secret=' +
@@ -181,7 +221,14 @@
                 redirectUri +
                 '&state=' +
                 state +
-                '&prompt=consent&scope=openid';
+                '&prompt=consent&scope=openid');
+    }
+
+    function randomString(length) {
+        let chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+        let result = '';
+        for (let i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+        return result;
     }
 </script>
 </body>

@@ -4,6 +4,6 @@
 export class AuthInputDto {
   clientId: string;
   clientSecret: string;
-  code: string;
+  url: string;
   redirectUri: string;
 }

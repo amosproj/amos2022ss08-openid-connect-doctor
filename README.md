@@ -1,5 +1,11 @@
 # OpenID Connect Doctor (AMOS SS 2022)
 
+<p align="center">
+<img src="public/images/logo-amos.png" width="430" height="300">
+</p>
+
+
+
 ## Documentation
 The documentation can be found in the [Documentation-Folder](https://github.com/amosproj/amos2022ss08-openid-connect-doctor/blob/main/Documentation/user-documentation.md).
 If you find any mistakes or if you have an idea how to improve the documentation, please create an issue or a pull-request.

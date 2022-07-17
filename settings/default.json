@@ -29,5 +29,10 @@
 	"token": {
 		"validation_schema": "test.schema.json",
 		"key_algorithm": "RS256"
+	},
+	"flows": {
+		"always_on": [],
+		"always_off": ["authorization_code"]
 	}
+	 
 }

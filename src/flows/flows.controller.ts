@@ -2,7 +2,7 @@
 //SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
 //SDPX-FileCopyrightText: 2022 Raghunandan Arava <raghunandan.arava@fau.de>
 
-import { Controller, Get, Post, Body, Render, Res, HttpCode, Redirect } from '@nestjs/common';
+import { Controller, Get, Post, Body, Render, Redirect } from '@nestjs/common';
 import { ClientCredentialFlowInputDto } from './Dto/clientCredentialFlowInput.dto';
 import { PasswordGrantFlowInputDto } from './Dto/passwordGrantFlowInput.dto';
 import { FlowsService } from './flows.service';
@@ -26,12 +26,12 @@ export class FlowsController {
 
   @Get('getResultPage')
   @Render('cc-result')
-  async redirectPage() {
-    return;
+  async redirectPage(result: any) {
+    return result;
   }
 
   @Post('callback')
-  @Redirect('getResultPage', 301)
+  @Render("cc-result")
   async authCallback(@Body() authInputDto: AuthInputDto) {
     let result;
       try{
@@ -139,38 +139,4 @@ export class FlowsController {
         };
       });
     }
-
-  @Post('authorize')
-  @Render('cc-result')
-  async postAuth(@Body() authInputDto: AuthInputDto) {
-    const result = await this.flowsService
-      .authorizationFlow(
-        process.env.ISSUER_STRING,
-        authInputDto.clientId,
-        authInputDto.clientSecret,
-        authInputDto.url,
-        authInputDto.redirectUri,
-      )
-      .then(([discoveryResult, decodingResult]) => {
-        return {
-          showResults: decodingResult.success,
-          message: decodingResult.message,
-
-          discoveryResult: discoveryResult,
-          payload: decodingResult.payload,
-          header: decodingResult.header,
-        };
-      })
-      .catch((error) => {
-        return {
-          showResults: false,
-          message: error,
-
-          discoveryResult: '',
-          payload: '',
-          header: '',
-        };
-      });
-    return result;
-  }
 }

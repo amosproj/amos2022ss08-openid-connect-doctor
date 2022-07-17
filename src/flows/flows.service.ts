@@ -229,7 +229,7 @@ export class FlowsService {
     clientSecret: string,
     url: string,
     redirectURI: string,
-  ): Promise<[string, ClientCredentialFlowResultDto]> {
+  ): Promise<[string, FlowResultDto]> {
     if (issuer_s === undefined || issuer_s === '') {
       throw new HttpException(
         'There was no issuer to validate the token against!',
@@ -301,7 +301,7 @@ export class FlowsService {
       this.protocolService.extendedLogError('Failed authorization code flow');
       return [
         '',
-        new ClientCredentialFlowResultDto({
+        new FlowResultDto({
           success: false,
           message: `An error occurred ${error}`,
           payload: undefined,
@@ -322,7 +322,7 @@ export class FlowsService {
                 header + '\n' + payload + '\n' + message,
               );
               this.protocolService.extendedLogSuccess('Token decoded');
-              return new ClientCredentialFlowResultDto({
+              return new FlowResultDto({
                 success: true,
                 message: 'Request and validation successful',
                 payload: payload,
@@ -330,7 +330,7 @@ export class FlowsService {
               });
             } else {
               this.protocolService.extendedLogError('Token validation failed');
-              return new ClientCredentialFlowResultDto({
+              return new FlowResultDto({
                 success: true,
                 message: `Request successful, but validation failed: ${message}`,
                 payload: payload,
@@ -343,7 +343,7 @@ export class FlowsService {
       })
       .catch(
         (error) =>
-          new ClientCredentialFlowResultDto({
+          new FlowResultDto({
             success: true,
             message: `An error occurred ${error}`,
             payload: undefined,

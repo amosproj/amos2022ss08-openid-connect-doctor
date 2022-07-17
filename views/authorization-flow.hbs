@@ -98,13 +98,13 @@
                 <label for="redirectUri"><b>Redirect URI: </b></label>
                 <input type="text" id="redirectUri" name="redirectUri" />
             </div>
-            <button id="submit" onclick="login()" type="submit"  value="submit" >Submit</button>
+            <button id="submit" onclick="login()" type="button"  value="submit" >Submit</button>
         </form>
     </div>
 </div>
 <script type="text/javascript">
     function login() {
-        const authIssuer = "http://localhost:8080/realms/master/protocol/openid-connect/auth";
+        const authIssuer = "http://localhost:8080/realms/myrealm/protocol/openid-connect/auth";
         const client_id = document.getElementById("clientId").value;
         const client_secret = document.getElementById("clientSecret").value;
         const redirect_uri = document.getElementById("redirectUri").value;
@@ -114,7 +114,7 @@
         let popUpWindow = authURL(authIssuer, client_id, client_secret, redirect_uri, responseType, state)
         let myURL = extractURL(popUpWindow);
 
-        setTimeout(function () {
+        /*setTimeout(function () {
             console.log("myURL");
         }, 3000);
 
@@ -129,13 +129,13 @@
             }),
             redirect: 'follow',
         })
-        console.log(response);
+        console.log(response);*/
 
-        /*let interval = setInterval(() => {
+        let interval = setInterval(() => {
             console.log('.....')
             if (!myURL.includes('blank')) {
                 console.log('I am here in the interval')
-                const response = fetch('/callback', {
+                const response = fetch('callback', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -152,7 +152,7 @@
                 myURL = extractURL(popUpWindow);
                 console.log("In else block")
             }
-        }, 1000);*/
+        }, 1000);
     }
 
     function extractURL(window) {

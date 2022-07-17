@@ -2,7 +2,7 @@
 //SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
 //SDPX-FileCopyrightText: 2022 Raghunandan Arava <raghunandan.arava@fau.de>
 
-import { Controller, Get, Post, Body, Render, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Render, Res, HttpCode, Redirect } from '@nestjs/common';
 import { ClientCredentialFlowInputDto } from './Dto/clientCredentialFlowInput.dto';
 import { PasswordGrantFlowInputDto } from './Dto/passwordGrantFlowInput.dto';
 import { FlowsService } from './flows.service';
@@ -24,8 +24,14 @@ export class FlowsController {
     return;
   }
 
-  @Post('callback')
+  @Get('getResultPage')
   @Render('cc-result')
+  async redirectPage() {
+    return;
+  }
+
+  @Post('callback')
+  @Redirect('getResultPage', 301)
   async authCallback(@Body() authInputDto: AuthInputDto) {
     let result;
       try{

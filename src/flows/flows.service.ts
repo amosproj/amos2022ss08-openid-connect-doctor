@@ -267,6 +267,7 @@ export class FlowsService {
 
     this.protocolService.extendedLog('Start authorization flow');
 
+    const callbackUri = url.split('?')[0];
     const myParameters = url.split('?')[1];
     const parameters = JSON.parse(
       '{"' + myParameters.replace(/&/g, '","').replace(/=/g, '":"') + '"}',
@@ -287,7 +288,7 @@ export class FlowsService {
           client_id: clientId,
           client_secret: clientSecret,
           code: parameters.code,
-          redirect_uri: redirectURI,
+          redirect_uri: callbackUri,
           audience: 'oidc-app',
         },
       );

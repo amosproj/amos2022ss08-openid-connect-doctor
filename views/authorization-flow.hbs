@@ -37,6 +37,9 @@
             </div>
         </form>
     </div>
+    <div>
+        <p id="demo"></p>
+    </div>
 </div>
 <script type="text/javascript">
     function login() {
@@ -65,15 +68,20 @@
                         redirectUri: callback_uri,
                         }),
                         redirect: 'follow'
-                    }).then((res) => {
-                        let result = res.json();
+                    }).then((response) => response.json()) //2
+                        .then((result) => {
+                            console.log(result); //3
+                            document.getElementById("demo").innerHTML =result.discoveryResult;
+                        });
+                      /*  let result = res.json();
                         popUpWindow.close();
-                        console.log(result);
+                        alert(result);
+                        console.log("####");
+                        console.log(result);*/
                         /*window.location.href = 'http://localhost:8081/api/flows/authResult?discoveryResult=' +
                         JSON.stringify(result.discoveryResult) + '&header=' + JSON.stringify(result.header) +
                         '&message=' & JSON.stringify(result.message) + '&payload=' +
                         JSON.stringify(result.payload) + '&showResults=' + result.showResults*/
-                    })
                     //window.location.href = redirect_uri;
                     //console.log(response);
             } else {

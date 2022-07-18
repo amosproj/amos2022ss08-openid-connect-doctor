@@ -29,8 +29,8 @@
                 <input type="password" id="clientSecret" class="col-sm-10" name="clientSecret" aria-label="Client-Secret input"  placeholder="Input your client-secret here" aria-placeholder="Input your client-secret here"/>
             </div>
             <div class="row mb-3">
-                <label class="col-sm-2 col-form-label" for="redirectUri">Redirect URI</label>
-                <input type="text" id="redirectURI" class="col-sm-10" name="redirectURI" aria-label="redirect-URI input"  placeholder="Input your redirect URI here" aria-placeholder="Input your redirect URI here"/>
+                <label class="col-sm-2 col-form-label" for="redirectUri">Custom URI</label>
+                <input type="text" id="customUri" class="col-sm-10" name="customUri" aria-label="custom-URI input"  placeholder="Input your custom URI here" aria-placeholder="Input your custom URI here"/>
             </div>
             <div class="d-grid">
                 <button class="btn btn-outline-dark" onclick="login()" type="button">Submit</button>
@@ -43,30 +43,39 @@
         const authIssuer = "http://localhost:8080/realms/myrealm/protocol/openid-connect/auth";
         const client_id = document.getElementById("clientId").value;
         const client_secret = document.getElementById("clientSecret").value;
-        const redirect_uri = document.getElementById("redirectURI").value;
+        const customUri = document.getElementById("customUri").value;
+        const callback_uri = "http://localhost:8081/api/flows/callback"
         const responseType = "code";
         const state = randomString(10);
 
-        let popUpWindow = authURL(authIssuer, client_id, client_secret, redirect_uri, responseType, state)
+        let popUpWindow = authURL(authIssuer, client_id, client_secret, callback_uri, responseType, state)
         let myURL = extractURL(popUpWindow);
 
         let interval = setInterval(() => {
             console.log('.....')
             if (myURL.includes('code')) {
-                console.log('I am here in the interval')
-                const response = fetch('callback', {
+                clearInterval(interval);
+                const response = fetch('authorize', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         clientId: client_id,
                         clientSecret: client_secret,
                         url: myURL,
-                        redirectUri: redirect_uri,
+                        redirectUri: callback_uri,
                         }),
-                    redirect: 'follow',
+                        redirect: 'follow'
+                    }).then((res) => {
+                        let result = res.json();
+                        popUpWindow.close();
+                        console.log(result);
+                        /*window.location.href = 'http://localhost:8081/api/flows/authResult?discoveryResult=' +
+                        JSON.stringify(result.discoveryResult) + '&header=' + JSON.stringify(result.header) +
+                        '&message=' & JSON.stringify(result.message) + '&payload=' +
+                        JSON.stringify(result.payload) + '&showResults=' + result.showResults*/
                     })
-                    console.log(response);
-                    clearInterval(interval);
+                    //window.location.href = redirect_uri;
+                    //console.log(response);
             } else {
                 myURL = extractURL(popUpWindow);
                 console.log("In else block")

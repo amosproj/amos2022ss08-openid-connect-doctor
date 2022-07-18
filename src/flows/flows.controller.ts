@@ -2,11 +2,12 @@
 //SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
 //SDPX-FileCopyrightText: 2022 Raghunandan Arava <raghunandan.arava@fau.de>
 
-import { Controller, Get, Post, Body, Render, Redirect } from '@nestjs/common';
+import { Controller, Get, Post, Body, Render, Query, Res } from '@nestjs/common';
 import { ClientCredentialFlowInputDto } from './Dto/clientCredentialFlowInput.dto';
 import { PasswordGrantFlowInputDto } from './Dto/passwordGrantFlowInput.dto';
 import { FlowsService } from './flows.service';
 import { AuthInputDto } from './Dto/authInput.dto';
+import { Response } from 'express';
 
 @Controller('flows')
 export class FlowsController {
@@ -24,15 +25,32 @@ export class FlowsController {
     return;
   }
 
-  @Get('getResultPage')
-  @Render('cc-result')
-  async redirectPage(result: any) {
-    return result;
+  @Get('callback')
+  async redirectPage() {
+    return 200;
   }
 
-  @Post('callback')
-  @Render("cc-result")
-  async authCallback(@Body() authInputDto: AuthInputDto) {
+  @Get('authResult')
+  @Render('cc-result')
+  async authResult(
+    @Query('discoveryResult') disResult: string,
+    @Query('header') header: string,
+    @Query('message') message: string,
+    @Query('payload') payload: string,
+    @Query('showResults') showResults: boolean,
+  ) {
+    return {
+      showResults: showResults,
+      message: JSON.parse(message),
+
+      discoveryResult: JSON.parse(disResult),
+      payload: JSON.parse(payload),
+      header: JSON.parse(header),
+    };
+  }
+
+  @Post('authorize')
+  async authCallback(@Body() authInputDto: AuthInputDto, @Res() res: Response) {
     let result;
       try{
       const [discoveryResult, decodingResult] = await this.flowsService
@@ -62,7 +80,7 @@ export class FlowsController {
             payload: '',
             header: '',
           }; }
-    return result;
+    return res.status(302).json(result).send();
   }
 
   @Post('cc')

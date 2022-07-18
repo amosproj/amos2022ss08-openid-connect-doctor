@@ -2,8 +2,9 @@
 //SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
 //SDPX-FileCopyrightText: 2022 Raghunandan Arava <raghunandan.arava@fau.de>
 
-import { Controller, Get, Post, Body, Render } from '@nestjs/common';
+import { Controller, Get, Post, Body, Render, Redirect } from '@nestjs/common';
 import { ClientCredentialFlowInputDto } from './Dto/clientCredentialFlowInput.dto';
+import { PasswordGrantFlowInputDto } from './Dto/passwordGrantFlowInput.dto';
 import { FlowsService } from './flows.service';
 import { AuthInputDto } from './Dto/authInput.dto';
 
@@ -21,6 +22,47 @@ export class FlowsController {
   @Render('authorization-flow')
   async getAuth() {
     return;
+  }
+
+  @Get('getResultPage')
+  @Render('cc-result')
+  async redirectPage(result: any) {
+    return result;
+  }
+
+  @Post('callback')
+  @Render("cc-result")
+  async authCallback(@Body() authInputDto: AuthInputDto) {
+    let result;
+      try{
+      const [discoveryResult, decodingResult] = await this.flowsService
+        .authorizationFlow(
+          process.env.ISSUER_STRING,
+          authInputDto.clientId,
+          authInputDto.clientSecret,
+          authInputDto.url,
+          authInputDto.redirectUri,
+        )
+        console.log(discoveryResult);
+        console.log(decodingResult);
+        result = {
+            showResults: decodingResult.success,
+            message: decodingResult.message,
+
+            discoveryResult: discoveryResult,
+            payload: decodingResult.payload,
+            header: decodingResult.header,
+          };
+        }catch(error) {
+          result = {
+            showResults: false,
+            message: error,
+
+            discoveryResult: '',
+            payload: '',
+            header: '',
+          }; }
+    return result;
   }
 
   @Post('cc')
@@ -58,17 +100,23 @@ export class FlowsController {
 
     return result;
   }
+  @Get('pg')
+  @Render('password_grant')
+  async getPg() {
+    return;
+  }
 
-  @Post('auth')
+  @Post('pg')
   @Render('cc-result')
-  async postAuth(@Body() authInputDto: AuthInputDto) {
+  async postPg(@Body() passwordGrantFlowInputDto: PasswordGrantFlowInputDto) {
+    console.log(passwordGrantFlowInputDto);
     const result = await this.flowsService
-      .authorizationFlow(
-        process.env.ISSUER_STRING,
-        authInputDto.clientId,
-        authInputDto.clientSecret,
-        authInputDto.code,
-        authInputDto.redirectUri,
+      .passwordGrant(
+        passwordGrantFlowInputDto.issuerUrl,
+        passwordGrantFlowInputDto.clientId,
+        passwordGrantFlowInputDto.clientSecret,
+        passwordGrantFlowInputDto.username,
+        passwordGrantFlowInputDto.password,
       )
       .then(([discoveryResult, decodingResult]) => {
         return {
@@ -90,7 +138,5 @@ export class FlowsController {
           header: '',
         };
       });
-
-    return result;
-  }
+    }
 }

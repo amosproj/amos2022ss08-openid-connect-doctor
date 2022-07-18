@@ -1,3 +1,6 @@
+//SDPX-License-Identifier: MIT
+//SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
+
 import {
   Controller,
   Get,
@@ -26,7 +29,7 @@ export class DiscoveryController {
   ) {}
 
   @Get('issuer')
-  @Render('index')
+  @Render('start')
   async discover_issuer() {
     const schemas = await this.discoveryService.getSchemas(undefined);
     const res = {
@@ -34,6 +37,7 @@ export class DiscoveryController {
         success: 1,
         info: null,
         previously_checked: this.discoveryService.getDefaultCheckboxes(),
+		previous_issuer: null,
       },
       short_message: 'Please input provider url',
       schemas: schemas,
@@ -41,9 +45,25 @@ export class DiscoveryController {
     return res;
   }
 
+  @Post('issuer/find')
+  @Render('discovery')
+  async discover_issuer_find_post(@Body() body) {
+    const dto = new DiscoveryDto();
+    dto.issuer_url = body.issuer_url;
+
+    const res = await this.checkIssuerUrlDetails(
+      '',
+      body.issuer_url,
+      undefined,
+      dto,
+    );
+    await this.utilsService.writeOutput(res.result.info);
+    return res;
+  }
+
   @Post('issuer')
-  @Render('index')
-  async discover_issuer_post(@Body() discoveryDto: DiscoveryDto) {
+  @Render('discovery')
+  async discover_issuer_analyze_post(@Body() discoveryDto: DiscoveryDto) {
     const keys = this.rememberSelectedParameters(discoveryDto);
     const res = await this.checkIssuerUrlDetails(
       discoveryDto.schema,
@@ -78,6 +98,7 @@ export class DiscoveryController {
           success: 1,
           info: null,
           previously_checked: null,
+		  previous_issuer: issuer_url_s,
         },
         short_message: 'Please input provider url',
         schemas: schemas,
@@ -92,6 +113,7 @@ export class DiscoveryController {
             success: 1,
             info: JSON.stringify(issuer, keys, 2),
             previously_checked: checkboxes,
+			previous_issuer: issuer_url_s,
           },
           issuer,
         ];
@@ -102,6 +124,7 @@ export class DiscoveryController {
             success: 0,
             info: err,
             previously_checked: null,
+		    previous_issuer: issuer_url_s,
           },
           null,
         ];
@@ -136,7 +159,7 @@ export class DiscoveryController {
       join(process.cwd(), 'schema/discovery', file.originalname),
       file.buffer,
     );
-    res.status(302).redirect('/api/discovery/issuer');
+    res.status(201).end();
   }
 
   @Get('/schema/download')
@@ -150,6 +173,6 @@ export class DiscoveryController {
   @Get('/schema/delete')
   async deleteSchema(@Query('schema') schema_s: string, @Res() res: Response) {
     await fs.unlink(join(process.cwd(), 'schema/discovery', schema_s));
-    res.status(302).redirect('/api/discovery/issuer');
+    res.status(200).end();
   }
 }

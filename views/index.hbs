@@ -1,209 +1,260 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <title>App</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Open Id Connect Doctor</title>
     <style>
-        .center {
-            margin: auto;
-            width: auto;
-            border: 2px solid black;
-            padding: 10px;
-        }
-        td, th {
+        .parametertable {
             border: 1px solid #dddddd;
             text-align: left;
             padding: 8px;
-        }
-        div.scroll {
-            overflow: auto;
         }
         .url{
             width: 40%;
         }
     </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
 </head>
 <body>
-<div class="center">
-    <form action="/api/discovery/issuer" method="post">
-        <label for="issuer"><b>Issuer: </b></label><br>
-        <input type="text" id="issuer_url" name="issuer_url"  class="url"><br><br>
-        <label for="issuer"><b>Parameter's List: </b></label><br>
-        <table >
-            <tr>
-                <td>
-                    <input type="checkbox" id="authorization_endpoint_checkbox" name="authorization_endpoint" value="1" {{#if result.previously_checked.authorization_endpoint}} checked{{/if}}>
-                    <label for="authorization_endpoint_box"> authorization_endpoint </label><br>
-                </td>
-                <td>
-                    <input type="checkbox" id="claim_types_supported_checkbox" name="claim_types_supported" value="1" {{#if result.previously_checked.claim_types_supported}} checked{{/if}}>
-                    <label for="claim_types_supported_box"> claim_types_supported </label><br>
-                </td>
-                <td>
-                    <input type="checkbox" id="claims_parameter_supported_checkbox" name="claims_parameter_supported" value="1" {{#if result.previously_checked.claims_parameter_supported}} checked{{/if}}>
-                    <label for="claims_parameter_supported_box"> claims_parameter_supported </label><br>
-                </td>
-                <td>
-                    <input type="checkbox" id="claims_supported_checkbox" name="claims_supported" value="1" {{#if result.previously_checked.claims_supported}} checked{{/if}}>
-                    <label for="claims_supported_box"> claims_supported </label><br>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" id="code_challenge_methods_supported_checkbox" name="code_challenge_methods_supported" value="1" {{#if result.previously_checked.code_challenge_methods_supported}} checked{{/if}}>
-                    <label for="code_challenge_methods_supported_box"> code_challenge_methods_supported </label><br>
-                </td>
-                <td>
-                    <input type="checkbox" id="device_authorization_endpoint_checkbox" name="device_authorization_endpoint" value="1" {{#if result.previously_checked.device_authorization_endpoint}} checked{{/if}}>
-                    <label for="device_authorization_endpoint_box"> device_authorization_endpoint </label><br>
-                </td>
-                <td>
-                    <input type="checkbox" id="grant_types_supported_checkbox" name="grant_types_supported" value="1" {{#if result.previously_checked.grant_types_supported}} checked{{/if}}>
-                    <label for="grant_types_supported_box"> grant_types_supported </label><br>
-                </td>
-                <td>
-                    <input type="checkbox" id="id_token_signing_alg_values_supported_checkbox" name="id_token_signing_alg_values_supported" value="1" {{#if result.previously_checked.id_token_signing_alg_values_supported}} checked{{/if}}>
-                    <label for="id_token_signing_alg_values_supported_box"> id_token_signing_alg_values_supported </label><br>
-                </td>
-            </tr>
+<div style="margin-top: 20px">
+</div>
+<div class="container" style="border: 2px solid black;margin-bottom: 20px">
+    <!-- Content here -->
+    <div class="row" style="padding-bottom:10px ; border-bottom: 2px solid black">
+        <div class="container" style="color: black">
+            <div class="col-md-1" align="right" ><img src="/images/logo-amos.png" height="100" width="100"></div>
+            <div class="col-md-6" ><h2>Open ID Connect Doctor</h2></div>
+            <div class="col-md-1" style="margin-top: 10px">
+                <form method="get" action="/api/discovery/issuer">
+                    <input type="submit" value="Home" />
+                </form>
+            </div>
+            <div class="col-md-2" style="margin-top: 10px">
+                <form action="/api/flows/cc">
+                    <input type="submit" value="Client-Credential-Flow" />
+                </form>
+                <form action="/api/flows/pg">
+                    <input type="submit" value="Password-Grant-Flow" />
+                </form>
+            </div>
+            <div class="col-md-2" style="margin-top: 10px">
+                <form action="/api/protocol/logger">
+                    <input type="submit" value="Check Protocols" />
+                </form>
+            </div>
 
-            <tr>
-                <td>
-                    <input type="checkbox" id="issuer_checkbox" name="issuer" value="1" {{#if result.previously_checked.issuer}} checked{{/if}}>
-                    <label for="issuer_box"> issuer </label><br>
-                </td>
-                <td>
-                    <input type="checkbox" id="jwks_uri_checkbox" name="jwks_uri" value="1" {{#if result.previously_checked.jwks_uri}} checked{{/if}}>
-                    <label for="jwks_uri_box"> jwks_uri </label><br>
-                </td>
-                <td>
-                    <input type="checkbox" id="request_parameter_supported_checkbox" name="request_parameter_supported" value="1" {{#if result.previously_checked.request_parameter_supported}} checked{{/if}}>
-                    <label for="request_parameter_supported_box"> request_parameter_supported </label><br>
-                </td>
-                <td>
-                    <input type="checkbox" id="request_uri_parameter_supported_checkbox" name="request_uri_parameter_supported" value="1" {{#if result.previously_checked.request_uri_parameter_supported}} checked{{/if}}>
-                    <label for="request_uri_parameter_supported_box"> request_uri_parameter_supported </label><br>
-                </td>
-            </tr>
+        </div>
+    </div>
+    <div class="row" style="padding-top: 10px">
+        <div class="col-md-12">
+            <form action="/api/discovery/issuer" method="post">
+                <label for="issuer"><b>Issuer: </b></label><br>
+                <input type="text" id="issuer_url" name="issuer_url"  class="url"><br><br>
 
-            <tr>
-                <td>
-                    <input type="checkbox" id="require_request_uri_registration_checkbox" name="require_request_uri_registration" value="1" {{#if result.previously_checked.require_request_uri_registration}} checked{{/if}}>
-                    <label for="require_request_uri_registration_box"> require_request_uri_registration </label><br>
-                </td>
-                <td>
-                    <input type="checkbox" id="response_modes_supported_checkbox" name="response_modes_supported" value="1" {{#if result.previously_checked.response_modes_supported}} checked{{/if}}>
-                    <label for="response_modes_supported_box"> response_modes_supported </label><br>
-                </td>
-                <td>
-                    <input type="checkbox" id="response_types_supported_checkbox" name="response_types_supported" value="1" {{#if result.previously_checked.response_types_supported}} checked{{/if}}>
-                    <label for="response_types_supported_box"> response_types_supported </label><br>
-                </td>
-                <td>
-                    <input type="checkbox" id="revocation_endpoint_checkbox" name="revocation_endpoint" value="1" {{#if result.previously_checked.revocation_endpoint}} checked{{/if}}>
-                    <label for="revocation_endpoint_box"> revocation_endpoint </label><br>
-                </td>
-            </tr>
+                <p>
+                    <a class="btn btn-success btn-sm" data-toggle="collapse" href="#collapseParameters" role="button" aria-expanded="true" aria-controls="collapseParameters">
+                        Expand Parameter List
+                    </a>
 
-            <tr>
-                <td>
-                    <input type="checkbox" id="revocation_endpoint_auth_methods_supported_checkbox" name="revocation_endpoint_auth_methods_supported" value="1" {{#if result.previously_checked.revocation_endpoint_auth_methods_supported}} checked{{/if}}>
-                    <label for="revocation_endpoint_auth_methods_supported_box"> revocation_endpoint_auth_methods_supported </label><br>
-                </td>
-                <td>
-                    <input type="checkbox" id="scopes_supported_checkbox" name="scopes_supported" value="1" {{#if result.previously_checked.scopes_supported}} checked{{/if}}>
-                    <label for="scopes_supported_box"> scopes_supported </label><br>
-                </td>
-                <td>
-                    <input type="checkbox" id="subject_types_supported_checkbox" name="subject_types_supported" value="1" {{#if result.previously_checked.subject_types_supported}} checked{{/if}}>
-                    <label for="subject_types_supported_box"> subject_types_supported </label><br>
-                </td>
-                <td>
-                    <input type="checkbox" id="token_endpoint_checkbox" name="token_endpoint" value="1" {{#if result.previously_checked.token_endpoint}} checked{{/if}}>
-                    <label for="token_endpoint_box"> token_endpoint </label><br>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" id="token_endpoint_auth_methods_supported_checkbox" name="token_endpoint_auth_methods_supported" value="1" {{#if result.previously_checked.token_endpoint_auth_methods_supported}} checked{{/if}}>
-                    <label for="token_endpoint_auth_methods_supported_box"> token_endpoint_auth_methods_supported </label><br>
-                </td>
-                <td>
-                    <input type="checkbox" id="userinfo_endpoint_checkbox" name="userinfo_endpoint" value="1" {{#if result.previously_checked.userinfo_endpoint}} checked{{/if}}>
-                    <label for="userinfo_endpoint_box"> userinfo_endpoint </label><br>
-                </td>
-            </tr>
-        </table><br>
-        {{#if schemas}}
-            <label for="schema_selector"> Select schema: </label>
-            <select name="schema" id="schema_selector">
-                {{#each schemas as |schema|}}
-                    <option value="{{ schema }}">{{ schema }}</option>
-                {{/each}}
-            </select>
-        {{/if}}
-    </form><br>
-    <button id="btn_enableAll" class="button enableButton">Enable All</button>
-    <button id="btn_disableAll" class="button disableButton">Disable All</button><br><br>
-    <a href="/api/flows/cc">Client-Credential-Flow</><br><br>
-    <a href="/api/protocol/logger">Check Protocols</a><br><br>
-    <script>
-        function setAll(b) {
-            let checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            checkboxes.forEach((checkbox) => {
-                checkbox.checked = b;
-            });
-        }
-        function enableAll() {
-            setAll(true);
-        }
-        function disableAll() {
-            setAll(false);
-        }
-        const btn_enable = document.querySelector('#btn_enableAll');
-        btn_enable.onclick = enableAll;
-        const btn_disable = document.querySelector('#btn_disableAll');
-        btn_disable.onclick = disableAll;
+                </p>
+                <div class="collapse" id="collapseParameters">
+                    <div class="card card-body">
+                        <table>
+                            <tr>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="authorization_endpoint_checkbox" name="authorization_endpoint" value="1" {{#if result.previously_checked.authorization_endpoint}} checked{{/if}}>
+                                    <label for="authorization_endpoint_box"> authorization_endpoint </label><br>
+                                </td>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="claim_types_supported_checkbox" name="claim_types_supported" value="1" {{#if result.previously_checked.claim_types_supported}} checked{{/if}}>
+                                    <label for="claim_types_supported_box"> claim_types_supported </label><br>
+                                </td>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="claims_parameter_supported_checkbox" name="claims_parameter_supported" value="1" {{#if result.previously_checked.claims_parameter_supported}} checked{{/if}}>
+                                    <label for="claims_parameter_supported_box"> claims_parameter_supported </label><br>
+                                </td>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="claims_supported_checkbox" name="claims_supported" value="1" {{#if result.previously_checked.claims_supported}} checked{{/if}}>
+                                    <label for="claims_supported_box"> claims_supported </label><br>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="code_challenge_methods_supported_checkbox" name="code_challenge_methods_supported" value="1" {{#if result.previously_checked.code_challenge_methods_supported}} checked{{/if}}>
+                                    <label for="code_challenge_methods_supported_box"> code_challenge_methods_supported </label><br>
+                                </td>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="device_authorization_endpoint_checkbox" name="device_authorization_endpoint" value="1" {{#if result.previously_checked.device_authorization_endpoint}} checked{{/if}}>
+                                    <label for="device_authorization_endpoint_box"> device_authorization_endpoint </label><br>
+                                </td>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="grant_types_supported_checkbox" name="grant_types_supported" value="1" {{#if result.previously_checked.grant_types_supported}} checked{{/if}}>
+                                    <label for="grant_types_supported_box"> grant_types_supported </label><br>
+                                </td>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="id_token_signing_alg_values_supported_checkbox" name="id_token_signing_alg_values_supported" value="1" {{#if result.previously_checked.id_token_signing_alg_values_supported}} checked{{/if}}>
+                                    <label for="id_token_signing_alg_values_supported_box"> id_token_signing_alg_values_supported </label><br>
+                                </td>
+                            </tr>
 
-        };
-    </script>
-    <form enctype="multipart/form-data" method="post" action="/api/discovery/schema/upload">
-        <input type="file" id="file_upload" name="upload">
-        <input type="submit">
-    </form>
-    {{#if schemas}}
-        <form action="/api/discovery/schema/download">
-            <label for="schema_download_selector"> Download schema: </label>
-            <select name="schema" id="schema_download_selector">
-                {{#each schemas as |schema|}}
-                    <option value="{{ schema }}">{{ schema }}</option>
-                {{/each}}
-            </select>
-            <input type="submit">
-        </form>
-        <form action="/api/discovery/schema/delete">
-            <label for="schema_delete_selector"> Delete schema: </label>
-            <select name="schema" id="schema_delete_selector">
-                {{#each schemas as |schema|}}
-                    <option value="{{ schema }}">{{ schema }}</option>
-                {{/each}}
-            </select>
-            <input type="submit">
-        </form>
-        <form action="/api/utils/downloadFile">
-            <input type="submit" name="Download File"  value="Download File">
-        </form>
-    {{/if}}
-    <label for="result_display"><strong style="color: {{#if result.success}}green{{else}}red{{/if}};font-size: 20px;">{{ short_message }}</strong></label><br><br>
-    <div class="scroll">
-        <div style="height:400px; width:500px; overflow-y:auto;">
+                            <tr>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="issuer_checkbox" name="issuer" value="1" {{#if result.previously_checked.issuer}} checked{{/if}}>
+                                    <label for="issuer_box"> issuer </label><br>
+                                </td>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="jwks_uri_checkbox" name="jwks_uri" value="1" {{#if result.previously_checked.jwks_uri}} checked{{/if}}>
+                                    <label for="jwks_uri_box"> jwks_uri </label><br>
+                                </td>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="request_parameter_supported_checkbox" name="request_parameter_supported" value="1" {{#if result.previously_checked.request_parameter_supported}} checked{{/if}}>
+                                    <label for="request_parameter_supported_box"> request_parameter_supported </label><br>
+                                </td>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="request_uri_parameter_supported_checkbox" name="request_uri_parameter_supported" value="1" {{#if result.previously_checked.request_uri_parameter_supported}} checked{{/if}}>
+                                    <label for="request_uri_parameter_supported_box"> request_uri_parameter_supported </label><br>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="require_request_uri_registration_checkbox" name="require_request_uri_registration" value="1" {{#if result.previously_checked.require_request_uri_registration}} checked{{/if}}>
+                                    <label for="require_request_uri_registration_box"> require_request_uri_registration </label><br>
+                                </td>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="response_modes_supported_checkbox" name="response_modes_supported" value="1" {{#if result.previously_checked.response_modes_supported}} checked{{/if}}>
+                                    <label for="response_modes_supported_box"> response_modes_supported </label><br>
+                                </td>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="response_types_supported_checkbox" name="response_types_supported" value="1" {{#if result.previously_checked.response_types_supported}} checked{{/if}}>
+                                    <label for="response_types_supported_box"> response_types_supported </label><br>
+                                </td>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="revocation_endpoint_checkbox" name="revocation_endpoint" value="1" {{#if result.previously_checked.revocation_endpoint}} checked{{/if}}>
+                                    <label for="revocation_endpoint_box"> revocation_endpoint </label><br>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="revocation_endpoint_auth_methods_supported_checkbox" name="revocation_endpoint_auth_methods_supported" value="1" {{#if result.previously_checked.revocation_endpoint_auth_methods_supported}} checked{{/if}}>
+                                    <label for="revocation_endpoint_auth_methods_supported_box"> revocation_endpoint_auth_methods_supported </label><br>
+                                </td>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="scopes_supported_checkbox" name="scopes_supported" value="1" {{#if result.previously_checked.scopes_supported}} checked{{/if}}>
+                                    <label for="scopes_supported_box"> scopes_supported </label><br>
+                                </td>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="subject_types_supported_checkbox" name="subject_types_supported" value="1" {{#if result.previously_checked.subject_types_supported}} checked{{/if}}>
+                                    <label for="subject_types_supported_box"> subject_types_supported </label><br>
+                                </td>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="token_endpoint_checkbox" name="token_endpoint" value="1" {{#if result.previously_checked.token_endpoint}} checked{{/if}}>
+                                    <label for="token_endpoint_box"> token_endpoint </label><br>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="token_endpoint_auth_methods_supported_checkbox" name="token_endpoint_auth_methods_supported" value="1" {{#if result.previously_checked.token_endpoint_auth_methods_supported}} checked{{/if}}>
+                                    <label for="token_endpoint_auth_methods_supported_box"> token_endpoint_auth_methods_supported </label><br>
+                                </td>
+                                <td class="parametertable">
+                                    <input type="checkbox" id="userinfo_endpoint_checkbox" name="userinfo_endpoint" value="1" {{#if result.previously_checked.userinfo_endpoint}} checked{{/if}}>
+                                    <label for="userinfo_endpoint_box"> userinfo_endpoint </label><br>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <br>
+                    {{#if schemas}}
+                        <label for="schema_selector"> Select schema: </label>
+                        <select name="schema" id="schema_selector">
+                            {{#each schemas as |schema|}}
+                                <option value="{{ schema }}">{{ schema }}</option>
+                            {{/each}}
+                        </select>
+                    {{/if}}
+                </div>
+            </form>
+            <br>
+        </div>
+        <div class="col-md-12">
+            <div>
+                <button id="btn_enableAll" class="button enableButton">Enable All</button>
+                <button id="btn_disableAll" class="button disableButton">Disable All</button><br><br>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="container" >
+                <form enctype="multipart/form-data" method="post" action="/api/discovery/schema/upload">
+                    <input type="file" id="file_upload" name="upload">
+                    <input type="submit">
+                </form>
+                {{#if schemas}}
+                    <form action="/api/discovery/schema/download">
+                        <label for="schema_download_selector"> Download schema: </label>
+                        <select name="schema" id="schema_download_selector">
+                            {{#each schemas as |schema|}}
+                                <option value="{{ schema }}">{{ schema }}</option>
+                            {{/each}}
+                        </select>
+                        <input type="submit">
+                    </form>
+                    <form action="/api/discovery/schema/delete">
+                        <label for="schema_delete_selector"> Delete schema: </label>
+                        <select name="schema" id="schema_delete_selector">
+                            {{#each schemas as |schema|}}
+                                <option value="{{ schema }}">{{ schema }}</option>
+                            {{/each}}
+                        </select>
+                        <input type="submit">
+                    </form>
+                    <form action="/api/utils/downloadFile">
+                        <input type="submit" name="Download File"  value="Download File">
+                    </form>
+                {{/if}}
+            </div>
+            <div class="col-md-12">
+                <div>
+                    <label for="result_display"><strong style="color: {{#if result.success}}green{{else}}red{{/if}};font-size: 20px;">{{ short_message }}</strong></label><br><br>
+                    <div class="scroll">
+                        <div style="height:400px; width:500px; overflow-y:auto;">
 					<pre>
                         {{{ result.info }}}
                     </pre>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
         </div>
     </div>
+        <script>
+            function setAll(b) {
+                let checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach((checkbox) => {
+                    checkbox.checked = b;
+                });
+            }
+            function enableAll() {
+                setAll(true);
+            }
+            function disableAll() {
+                setAll(false);
+            }
+            const btn_enable = document.querySelector('#btn_enableAll');
+            btn_enable.onclick = enableAll;
+            const btn_disable = document.querySelector('#btn_disableAll');
+            btn_disable.onclick = disableAll;
+        </script>
 </div>
-</div>
+
+
+
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
 </body>
-</head>
 </html>

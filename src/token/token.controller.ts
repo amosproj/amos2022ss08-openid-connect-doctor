@@ -1,6 +1,7 @@
 //SDPX-License-Identifier: MIT
 //SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
 //SDPX-FileCopyrightText: 2022 Raghunandan Arava <raghunandan.arava@fau.de>
+//SDPX-FileCopyrightText: 2022 Michael Kupfer <michael.kupfer@fau.de>
 
 import {
   Controller,
@@ -70,6 +71,7 @@ export default class TokenController {
         header: null,
         schemas: schemas,
         key_algorithms: this.tokenService.getKeyAlgorithms(),
+        validated_payload_against_schema: false,
       };
     }
 
@@ -126,6 +128,7 @@ export default class TokenController {
         schemas: schemas,
         key_algorithms: this.tokenService.getKeyAlgorithms(),
         decoding_error: true,
+        validated_payload_against_schema: false,
       };
     }
 
@@ -160,6 +163,7 @@ export default class TokenController {
         schemas: schemas,
         key_algorithms: this.tokenService.getKeyAlgorithms(),
         decoding_error: decoding_error,
+        validated_payload_against_schema: true,
       };
     } else {
       return {
@@ -172,6 +176,7 @@ export default class TokenController {
         schemas: schemas,
         key_algorithms: this.tokenService.getKeyAlgorithms(),
         decoding_error: false,
+        validated_payload_against_schema: false,
       };
     }
   }

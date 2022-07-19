@@ -1,3 +1,5 @@
+<!--SDPX-License-Identifier: MIT-->
+<!--SDPX-FileCopyrightText: 2022 Michael Kupfer <michael.kupfer@fau.de>-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,31 +8,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Open Id Connect Doctor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+.b-divider {
+    height: 5rem;
+    background-color: rgba(0, 0, 0, 0);
+}
+    </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="navbar-item mx-auto">
-                <a class="btn btn-outline-secondary" href="/api/protocol/logger" role="button">Protocol</a>
-            </div>
-        </div>
-    </nav>
+    <div class="container">
+        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+            <a class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+                <span class="me-2"></span>
+            </a>
+
+            <a href="/api/protocol/logger" class="nav col-12 col-md-auto mb-2 mb-md-0 text-decoration-none">
+                <span class="btn btn-outline-secondary me-2">Protocol</span>
+            </a>
+
+            <a class="col-md-3 text-end">
+                <span class="btn me-2"></span>
+            </a>
+        </header>
+    </div>
     <div class="container">
         <div class="row row-cols-1 justify-content-center g-2">
-            <div class="col-6">
-                <img class="img-fluid mx-auto p-3" src="/images/logo-amos.png" />
+            <div class="b-divider">
             </div>
-            <div class="col justify-cotent-center">
+            <div class="col-6 d-flex" margin-top="100">
+                <img class="img-fluid mx-auto p-3" src="/images/logo-amos.png" height="400" width="271"/>
+            </div>
+            <div class="col justify-content-center">
                 <form action="/api/discovery/issuer/find" method="post">
-                    <div class="row">
-                        <label for="issuer" class="col-sm-2 col-form-label" >Issuer </label>
-                        <input type="text" id="issuer_url" class="col-sm-8" name="issuer_url" aria-label="Issuer input with dropdown button"  placeholder="Input your issuer here" aria-placeholder="Input your issuer here"/>
-                        <button class="btn btn-outline-secondary dropdown-toggle col-sm-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">Defaults</button>
-                        <ul class="dropdown-menu dropdown-menu-end col-sm-4">
+                    <div class="d-flex flex-row justify-content-center">
+                        <label for="issuer" class="mx-4 col-form-label" >Issuer: </label>
+                        <input type="text" id="issuer_url" class="col-sm-4" name="issuer_url" aria-label="Issuer input with dropdown button"  placeholder="Input your issuer here" aria-placeholder="Input your issuer here"/>
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" data-issuer_url="https://accounts.google.com" onclick="setAsInput(this)">Google</a></li>
                         </ul>
                     </div>
-                    <div class="d-grid pt-2">
+                    <div class="pt-2 d-flex flew-row justify-content-center">
                         <button class="btn btn-outline-dark" type="submit">Submit</button>
                     </div>
                 </form>

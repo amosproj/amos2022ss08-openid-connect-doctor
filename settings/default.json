@@ -32,7 +32,7 @@
 	},
 	"flows": {
 		"always_on": [],
-		"always_off": ["authorization_code"]
+		"always_off": []
 	}
 	 
 }

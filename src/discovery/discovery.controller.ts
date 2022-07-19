@@ -47,6 +47,23 @@ export class DiscoveryController {
     return res;
   }
 
+  @Get('issuer/find')
+  @Render('discovery')
+  async discover_issuer_find_get(@Query('issuer_s') issuer_url: string) {
+    const dto = new DiscoveryDto();
+    dto.issuer_url = issuer_url;
+
+    const res = await this.checkIssuerUrlDetails(
+      '',
+      issuer_url,
+      undefined,
+      dto,
+    );
+    res.previous.checked = this.checkboxes_to_discoveryDto();
+    await this.utilsService.writeOutput(res.result.html_result);
+    return res;
+  }
+
   @Post('issuer/find')
   @Render('discovery')
   async discover_issuer_find_post(@Body() body) {

@@ -9,7 +9,7 @@
     <nav class="navbar">
         <div class="container">
             <div class="navbar-item">
-                <a class="btn btn-outline-secondary" href="/api/discovery/issuer" role="button">Back to Discovery</a>
+                <a class="btn btn-outline-secondary" href="/api/discovery/issuer/find?issuer_s={{issuer_s}}" role="button">Back to Discovery</a>
             </div>
             <div class="navbar-item mx-auto">
                 <a class="btn btn-outline-secondary" href="/api/protocol/logger" role="button">Protocol</a>
@@ -71,7 +71,7 @@
                 </div>
                 <div class="card-body">
                     <p class="card-text">Redirects the user to the identity-provider to handle authentication.</p>
-                    <a href="/api/flows/ac?issuer_s={{issuer_s}}" class="btn btn-outline-dark">Try it out</a>
+                    <a href="/api/flows/auth?issuer_s={{issuer_s}}" class="btn btn-outline-dark">Try it out</a>
                 </div>
             </div>
             {{else}}
@@ -81,7 +81,7 @@
                 </div>
                 <div class="card-body">
                     <p class="card-text">Redirects the user to the identity-provider to handle authentication.</p>
-                    <a href="/api/flows/ac?issuer_s={{issuer_s}}" class="btn btn-outline-dark disabled">Try it out</a>
+                    <a href="/api/flows/auth?issuer_s={{issuer_s}}" class="btn btn-outline-dark disabled">Try it out</a>
                 </div>
             </div>
             {{/if}}

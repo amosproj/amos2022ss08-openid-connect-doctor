@@ -28,9 +28,15 @@
                         <span class="btn btn-outline-secondary me-2">Protocol</span>
                     </a>
 
+                    {{#if previous.issuer}}
                     <a class="col-md-3 text-end" href="/api/flows/index?issuer_s={{previous.issuer}}">
                         <span class="btn btn-outline-secondary me-2">Test Authentication</span>
                     </a>
+                    {{else}}
+                    <a class="col-md-3 text-end" >
+                        <span class="btn btn-outline-secondary me-2 disabled">Test Authentication</span>
+                    </a>
+                    {{/if}}
                 </header>
             </div>
             <div class="container py-3 mb-4 border-bottom">

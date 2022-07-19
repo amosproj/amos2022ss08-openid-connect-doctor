@@ -15,38 +15,44 @@
             </div>
         </div>
     </nav>
-<div class="container">
-    <div class="input-container">
+<div class="container" style="border: 1px solid black; margin-bottom: 10px;padding-bottom: 5px">
+    <div class="input-container" >
         <h2>Authorization-Code-Flow</h2>
         <p>Please enter the necessary information:</p>
         <form class="input-form">
             <div class="row mb-3">
                 <label class="col-sm-2 col-form-label" for="clientId">Client-ID</label>
-                <input type="text" id="clientId" class="col-sm-10" name="clientId" aria-label="Client-Id input"  placeholder="Input your client-id here" aria-placeholder="Input your client-id here"/>
+                <input type="text" id="clientId" class="col-sm-8" name="clientId" aria-label="Client-Id input"  placeholder="Input your client-id here" aria-placeholder="Input your client-id here"/>
             </div>
             <div class="row mb-3">
                 <label class="col-sm-2 col-form-label" for="clientSecret">Client-Secret</label>
-                <input type="password" id="clientSecret" class="col-sm-10" name="clientSecret" aria-label="Client-Secret input"  placeholder="Input your client-secret here" aria-placeholder="Input your client-secret here"/>
+                <input type="password" id="clientSecret" class="col-sm-8" name="clientSecret" aria-label="Client-Secret input"  placeholder="Input your client-secret here" aria-placeholder="Input your client-secret here"/>
             </div>
             <div class="row mb-3">
                 <label class="col-sm-2 col-form-label" for="redirectUri">Custom URI</label>
-                <input type="text" id="customUri" class="col-sm-10" name="customUri" aria-label="custom-URI input"  placeholder="Input your custom URI here" aria-placeholder="Input your custom URI here"/>
+                <input type="text" id="customUri" class="col-sm-8" name="customUri" aria-label="custom-URI input"  placeholder="Input your custom URI here" aria-placeholder="Input your custom URI here"/>
             </div>
-            <div class="d-grid">
-                <button class="btn btn-outline-dark" onclick="login()" type="button">Submit</button>
+            <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" for="redirectUri"></label>
+                <button class="btn btn-outline-dark col-sm-8" onclick="login()" type="button">Submit</button>
             </div>
         </form>
     </div>
 
     <div class="container"  id="myDIV" style="padding-bottom: 10px;margin-bottom: 5px;display: none" >
+        </br>
         <h2>Flow-Result</h2>
-
-        <p id="message"></p>
+          <p id="message"></p>
+        </br>
+        <form action="/api/utils/downloadFile">
+            <button class="btn btn-primary"  name="Download File"  value="">Download Flow Analysis</button>
+        </form>
+        </br>
             <div class="results-item">
                 <div class="result-group">
                     <h2>Header</h2>
                     <div class="scroll">
-                        <div style="height:400px;  overflow-y:auto;">
+                        <div style="overflow-y:auto;">
 					<pre>
                        <p id="header"></p>
                     </pre>
@@ -63,7 +69,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="result-group">
+                <div class="result-group" style="margin-top: 20px">
                     <h2>Discovery-Endpoint</h2>
                     <div class="scroll">
                         <div style="height:400px;  overflow-y:auto;">

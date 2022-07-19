@@ -232,21 +232,21 @@ export class FlowsService {
   ): Promise<[string, FlowResultDto]> {
     if (issuer_s === undefined || issuer_s === '') {
       throw new HttpException(
-        'There was no issuer to validate the token against!',
+        'There was no issuer to validate the token against for authorization code flow!',
         HttpStatus.BAD_REQUEST,
       );
     }
 
     if (clientId === undefined || clientId === '') {
       throw new HttpException(
-        'There was no client id provided',
+        'There was no client id provided for authorization code flow',
         HttpStatus.UNAUTHORIZED,
       );
     }
 
     if (clientSecret === undefined || clientSecret === '') {
       throw new HttpException(
-        'There was no client secret provided',
+        'There was no client secret provided for authorization code flow',
         HttpStatus.UNAUTHORIZED,
       );
     }
@@ -311,7 +311,7 @@ export class FlowsService {
       ];
     }
 
-    this.protocolService.extendedLog('Decode retrieved token');
+    this.protocolService.extendedLog('Decode retrieved token for authorization code flow');
     const result = await this.tokenService
       .decodeToken(tokenString)
       .then(async ([header, payload]) => {
@@ -322,7 +322,7 @@ export class FlowsService {
               await this.utilsService.writeOutput(
                 header + '\n' + payload + '\n' + message,
               );
-              this.protocolService.extendedLogSuccess('Token decoded');
+              this.protocolService.extendedLogSuccess('Token decoded for authorization code flow');
               return new FlowResultDto({
                 success: true,
                 message: 'Request and validation successful',
@@ -330,10 +330,10 @@ export class FlowsService {
                 header: header,
               });
             } else {
-              this.protocolService.extendedLogError('Token validation failed');
+              this.protocolService.extendedLogError('Token validation failed for authorization code flow');
               return new FlowResultDto({
                 success: true,
-                message: `Request successful, but validation failed: ${message}`,
+                message: `Request successful, but validation failed for authorization code flow: ${message}`,
                 payload: payload,
                 header: header,
               });

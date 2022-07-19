@@ -24,15 +24,15 @@ export class ExtendedProtocolService {
     }
 
     async extendedLogError(message: string) {
-        this.extendedLogHelper(message, 'red');
+        await this.extendedLogHelper(message, 'red');
     }
 
     async extendedLogSuccess(message: string) {
-        this.extendedLogHelper(message, 'green');
+        await this.extendedLogHelper(message, 'green');
     }
 
     async extendedLog(message: string) {
-        this.extendedLogHelper(message, 'black');
+        await this.extendedLogHelper(message, 'black');
     }
 
     private async extendedLogHelper(message: string, color: string) {

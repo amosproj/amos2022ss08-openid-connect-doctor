@@ -10,8 +10,8 @@
 <body>
     <div class="container">
         <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-            <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
-                <span class="btn btn-outline-secondary me-2">Back to Discovery</span>
+            <a href="/api/flows/index?issuer_s={{issuer_s}}" role="button" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+                <span class="btn btn-outline-secondary me-2">Back to Overview</span>
             </a>
 
             <a href="/api/protocol/logger" class="nav col-12 col-md-auto mb-2 mb-md-0 text-decoration-none">
@@ -29,7 +29,7 @@
         <form class="input-form" method="post" action="/api/flows/cc">
             <div class="row mb-3">
                 <label class="col-sm-2 col-form-label" for="issuerUrl">Issuer</label>
-                <input type="text" id="issuerUrl" class="col-sm-10" name="issuerUrl" aria-label="Issuer input"  placeholder="Input your issuer here" aria-placeholder="Input your issuer here"/>
+                <input type="text" id="issuerUrl" class="col-sm-10" name="issuerUrl" value="{{issuer_s}}" aria-label="Issuer input"  placeholder="Input your issuer here" aria-placeholder="Input your issuer here"/>
             </div>
             <div class="row mb-3">
                 <label class="col-sm-2 col-form-label" for="clientId">Client-ID</label>

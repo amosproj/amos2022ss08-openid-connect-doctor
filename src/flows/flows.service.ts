@@ -9,9 +9,13 @@ import { DiscoveryService } from '../discovery/discovery.service';
 import { ExtendedProtocolService } from '../extended-protocol/extended-protocol.service';
 import { FlowResultDto } from './Dto/clientCredentialFlowResult.dto';
 import { UtilsService } from '../utils/utils.service';
+import { AuthenticationFlowsResultDto } from './Dto/authenticationFlowsResult.dto';
+import { SettingsService } from '../settings/settings.service';
 
 @Injectable()
 export class FlowsService {
+  @Inject(SettingsService)
+  private readonly settingsService: SettingsService;
   @Inject(TokenService)
   private readonly tokenService: TokenService;
   @Inject(ExtendedProtocolService)
@@ -69,6 +73,60 @@ export class FlowsService {
       );
 
     return result;
+  }
+
+  async getAllowedGrantTypes(
+    issuer_s: string,
+  ): Promise<AuthenticationFlowsResultDto> {
+    if (issuer_s === undefined || issuer_s === '') {
+      throw new HttpException(
+        'There was no issuer to validate the token against!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    try {
+      const issuer = await this.discoveryService.get_issuer(issuer_s);
+      let allowedGrantTypes = issuer['grant_types_supported'];
+
+      if (allowedGrantTypes === undefined || allowedGrantTypes.length == 0) {
+        allowedGrantTypes = ['authorization_code', 'implicit'];
+      }
+
+      const allowClientCredentials = this.grantTypeIsAllowed(
+        allowedGrantTypes,
+        'client_credentials',
+      );
+
+      const allowPasswordGrant = this.grantTypeIsAllowed(
+        allowedGrantTypes,
+        'password',
+      );
+
+      const allowAuthorizationCode = this.grantTypeIsAllowed(
+        allowedGrantTypes,
+        'authorization_code',
+      );
+
+      return new AuthenticationFlowsResultDto({
+        allowClientCredentials: allowClientCredentials,
+        allowPasswordGrant: allowPasswordGrant,
+        allowAuthorizationCode: allowAuthorizationCode,
+      });
+    } catch (error) {
+      this.protocolService.extendedLogError(
+        'Failed to retrieve the allowed grant-types',
+      );
+      return undefined;
+    }
+  }
+
+  private grantTypeIsAllowed(allowedGrantTypes, granttype: string): boolean {
+    return (
+      (allowedGrantTypes.includes('client_credentials') ||
+        this.settingsService.config.flows.always_on.includes(granttype)) &&
+      this.settingsService.config.flows.always_off.includes(granttype) === false
+    );
   }
 
   async clientCredentials(

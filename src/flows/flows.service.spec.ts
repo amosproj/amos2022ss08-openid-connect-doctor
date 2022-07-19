@@ -77,4 +77,96 @@ describe('FlowsService', () => {
       ).rejects.toThrow('There was no client secret provided');
     });
   });
+
+  describe('authorizationFlow', () => {
+    it('should fail if no issuer is provided', async () => {
+      await expect(
+        service.authorizationFlow(
+          undefined,
+          'client_id',
+          'client_secret',
+          'myURL',
+          'redirectURI',
+        ),
+      ).rejects.toThrow('There was no issuer to validate the token against for authorization code flow!');
+    });
+
+    it('should fail if issuer is empty', async () => {
+      await expect(
+        service.authorizationFlow('', 'client_id', 'client_secret', 'myURL', 'redirectURI'),
+      ).rejects.toThrow('There was no issuer to validate the token against for authorization code flow!');
+    });
+
+    it('should fail if no client id is provided', async () => {
+      await expect(
+        service.authorizationFlow(
+          'issuer_s',
+          undefined,
+          'client_secret',
+          'myURL',
+          'redirectURI',
+        ),
+      ).rejects.toThrow('There was no client id provided for authorization code flow');
+    });
+
+    it('should fail if client id is empty', async () => {
+      await expect(
+        service.authorizationFlow('issuer_s', '', 'client_secret', 'myURL', 'redirectURI'),
+      ).rejects.toThrow('There was no client id provided for authorization code flow');
+    });
+
+    it('should fail if no client secret is provided', async () => {
+      await expect(
+        service.authorizationFlow(
+          'issuer_s',
+          'client_id',
+          undefined,
+          'myURL',
+          'redirectURI'
+        ),
+      ).rejects.toThrow('There was no client secret provided for authorization code flow');
+    });
+
+    it('should fail if client secret is empty', async () => {
+      await expect(
+        service.authorizationFlow('issuer_s', 'client_id', '', 'myURL', 'redirecURI'),
+      ).rejects.toThrow('There was no client secret provided for authorization code flow');
+    });
+
+    it('should fail if no url is provided', async () => {
+      await expect(
+        service.authorizationFlow(
+          'issuer_s',
+          'client_id',
+          'client_secret',
+          undefined,
+          'redirectURI',
+        ),
+      ).rejects.toThrow('There is no url provided for the authorization flow!');
+    });
+
+    it('should fail if url is empty', async () => {
+      await expect(
+        service.authorizationFlow('issuer_s', 'client_id', 'client_secret', '', 'redirecURI'),
+      ).rejects.toThrow('There is no url provided for the authorization flow!');
+    });
+
+    it('should fail if no redirectURI is provided', async () => {
+      await expect(
+        service.authorizationFlow(
+          'issuer_s',
+          'client_id',
+          'client_secret',
+          'myURL',
+          undefined,
+        ),
+      ).rejects.toThrow('There was no redirectURI provided!');
+    });
+
+    it('should fail if redirectedURI is empty', async () => {
+      await expect(
+        service.authorizationFlow('issuer_s', 'client_id', 'client_secret', 'myURL', ''),
+      ).rejects.toThrow('There was no redirectURI provided!');
+    });
+  })
 });

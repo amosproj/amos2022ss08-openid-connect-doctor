@@ -3,12 +3,13 @@ import { join } from 'path';
 import { SettingsService } from '../settings/settings.service';
 import { HelperService } from '../helper/helper.service';
 import { promises as fsPromises } from 'fs';
+import {FileHandle} from "fs/promises";
 
 @Injectable()
 export class ExtendedProtocolService {
     private readonly logPath = './logfiles';
     private readonly extLogFileName = './extLogger.html';
-    private extLogFile = undefined;
+    private extLogFile: FileHandle ;
     private extLogBuffer : string = '';
 
     private logger: Logger;

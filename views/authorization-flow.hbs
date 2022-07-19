@@ -85,15 +85,14 @@
 
 <script type="text/javascript">
     function login() {
-        const authIssuer = "http://localhost:8080/realms/myrealm/protocol/openid-connect/auth";
         const client_id = document.getElementById("clientId").value;
         const client_secret = document.getElementById("clientSecret").value;
         const customUri = document.getElementById("customUri").value;
-        const callback_uri = "http://localhost:8081/api/flows/callback"
+        const callback_uri = 'http://localhost:8081/api/flows/callback';
         const responseType = "code";
         const state = randomString(10);
 
-        let popUpWindow = authURL(authIssuer, client_id, client_secret, callback_uri, responseType, state)
+        let popUpWindow = authURL(customUri, client_id, client_secret, callback_uri, responseType, state)
         let myURL = extractURL(popUpWindow);
 
         let interval = setInterval(() => {

@@ -60,9 +60,7 @@ export class FlowsController {
           authInputDto.clientSecret,
           authInputDto.url,
           authInputDto.redirectUri,
-        )
-        console.log(discoveryResult);
-        console.log(decodingResult);
+        );
         result = {
             showResults: decodingResult.success,
             message: decodingResult.message,

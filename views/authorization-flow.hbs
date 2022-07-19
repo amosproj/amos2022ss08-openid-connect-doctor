@@ -37,18 +37,46 @@
             </div>
         </form>
     </div>
-    <div class="container" style="padding-bottom: 10px;margin-bottom: 5px">
-         <h5>Discover message</h5>
 
-        <div class="scroll">
-            <div style="height:400px;  overflow-y:auto;">
+    <div class="container"  id="myDIV" style="padding-bottom: 10px;margin-bottom: 5px;display: none" >
+        <h2>Flow-Result</h2>
+
+        <p id="message"></p>
+            <div class="results-item">
+                <div class="result-group">
+                    <h2>Header</h2>
+                    <div class="scroll">
+                        <div style="height:400px;  overflow-y:auto;">
+					<pre>
+                       <p id="header"></p>
+                    </pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="result-group">
+                    <h2>Payload</h2>
+                    <div class="scroll">
+                        <div style="height:400px;  overflow-y:auto;">
+					<pre>
+                       <p id="payload"></p>
+                    </pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="result-group">
+                    <h2>Discovery-Endpoint</h2>
+                    <div class="scroll">
+                        <div style="height:400px;  overflow-y:auto;">
 					<pre>
                        <p id="discoveryMessage"></p>
                     </pre>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
     </div>
 </div>
+
 <script type="text/javascript">
     function login() {
         const authIssuer = "http://localhost:8080/realms/myrealm/protocol/openid-connect/auth";
@@ -79,25 +107,28 @@
                     }).then((response) => response.json()) //2
                         .then((result) => {
                             console.log(result); //3
+                            document.getElementById("message").innerHTML =result.message;
+                            document.getElementById("header").innerHTML =result.header;
+                            document.getElementById("payload").innerHTML =result.payload;
                             document.getElementById("discoveryMessage").innerHTML =result.discoveryResult;
+                            console.log("Show result status: "+result.showResults);
+                            if(result.showResults){
+                                var toggle = document.getElementById("myDIV");
+                                if (toggle.style.display === "none") {
+                                    toggle.style.display = "block";
+                                }
+                            }
+
                         });
-                      /*  let result = res.json();
+
                         popUpWindow.close();
-                        alert(result);
-                        console.log("####");
-                        console.log(result);*/
-                        /*window.location.href = 'http://localhost:8081/api/flows/authResult?discoveryResult=' +
-                        JSON.stringify(result.discoveryResult) + '&header=' + JSON.stringify(result.header) +
-                        '&message=' & JSON.stringify(result.message) + '&payload=' +
-                        JSON.stringify(result.payload) + '&showResults=' + result.showResults*/
-                    //window.location.href = redirect_uri;
-                    //console.log(response);
             } else {
                 myURL = extractURL(popUpWindow);
                 console.log("In else block")
             }
         }, 1000);
     }
+
 
     function extractURL(window) {
         return window.location.href;

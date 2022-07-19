@@ -57,13 +57,9 @@
                                         {{/each}}
                                         {{/if}}
                                     </select>
-                                </div><br>
-                                <div class="d-flex flex-row align-content-start">
-                                    <label class="w-50" for="schema_local_selector"> Local: </label>
-                                    <input class="w-50" type="file" id="schema_local_selector" name="schema_file">
                                 </div>
                             </div>
-                        </div>
+                        </div><br>
                     </div>
                     <p>
                     <a class="btn btn-outline-secondary" data-bs-toggle="collapse" href="#payloadSettings" role="button" aria-expanded="false" aria-controls="payloadSettings">
@@ -72,24 +68,33 @@
                     </p>
                     <div class="collapse flex-wrap align-items-center w-100" id="payloadSettings">
                         <div class="card card-body d-flex flex-row align-content-start w-100">
-                            <label class="w-50" for="schema_selector"> Select schema (uploaded or local): </label>
+                            <label class="w-50" for="schema_selector"> Select schema: </label>
                             <div class="d-flex flex-column align-content-start w-50">
                                 <div class="d-flex flex-row align-content-start">
-                                    <label class="w-50" for="schema_uploaded_selector_payload"> Uploaded: </label>
-                                    <select class="w-50" name="schema_payload" id="schema_uploaded_selector_payload">
+                                    <label class="w-50" for="schema_uploaded_selector_payload"></label>
+                                    {{#if validated_payload_against_schema}}
+                                    <div class="card text-white bg-{{#if decoding_error}}danger{{else}}success{{/if}} mb-3" style="max-width: 18rem;">
+                                        <div class="card-header">
+                                            {{#if decoding_error}}
+                                            Schema didn't match
+                                            {{else}}
+                                            Schema matched
+                                            {{/if}}
+                                        </div>
+                                    {{/if}}
+                                    <select class="w-{{#if validated_payload_against_schema}}100{{else}}50{{/if}}" name="schema_payload" id="schema_uploaded_selector_payload">
                                         {{#if schemas}}
                                         {{#each schemas as |schema|}}
                                         <option value="{{ schema }}">{{ schema }}</option>
                                         {{/each}}
                                         {{/if}}
                                     </select>
-                                </div><br>
-                                <div class="d-flex flex-row align-content-start">
-                                    <label class="w-50" for="schema_local_selector_payload"> Local: </label>
-                                    <input class="w-50" type="file" id="schema_local_selector_payload" name="schema_file_payload">
+                                    {{#if validated_payload_against_schema}}
+                                    </div>
+                                    {{/if}}
                                 </div>
                             </div>
-                        </div>
+                        </div><br>
                     </div>
                     <div class="card card-body d-flex flex-row align-content-start w-100">
                         <label class="w-50" for="getKeysFromProvider">Use Key-Material from JWKS-Endpoint?</label>

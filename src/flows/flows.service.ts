@@ -253,7 +253,7 @@ export class FlowsService {
 
     if (url === undefined || url === '') {
       throw new HttpException(
-        'There is no code provided for the authorization flow!',
+        'There is no url provided for the authorization flow!',
         HttpStatus.UNAUTHORIZED,
       );
     }

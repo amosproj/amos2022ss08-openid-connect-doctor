@@ -1,3 +1,5 @@
+//SDPX-License-Identifier: MIT
+//SDPX-FileCopyrightText: 2022 Michael Kupfer <michael.kupfer@fau.de>
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Issuer } from "openid-client";
 import Ajv, { JSONSchemaType } from "ajv"

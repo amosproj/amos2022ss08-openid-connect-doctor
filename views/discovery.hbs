@@ -1,3 +1,6 @@
+<!--SDPX-License-Identifier: MIT-->
+<!--SDPX-FileCopyrightText: 2022 Michael Kupfer <michael.kupfer@fau.de>-->
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -18,29 +21,29 @@
             <div class="container">
                 <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
                     <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
-                        <span class="fs-4 btn btn-outline-primary me-2">Back</span>
+                        <span class="btn btn-outline-secondary me-2">Back</span>
                     </a>
 
-                    <ul class="fs-4 nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                        <li><a href="/api/protocol/logger" class="nav-link">Protocol</a></li>
-                    </ul>
+                    <a href="/api/protocol/logger" class="nav col-12 col-md-auto mb-2 mb-md-0 text-decoration-none">
+                        <span class="btn btn-outline-secondary me-2">Protocol</span>
+                    </a>
 
                     <a class="col-md-3 text-end">
-                        <span class="fs-4 btn btn-primary me-2">Test Authentication</span>
+                        <span class="btn btn-outline-secondary me-2">Test Authentication</span>
                     </a>
                 </header>
             </div>
             <div class="container py-3 mb-4 border-bottom">
                 <p>
-                <a class="btn btn-primary" data-bs-toggle="collapse" href="#advancedSettings" role="button" aria-expanded="false" aria-controls="advancedSettings">
+                <a class="btn btn-outline-secondary" data-bs-toggle="collapse" href="#advancedSettings" role="button" aria-expanded="false" aria-controls="advancedSettings">
                     Advanced Settings
                 </a>
                 </p>
                 <div class="collapse flex-wrap align-items-center w-100" id="advancedSettings">
                     <form id="issuer_form" action="/api/discovery/issuer" method="post">
-                        <input type="text" id="issuer_url" name="issuer_url" class="url" value="{{result.previous_issuer}}" hidden>
+                        <input type="text" id="issuer_url" name="issuer_url" class="url" value="{{previous.issuer}}" hidden>
                         <div class="card card-body d-flex flex-column align-content-start w-100">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">Filter</button>
+                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#filterModal">Filter</button>
                             <div class="modal fade bg-secondary" tabindex="-1" role="dialog" id="filterModal" aria-labelledby="filterModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content rounded-4 shadow">
@@ -48,82 +51,84 @@
                                             <h5 class="modal-title">Select filters</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <div class="modal-body py-0">
-                                            <p>Select the fields you want to see</p>
-                                            <div class="btn-group-vertical" role="group" aria-label="Filter checkboxes">
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="authorization_endpoint_checkbox" name="authorization_endpoint" value="1" {{#if result.previously_checked.authorization_endpoint}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="authorization_endpoint_checkbox"> authorization_endpoint </label>
+                                        <div class="modal-body py-0 justify-content-center">
+                                            <div class="d-flex flex-column">
+                                                <p>Select the fields you want to see</p>
+                                                <div class="btn-group-vertical w-90" role="group" aria-label="Filter checkboxes">
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="authorization_endpoint_checkbox" name="authorization_endpoint" value="1" {{#if previous.checked.authorization_endpoint}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="authorization_endpoint_checkbox"> authorization_endpoint </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="claim_types_supported_checkbox" name="claim_types_supported" value="1" {{#if result.previously_checked.claim_types_supported}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="claim_types_supported_checkbox"> claim_types_supported </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="claim_types_supported_checkbox" name="claim_types_supported" value="1" {{#if previous.checked.claim_types_supported}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="claim_types_supported_checkbox"> claim_types_supported </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="claims_parameter_supported_checkbox" name="claims_parameter_supported" value="1" {{#if result.previously_checked.claims_parameter_supported}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="claims_parameter_supported_checkbox"> claims_parameter_supported </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="claims_parameter_supported_checkbox" name="claims_parameter_supported" value="1" {{#if previous.checked.claims_parameter_supported}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="claims_parameter_supported_checkbox"> claims_parameter_supported </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="claims_supported_checkbox" name="claims_supported" value="1" {{#if result.previously_checked.claims_supported}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="claims_supported_checkbox"> claims_supported </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="claims_supported_checkbox" name="claims_supported" value="1" {{#if previous.checked.claims_supported}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="claims_supported_checkbox"> claims_supported </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="code_challenge_methods_supported_checkbox" name="code_challenge_methods_supported" value="1" {{#if result.previously_checked.code_challenge_methods_supported}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="code_challenge_methods_supported_checkbox"> code_challenge_methods_supported </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="code_challenge_methods_supported_checkbox" name="code_challenge_methods_supported" value="1" {{#if previous.checked.code_challenge_methods_supported}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="code_challenge_methods_supported_checkbox"> code_challenge_methods_supported </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="device_authorization_endpoint_checkbox" name="device_authorization_endpoint" value="1" {{#if result.previously_checked.device_authorization_endpoint}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="device_authorization_endpoint_checkbox"> device_authorization_endpoint </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="device_authorization_endpoint_checkbox" name="device_authorization_endpoint" value="1" {{#if previous.checked.device_authorization_endpoint}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="device_authorization_endpoint_checkbox"> device_authorization_endpoint </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="grant_types_supported_checkbox" name="grant_types_supported" value="1" {{#if result.previously_checked.grant_types_supported}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="grant_types_supported_checkbox"> grant_types_supported </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="grant_types_supported_checkbox" name="grant_types_supported" value="1" {{#if previous.checked.grant_types_supported}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="grant_types_supported_checkbox"> grant_types_supported </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="id_token_signing_alg_values_supported_checkbox" name="id_token_signing_alg_values_supported" value="1" {{#if result.previously_checked.id_token_signing_alg_values_supported}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="id_token_signing_alg_values_supported_checkbox"> id_token_signing_alg_values_supported </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="id_token_signing_alg_values_supported_checkbox" name="id_token_signing_alg_values_supported" value="1" {{#if previous.checked.id_token_signing_alg_values_supported}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="id_token_signing_alg_values_supported_checkbox"> id_token_signing_alg_values_supported </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="issuer_checkbox" name="issuer" value="1" {{#if result.previously_checked.issuer}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="issuer_checkbox"> issuer </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="issuer_checkbox" name="issuer" value="1" {{#if previous.checked.issuer}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="issuer_checkbox"> issuer </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="jwks_uri_checkbox" name="jwks_uri" value="1" {{#if result.previously_checked.jwks_uri}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="jwks_uri_checkbox"> jwks_uri </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="jwks_uri_checkbox" name="jwks_uri" value="1" {{#if previous.checked.jwks_uri}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="jwks_uri_checkbox"> jwks_uri </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="request_parameter_supported_checkbox" name="request_parameter_supported" value="1" {{#if result.previously_checked.request_parameter_supported}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="request_parameter_supported_checkbox"> request_parameter_supported </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="request_parameter_supported_checkbox" name="request_parameter_supported" value="1" {{#if previous.checked.request_parameter_supported}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="request_parameter_supported_checkbox"> request_parameter_supported </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="request_uri_parameter_supported_checkbox" name="request_uri_parameter_supported" value="1" {{#if result.previously_checked.request_uri_parameter_supported}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="request_uri_parameter_supported_checkbox"> request_uri_parameter_supported </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="request_uri_parameter_supported_checkbox" name="request_uri_parameter_supported" value="1" {{#if previous.checked.request_uri_parameter_supported}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="request_uri_parameter_supported_checkbox"> request_uri_parameter_supported </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="require_request_uri_registration_checkbox" name="require_request_uri_registration" value="1" {{#if result.previously_checked.require_request_uri_registration}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="require_request_uri_registration_checkbox"> require_request_uri_registration </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="require_request_uri_registration_checkbox" name="require_request_uri_registration" value="1" {{#if previous.checked.require_request_uri_registration}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="require_request_uri_registration_checkbox"> require_request_uri_registration </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="response_modes_supported_checkbox" name="response_modes_supported" value="1" {{#if result.previously_checked.response_modes_supported}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="response_modes_supported_checkbox"> response_modes_supported </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="response_modes_supported_checkbox" name="response_modes_supported" value="1" {{#if previous.checked.response_modes_supported}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="response_modes_supported_checkbox"> response_modes_supported </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="response_types_supported_checkbox" name="response_types_supported" value="1" {{#if result.previously_checked.response_types_supported}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="response_types_supported_checkbox"> response_types_supported </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="response_types_supported_checkbox" name="response_types_supported" value="1" {{#if previous.checked.response_types_supported}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="response_types_supported_checkbox"> response_types_supported </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="revocation_endpoint_checkbox" name="revocation_endpoint" value="1" {{#if result.previously_checked.revocation_endpoint}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="revocation_endpoint_checkbox"> revocation_endpoint </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="revocation_endpoint_checkbox" name="revocation_endpoint" value="1" {{#if previous.checked.revocation_endpoint}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="revocation_endpoint_checkbox"> revocation_endpoint </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="revocation_endpoint_auth_methods_supported_checkbox" name="revocation_endpoint_auth_methods_supported" value="1" {{#if result.previously_checked.revocation_endpoint_auth_methods_supported}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="revocation_endpoint_auth_methods_supported_checkbox"> revocation_endpoint_auth_methods_supported </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="revocation_endpoint_auth_methods_supported_checkbox" name="revocation_endpoint_auth_methods_supported" value="1" {{#if previous.checked.revocation_endpoint_auth_methods_supported}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="revocation_endpoint_auth_methods_supported_checkbox"> revocation_endpoint_auth_methods_supported </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="scopes_supported_checkbox" name="scopes_supported" value="1" {{#if result.previously_checked.scopes_supported}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="scopes_supported_checkbox"> scopes_supported </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="scopes_supported_checkbox" name="scopes_supported" value="1" {{#if previous.checked.scopes_supported}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="scopes_supported_checkbox"> scopes_supported </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="subject_types_supported_checkbox" name="subject_types_supported" value="1" {{#if result.previously_checked.subject_types_supported}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="subject_types_supported_checkbox"> subject_types_supported </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="subject_types_supported_checkbox" name="subject_types_supported" value="1" {{#if previous.checked.subject_types_supported}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="subject_types_supported_checkbox"> subject_types_supported </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="token_endpoint_checkbox" name="token_endpoint" value="1" {{#if result.previously_checked.token_endpoint}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="token_endpoint_checkbox"> token_endpoint </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="token_endpoint_checkbox" name="token_endpoint" value="1" {{#if previous.checked.token_endpoint}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="token_endpoint_checkbox"> token_endpoint </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="token_endpoint_auth_methods_supported_checkbox" name="token_endpoint_auth_methods_supported" value="1" {{#if result.previously_checked.token_endpoint_auth_methods_supported}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="token_endpoint_auth_methods_supported_checkbox"> token_endpoint_auth_methods_supported </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="token_endpoint_auth_methods_supported_checkbox" name="token_endpoint_auth_methods_supported" value="1" {{#if previous.checked.token_endpoint_auth_methods_supported}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="token_endpoint_auth_methods_supported_checkbox"> token_endpoint_auth_methods_supported </label>
 
-                                                <input type="checkbox" class="btn-check" autocomplete="off" id="userinfo_endpoint_checkbox" name="userinfo_endpoint" value="1" {{#if result.previously_checked.userinfo_endpoint}} checked{{/if}}>
-                                                <label class="btn btn-outline-primary" for="userinfo_endpoint_checkbox"> userinfo_endpoint </label>
+                                                    <input type="checkbox" class="btn-check" autocomplete="off" id="userinfo_endpoint_checkbox" name="userinfo_endpoint" value="1" {{#if previous.checked.userinfo_endpoint}} checked{{/if}}>
+                                                    <label class="btn btn-outline-secondary" for="userinfo_endpoint_checkbox"> userinfo_endpoint </label>
+                                                </div>
                                             </div>
-					    <div class="d-flex flex-row">
-						    <button type="button" id="btn_disableAll" class="btn btn-light w-50 mx-2">Disable All</button><br><br>
-						    <button type="button" id="btn_enableAll" class="btn btn-light w-50 mx-2">Enable All</button>
-					    </div>
+                                            <div class="d-flex flex-row mt-2">
+                                                <button type="button" id="btn_disableAll" class="btn btn-light w-50 mx-2">Disable All</button><br><br>
+                                                <button type="button" id="btn_enableAll" class="btn btn-light w-50 mx-2">Enable All</button>
+                                            </div>
                                         </div>
                                         <div class="modal-footer flex-column border-top-0">
-                                            <button type="submit" class="btn btn-lg btn-primary w-100 mx-0 mb-2">Apply filters</button>
+                                            <button type="submit" class="btn btn-lg btn-outline-secondary w-100 mx-0 mb-2">Apply filters</button>
                                             <button type="button" class="btn btn-lg btn-light w-100 mx-0" data-bs-dismiss="modal">Close</button>
                                         </div>
                                     </div>
@@ -131,44 +136,28 @@
                             </div>
                         </div>
                         <div class="card card-body container d-flex flex-row align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-                            {{#if schemas}}
+                            {{#if previous.schemas}}
                             <label class="w-50" for="schema_selector"> Select validation schema: </label>
-                            <select class="form-select w-25 mx-4" aria-label="Validation schema select" name="schema" id="schema_selector">
-                                {{#each schemas as |schema|}}
+			    {{#if previous.validated_against_schema}}
+			    <div class="card text-white bg-{{#if result.schema_validation_success}}success{{else}}danger{{/if}} mb-3" style="max-width: 18rem;">
+				      <div class="card-header">
+					      {{#if result.schema_validation_success}}
+					      Schema matched
+					      {{else}}
+					      Schema didn't match
+					      {{/if}}
+				      </div>
+			    {{/if}}
+			    <select class="form-select w-{{#if previous.validated_against_schema}}100{{else}}25 mx-4{{/if}}" aria-label="Validation schema select" name="schema" id="schema_selector">
+                                {{#each previous.schemas as |schema|}}
                                 <option value="{{ schema }}">{{ schema }}</option>
                                 {{/each}}
                             </select>
-                            <button type="submit" id="apply_schema_btn" class="btn btn-lg btn-primary w-25 mx-0 mb-2">Apply schema</button>
+			    {{#if previous.validated_against_schema}}
+			    </div>
+			    {{/if}}
+                            <button type="submit" id="apply_schema_btn" class="btn btn-lg btn-outline-secondary w-25 mx-0 mb-2">Apply schema</button>
                             {{/if}}
-                        </div>
-                    </form>
-                    <form id="upload_schema" enctype="multipart/form-data" method="post" action="/api/discovery/schema/upload">
-                        <div class="card card-body container d-flex flex-row align-items-center justify-content-center justify-content-md-between py-3 mb-4">
-                            <label class="w-50" for="file_upload">Upload schema: </label>
-                            <input class="w-25 mx-4" type="file" id="file_upload" name="upload">
-                            <button type="submit" id="upload_schema_submit" class="btn btn-lg btn-primary w-25 mx-0 mb-2">Upload schema</button>
-                        </div>
-                    </form>
-                    <form id="download_schema_form" action="/api/discovery/schema/download">
-                        <div class="card card-body container d-flex flex-row align-items-center justify-content-center justify-content-md-between py-3 mb-4">
-                            <label class="w-50" for="schema_download_selector"> Download schema: </label>
-                            <select class="form-select w-25 mx-4" name="schema" id="schema_download_selector">
-                                {{#each schemas as |schema|}}
-                                    <option value="{{ schema }}">{{ schema }}</option>
-                                {{/each}}
-                            </select>
-                            <button id="download_schema_btn" type="submit" class="btn btn-lg btn-primary w-25 mx-0 mb-2">Download schema</button>
-                        </div>
-                    </form>
-                    <form id="delete_schema_form" action="/api/discovery/schema/delete">
-                        <div class="card card-body container d-flex flex-row align-items-center justify-content-center justify-content-md-between py-3 mb-4">
-                            <label class="w-50" for="schema_delete_selector"> Delete schema: </label>
-                            <select class="form-select w-25 mx-4" name="schema" id="schema_delete_selector">
-                                {{#each schemas as |schema|}}
-                                    <option value="{{ schema }}">{{ schema }}</option>
-                                {{/each}}
-                            </select>
-                            <button id="delete_schema_btn" type="submit" class="btn btn-lg btn-primary w-25 mx-0 mb-2">Delete schema</button>
                         </div>
                     </form>
                 </div>
@@ -176,7 +165,7 @@
             <div class="container">
                 {{#if result.success}}
                 <p>
-                <a class="btn btn-primary" data-bs-toggle="collapse" href="#resultContainer" role="button" aria-expanded="false" aria-controls="resultContainer">
+                <a class="btn btn-outline-secondary" data-bs-toggle="collapse" href="#resultContainer" role="button" aria-expanded="false" aria-controls="resultContainer">
                     Toggle Results
                 </a>
                 </p>
@@ -188,11 +177,11 @@
                 </p>
                 {{/if}}
                 <div class="collapse show" id="resultContainer">
-                    <button class="btn btn-primary" onclick="download('discovery.txt', $('#resultText').text())">Download</button>
-                    <button class="btn btn-primary" onclick="clipboard($('#resultText').text())">Copy results</button>
+                    <button class="btn btn-outline-secondary" onclick="download('discovery.txt', $('#resultText').text())">Download</button>
+                    <button class="btn btn-outline-secondary" onclick="clipboard($('#resultText').text())">Copy results</button>
                     <div class="card card-body" id="resultText">
                         <pre>
-{{{result.info}}}
+{{{result.html_result}}}
                         </pre>
                     </div>
                 </div>

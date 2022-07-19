@@ -1,5 +1,6 @@
 //SDPX-License-Identifier: MIT
 //SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
+//SDPX-FileCopyrightText: 2022 Michael Kupfer <michael.kupfer@fau.de>
 
 import {
   Controller,
@@ -20,6 +21,7 @@ import { join } from 'path';
 import { DiscoveryService } from './discovery.service';
 import { DiscoveryDto } from './discovery.dto';
 import { UtilsService } from '../utils/utils.service';
+import { DiscoveryResult } from './discoveryResult.dto';
 
 @Controller('discovery')
 export class DiscoveryController {
@@ -37,7 +39,7 @@ export class DiscoveryController {
         success: 1,
         info: null,
         previously_checked: this.discoveryService.getDefaultCheckboxes(),
-		previous_issuer: null,
+        previous_issuer: null,
       },
       short_message: 'Please input provider url',
       schemas: schemas,
@@ -57,8 +59,17 @@ export class DiscoveryController {
       undefined,
       dto,
     );
-    await this.utilsService.writeOutput(res.result.info);
+    res.previous.checked = this.checkboxes_to_discoveryDto();
+    await this.utilsService.writeOutput(res.result.html_result);
     return res;
+  }
+
+  private checkboxes_to_discoveryDto(): DiscoveryDto {
+    const dto = new DiscoveryDto();
+    for (const def_checkbox in this.discoveryService.getDefaultCheckboxes()) {
+      dto[def_checkbox] = '1';
+    }
+    return dto;
   }
 
   @Post('issuer')
@@ -71,7 +82,7 @@ export class DiscoveryController {
       keys,
       discoveryDto,
     );
-    await this.utilsService.writeOutput(res.result.info);
+    await this.utilsService.writeOutput(res.result.html_result);
     return res;
   }
 
@@ -90,18 +101,23 @@ export class DiscoveryController {
     issuer_url_s: string,
     keys: any[],
     checkboxes: DiscoveryDto,
-  ) {
+  ): Promise<DiscoveryResult> {
     const schemas = await this.discoveryService.getSchemas(schema_s);
+    const previous = {
+      checked: checkboxes,
+      issuer: issuer_url_s,
+      schemas: schemas,
+      validated_against_schema: schema_s !== '' ? true : false,
+    };
     if (issuer_url_s === undefined) {
       return {
         result: {
-          success: 1,
-          info: null,
-          previously_checked: null,
-		  previous_issuer: issuer_url_s,
+          success: true,
+          schema_validation_success: false,
+          html_result: null,
         },
         short_message: 'Please input provider url',
-        schemas: schemas,
+        previous: previous,
       };
     }
     let short_message = 'Provider found:';
@@ -112,8 +128,6 @@ export class DiscoveryController {
           {
             success: 1,
             info: JSON.stringify(issuer, keys, 2),
-            previously_checked: checkboxes,
-			previous_issuer: issuer_url_s,
           },
           issuer,
         ];
@@ -123,8 +137,6 @@ export class DiscoveryController {
           {
             success: 0,
             info: err,
-            previously_checked: null,
-		    previous_issuer: issuer_url_s,
           },
           null,
         ];
@@ -146,9 +158,13 @@ export class DiscoveryController {
       }
     }
     return {
-      result: issuer_query_res,
+      result: {
+        success: issuer_query_res.success,
+        schema_validation_success: issuer_query_res.success,
+        html_result: issuer_query_res.info,
+      },
       short_message: short_message,
-      schemas: schemas,
+      previous: previous,
     };
   }
 

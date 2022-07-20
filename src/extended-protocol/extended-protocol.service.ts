@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import {HttpException, Inject, Injectable, Logger} from '@nestjs/common';
 import { join } from 'path';
 import { SettingsService } from '../settings/settings.service';
 import { HelperService } from '../helper/helper.service';
@@ -24,20 +24,32 @@ export class ExtendedProtocolService {
     }
 
     async extendedLogError(message: string) {
+        if (message === undefined || message === null) {
+            throw new HttpException('Extended Log Error message can not be undefined or null', 400);
+        }
         await this.extendedLogHelper(message, 'red');
     }
 
     async extendedLogSuccess(message: string) {
+        if (message === undefined || message === null) {
+            throw new HttpException('Extended Log Success message can not be undefined or null', 400);
+        }
         await this.extendedLogHelper(message, 'green');
     }
 
     async extendedLog(message: string) {
-        await this.extendedLogHelper(message, 'black');
+        if (message === undefined || message === null) {
+            throw new HttpException('Extended Log message can not be undefined or null', 400);
+        }
+       await this.extendedLogHelper(message, 'black');
     }
 
-    private async extendedLogHelper(message: string, color: string) {
+     async extendedLogHelper(message: string, color: string) {
+         if (message === undefined || message === null || typeof(message)=== undefined || color===undefined) {
+             throw new HttpException('Extended Log Helper can not be undefined or null', 400);
+         }
         const logFile = join(this.logPath, this.extLogFileName);
-        if (typeof(this.extLogFile) === undefined) {
+        if (this.extLogFile === undefined) {
             try {
                 this.extLogFile = await fsPromises.open(logFile, 'a');
             } catch {

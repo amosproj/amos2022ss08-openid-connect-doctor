@@ -1,3 +1,5 @@
+//SDPX-License-Identifier: MIT
+//SDPX-FileCopyrightText: 2022 Michael Kupfer <michael.kupfer@fau.de>
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { join } from 'path';
 import { SettingsService } from '../settings/settings.service';

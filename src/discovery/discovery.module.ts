@@ -1,3 +1,5 @@
+//SDPX-License-Identifier: MIT
+//SDPX-FileCopyrightText: 2022 Michael Kupfer <michael.kupfer@fau.de>
 import { Module } from '@nestjs/common';
 import { DiscoveryController } from './discovery.controller';
 import { DiscoveryService } from './discovery.service';

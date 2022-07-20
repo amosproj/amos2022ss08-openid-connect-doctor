@@ -1,5 +1,6 @@
 <!--SDPX-License-Identifier: MIT-->
 <!--SDPX-FileCopyrightText: 2022 Sarah Julia Kriesch <sarah.j.kriesch@fau.de>-->
+<!--SDPX-FileCopyrightText: 2022 Michael Kupfer <michael.kupfer@fau.de>-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,40 +20,29 @@
 </head>
 <body>
     <main>
-        <div class="coverer">
+        <div class="container">
             <center>
-               <img class="mx-auto d-block" src="/images/logo-amos.png" alt="Image"  width="200" height="180">
+               <img class="mx-auto d-block" src="/images/logo-amos.png" alt="Image"  width="180" height="200">
             </center>
             <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
                 <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
-                    <span class="fs-4 btn btn-outline-primary me-2">Back to Discovery</span>
+                    <span class="btn btn-outline-secondary me-2">Back to Discovery</span>
                 </a>
             </header>
         </div>
-        <div class="coverer">
+        <div class="container">
             <input type="checkbox" class="btn-check" id="toggleProtocolCheckbox" checked onclick="toggleProtocol()">
-            <label class="btn btn-outline-primary" for="toggleProtocolCheckbox" id="toggleProtocolLabel"><b>Save Protocol Logs in File Enabled</b></label><br><br>
+            <label class="btn btn-outline-secondary" for="toggleProtocolCheckbox" id="toggleProtocolLabel"><b>Save Protocol Logs in File Enabled</b></label><br><br>
             <p>
-            <a class="btn btn-primary" data-bs-toggle="collapse" href="#requestsList" role="button" aria-expanded="false" aria-controls="requestsList">
-                List of last 50 Requests
+            <a id="toggleShowProtocolButton" class="btn btn-outline-secondary" data-bs-toggle="collapse" href="#protocol" role="button" aria-expanded="false" aria-controls="protocol" onclick="toggleShowProtocol()">
+                Hide Protocol
             </a>
             </p>
-            <div class="collapse flex-wrap align-items-center w-100" id="requestsList">
-                <button class="btn btn-primary" onclick="download('requests.txt', $('#requestLog').text())">Download</button>
-                <pre id="requestLog">
-{{{ requests }}}
-                </pre>
-            </div>
-            <p>
-            <a class="btn btn-primary" data-bs-toggle="collapse" href="#protocol" role="button" aria-expanded="false" aria-controls="protocol">
-                Protocol
-            </a>
-            </p>
-            <div class="collapse flex-wrap align-items-center w-100" id="protocol">
-                <button class="btn btn-primary" onclick="download('protocol.txt', $('#protocolLog').text())">Download</button>
-                <button class="btn btn-primary" onclick="clipboard($('#protocolLog').text())">Copy results</button>
+            <div class="collapse show flex-wrap align-items-center w-100" id="protocol">
+                <button class="btn btn-outline-secondary" onclick="download('protocol.txt', $('#protocolLog').text())">Download</button>
+                <button class="btn btn-outline-secondary" onclick="clipboard($('#protocolLog').text())">Copy results</button>
                 <pre id="protocolLog">
-{{{ protocol }}}
+                    {{{ protocol }}}
                 </pre>
             </div>
         </div>
@@ -73,6 +63,16 @@
         } else {
             const response = await fetch('http://localhost:8081/api/protocol/toggleLogger?toggleLogger=0');
             $("#toggleProtocolLabel").text("Save Protocol Logs in File Disabled");
+        }
+    }
+    let showProtocol = true;
+    async function toggleShowProtocol() {
+        if (showProtocol) {
+            $("#toggleShowProtocolButton").text("Show Protocol");
+            showProtocol = false;
+        } else {
+            $("#toggleShowProtocolButton").text("Hide Protocol");
+            showProtocol = true;
         }
     }
     function download(filename, text) {

@@ -1,20 +1,113 @@
 //SDPX-License-Identifier: MIT
 //SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
 //SDPX-FileCopyrightText: 2022 Raghunandan Arava <raghunandan.arava@fau.de>
+//SDPX-FileCopyrightText: 2022 Michael Kupfer <michael.kupfer@fau.de>
 
-import { Controller, Get, Post, Body, Render } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Render,
+  Query,
+  Res,
+} from '@nestjs/common';
 import { ClientCredentialFlowInputDto } from './Dto/clientCredentialFlowInput.dto';
 import { PasswordGrantFlowInputDto } from './Dto/passwordGrantFlowInput.dto';
 import { FlowsService } from './flows.service';
+import { AuthInputDto } from './Dto/authInput.dto';
+import { Response } from 'express';
 
 @Controller('flows')
 export class FlowsController {
+  dicoveryContent: string;
+
   constructor(private readonly flowsService: FlowsService) {}
+
+  @Get('index')
+  @Render('flows')
+  async index(@Query('issuer_s') issuer_s: string) {
+    const result = await this.flowsService.getAllowedGrantTypes(issuer_s);
+
+    return {
+      issuer_s: issuer_s,
+      allowClientCredentials: result.allowClientCredentials,
+      allowPasswordGrant: result.allowPasswordGrant,
+      allowAuthorizationCode: result.allowAuthorizationCode,
+    };
+  }
 
   @Get('cc')
   @Render('cc')
-  async get() {
-    return;
+  async get(@Query('issuer_s') issuer_s: string) {
+    return {
+      issuer_s: issuer_s,
+    };
+  }
+
+  @Get('auth')
+  @Render('authorization-flow')
+  async getAuth(@Query('issuer_s') issuer_s: string) {
+    return {
+      issuer_s: issuer_s,
+    };
+  }
+
+  @Get('callback')
+  async redirectPage() {
+    return 200;
+  }
+
+  @Get('authResult')
+  @Render('cc-result')
+  async authResult(
+    @Query('discoveryResult') disResult: string,
+    @Query('header') header: string,
+    @Query('message') message: string,
+    @Query('payload') payload: string,
+    @Query('showResults') showResults: boolean,
+  ) {
+    return {
+      showResults: showResults,
+      message: JSON.parse(message),
+
+      discoveryResult: JSON.parse(disResult),
+      payload: JSON.parse(payload),
+      header: JSON.parse(header),
+    };
+  }
+
+  @Post('authorize')
+  async authCallback(@Body() authInputDto: AuthInputDto, @Res() res: Response) {
+    let result;
+    try {
+      const [discoveryResult, decodingResult] =
+        await this.flowsService.authorizationFlow(
+          process.env.ISSUER_STRING,
+          authInputDto.clientId,
+          authInputDto.clientSecret,
+          authInputDto.url,
+          authInputDto.redirectUri,
+        );
+      result = {
+        showResults: decodingResult.success,
+        message: decodingResult.message,
+
+        discoveryResult: discoveryResult,
+        payload: decodingResult.payload,
+        header: decodingResult.header,
+      };
+    } catch (error) {
+      result = {
+        showResults: false,
+        message: error,
+
+        discoveryResult: '',
+        payload: '',
+        header: '',
+      };
+    }
+    return res.status(302).json(result).send();
   }
 
   @Post('cc')
@@ -52,11 +145,12 @@ export class FlowsController {
 
     return result;
   }
-
   @Get('pg')
   @Render('password_grant')
-  async getPg() {
-    return;
+  async getPg(@Query('issuer_s') issuer_s: string) {
+    return {
+      issuer_s: issuer_s,
+    };
   }
 
   @Post('pg')
@@ -91,6 +185,5 @@ export class FlowsController {
           header: '',
         };
       });
-    return result;
   }
 }

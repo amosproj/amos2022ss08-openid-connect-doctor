@@ -11,15 +11,15 @@
         <div class="container">
             <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
                 <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
-                    <span class="fs-4 btn btn-outline-primary me-2">Back to Discovery</span>
+                    <span class="btn btn-outline-secondary me-2">Back</span>
                 </a>
 
-                <ul class="fs-4 nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                    <li><a href="/api/protocol/logger" class="nav-link">Protocol</a></li>
-                </ul>
+                <a href="/api/protocol/logger" class="nav col-12 col-md-auto mb-2 mb-md-0 text-decoration-none">
+                    <span class="btn btn-outline-secondary me-2">Protocol</span>
+                </a>
 
                 <a class="col-md-3 text-end">
-                    <span class="fs-4 btn btn-primary me-2">To Authentication</span>
+                    <span class="btn btn-outline-secondary me-2">Test Authentication</span>
                 </a>
             </header>
         </div>
@@ -34,29 +34,67 @@
                     <textarea class="w-75" type="text" id="token" name="token" rows="8"></textarea>
                 </div><br>
                 <p>
-                <a class="btn btn-primary" data-bs-toggle="collapse" href="#advancedSettings" role="button" aria-expanded="false" aria-controls="advancedSettings">
+                <a class="btn btn-outline-secondary" data-bs-toggle="collapse" href="#advancedSettings" role="button" aria-expanded="false" aria-controls="advancedSettings">
                     Advanced Settings
                 </a>
                 </p>
                 <div class="collapse flex-wrap align-items-center w-100" id="advancedSettings">
-                    <div class="card card-body d-flex flex-row align-content-start w-100">
-                        <label class="w-50" for="schema_selector"> Select schema (uploaded or local): </label>
-                        <div class="d-flex flex-column align-content-start w-50">
-                            <div class="d-flex flex-row align-content-start">
-                                <label class="w-50" for="schema_uploaded_selector"> Uploaded: </label>
-                                <select class="w-50" name="schema" id="schema_uploaded_selector">
-                                    {{#if schemas}}
-                                    {{#each schemas as |schema|}}
-                                    <option value="{{ schema }}">{{ schema }}</option>
-                                    {{/each}}
-                                    {{/if}}
-                                </select>
-                            </div><br>
-                            <div class="d-flex flex-row align-content-start">
-                                <label class="w-50" for="schema_local_selector"> Local: </label>
-                                <input class="w-50" type="file" id="schema_local_selector" name="schema_file">
+                    <p>
+                    <a class="btn btn-outline-secondary" data-bs-toggle="collapse" href="#headerSettings" role="button" aria-expanded="false" aria-controls="headerSettings">
+                        Header Settings
+                    </a>
+                    </p>
+                    <div class="collapse flex-wrap align-items-center w-100" id="headerSettings">
+                        <div class="card card-body d-flex flex-row align-content-start w-100">
+                            <label class="w-50" for="schema_selector"> Select schema (uploaded or local): </label>
+                            <div class="d-flex flex-column align-content-start w-50">
+                                <div class="d-flex flex-row align-content-start">
+                                    <label class="w-50" for="schema_uploaded_selector"> Uploaded: </label>
+                                    <select class="w-50" name="schema" id="schema_uploaded_selector">
+                                        {{#if schemas}}
+                                        {{#each schemas as |schema|}}
+                                        <option value="{{ schema }}">{{ schema }}</option>
+                                        {{/each}}
+                                        {{/if}}
+                                    </select>
+                                </div>
                             </div>
-                        </div>
+                        </div><br>
+                    </div>
+                    <p>
+                    <a class="btn btn-outline-secondary" data-bs-toggle="collapse" href="#payloadSettings" role="button" aria-expanded="false" aria-controls="payloadSettings">
+                        Payload Settings
+                    </a>
+                    </p>
+                    <div class="collapse flex-wrap align-items-center w-100" id="payloadSettings">
+                        <div class="card card-body d-flex flex-row align-content-start w-100">
+                            <label class="w-50" for="schema_selector"> Select schema: </label>
+                            <div class="d-flex flex-column align-content-start w-50">
+                                <div class="d-flex flex-row align-content-start">
+                                    <label class="w-50" for="schema_uploaded_selector_payload"></label>
+                                    {{#if validated_payload_against_schema}}
+                                    <div class="card text-white bg-{{#if decoding_error}}danger{{else}}success{{/if}} mb-3" style="max-width: 18rem;">
+                                        <div class="card-header">
+                                            {{#if decoding_error}}
+                                            Schema didn't match
+                                            {{else}}
+                                            Schema matched
+                                            {{/if}}
+                                        </div>
+                                    {{/if}}
+                                    <select class="w-{{#if validated_payload_against_schema}}100{{else}}50{{/if}}" name="schema_payload" id="schema_uploaded_selector_payload">
+                                        {{#if schemas}}
+                                        {{#each schemas as |schema|}}
+                                        <option value="{{ schema }}">{{ schema }}</option>
+                                        {{/each}}
+                                        {{/if}}
+                                    </select>
+                                    {{#if validated_payload_against_schema}}
+                                    </div>
+                                    {{/if}}
+                                </div>
+                            </div>
+                        </div><br>
                     </div>
                     <div class="card card-body d-flex flex-row align-content-start w-100">
                         <label class="w-50" for="getKeysFromProvider">Use Key-Material from JWKS-Endpoint?</label>
@@ -78,40 +116,12 @@
                             <input class="w-50" type="text" id="keyMaterialFilepath" name="keyMaterialFilepath" />
                         </div>
                     </div><br>
-                    <div class="card card-body d-flex flex-row align-content-start w-100">
-                        <label class="w-50" for="file_upload">Upload schema: </label>
-                        <input form="upload_form" class="w-25 mx-4" type="file" id="file_upload" name="upload">
-                        <input form="upload_form" class="btn btn-lg btn-primary w-25 mx-0 mb-2" type="submit" value="Upload schema">
-                    </div>
-                    {{#if schemas}}
-                    <div class="card card-body d-flex flex-row align-content-start w-100">
-                        <label class="w-50" for="schema_download_selector"> Select schema: </label>
-                        <select form="download_form" class="w-25 mx-4" name="schema" id="schema_download_selector">
-                            {{#each schemas as |schema|}}
-                            <option value="{{ schema }}">{{ schema }}</option>
-                            {{/each}}
-                        </select>
-                        <input form="download_form" class="btn btn-lg btn-primary w-25 mx-0 mb-2" type="submit" value="Download schema">
-                    </div>
-                    <div class="card card-body d-flex flex-row align-content-start w-100">
-                        <label class="w-50" for="schema_delete_selector"> Select schema: </label>
-                        <select form="delete_form" class="w-25 mx-4" name="schema" id="schema_delete_selector">
-                            {{#each schemas as |schema|}}
-                            <option value="{{ schema }}">{{ schema }}</option>
-                            {{/each}}
-                        </select>
-                        <input form="delete_form" class="btn btn-lg btn-primary w-25 mx-0 mb-2" type="submit" value="Delete schema">
-                    </div><br>
-                    {{/if}}
                 </div>
                 <div class="button-group">
-                    <button class="btn btn-outline-primary" type="submit" formaction="/api/token/decode" formmethod="get">Reset</button>
-                    <button class="btn btn-primary" type="submit">Submit</button>
+                    <button class="btn btn-outline-secondary" type="submit" formaction="/api/token/decode" formmethod="get">Reset</button>
+                    <button class="btn btn-outline-secondary" type="submit">Submit</button>
                 </div>
             </form>                
-            <form id="upload_form" enctype="multipart/form-data" method="post" action="/api/token/schema/upload"></form>
-            <form id="download_form" action="/api/token/schema/download"></form>
-            <form id="delete_form" action="/api/token/schema/delete"></form>
         </div><br>
         <div class="container">
             <p>{{message}}</p>
@@ -124,16 +134,16 @@
                 </p>
             {{else}}
                 <p>
-                <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                <a class="btn btn-outline-secondary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
                     Toggle Results
                 </a>
                 </p>
             {{/if}}
             <div class="collapse show" id="collapseExample">
-                <button class="btn btn-primary" onclick="download('header.txt', $('#headerDisplay').text())">Download header</button>
-                <button class="btn btn-primary" onclick="download('payload.txt', $('#payloadDisplay').text())">Download payload</button>
-                <button class="btn btn-primary" onclick="clipboard($('#headerDisplay').text())">Copy header</button>
-                <button class="btn btn-primary" onclick="clipboard($('#payloadDisplay').text())">Copy payload</button>
+                <button class="btn btn-outline-secondary" onclick="download('header.txt', $('#headerDisplay').text())">Download header</button>
+                <button class="btn btn-outline-secondary" onclick="download('payload.txt', $('#payloadDisplay').text())">Download payload</button>
+                <button class="btn btn-outline-secondary" onclick="clipboard($('#headerDisplay').text())">Copy header</button>
+                <button class="btn btn-outline-secondary" onclick="clipboard($('#payloadDisplay').text())">Copy payload</button>
                 <div class="card card-body">
                     <h2>Header</h2>
                     <pre id="headerDisplay">

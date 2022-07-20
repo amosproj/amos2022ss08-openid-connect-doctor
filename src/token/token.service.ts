@@ -1,6 +1,7 @@
 //SDPX-License-Identifier: MIT
 //SDPX-FileCopyrightText: 2022 Philip Rebbe <rebbe.philip@fau.de>
 //SDPX-FileCopyrightText: 2022 Raghunandan Arava <raghunandan.arava@fau.de>
+//SDPX-FileCopyrightText: 2022 Michael Kupfer <michael.kupfer@fau.de>
 
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import * as jose from 'jose';

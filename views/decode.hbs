@@ -18,7 +18,7 @@
         </style>
     </head>
     <body>
-        <div class="coverer">
+        <div class="container">
             <center>
                 <br>
                 <img class="mx-auto d-block mt-2" src="/images/logo-amos.png" alt="Image"  width="200" height="180">
@@ -37,7 +37,7 @@
                 </a>
             </header>
         </div>
-        <div class="coverer">
+        <div class="container">
             <form class="input-form" enctype="multipart/form-data" action="/api/token/decode" method="post">
                 <div class="card card-body d-flex flex-row align-content-start w-100">
                     <label class="w-25" for="issuer">Issuer:</label>
@@ -137,7 +137,7 @@
                 </div>
             </form>                
         </div><br>
-        <div class="coverer">
+        <div class="container">
             <p>{{message}}</p>
             {{#if showResults}}
             {{#if decoding_error}}

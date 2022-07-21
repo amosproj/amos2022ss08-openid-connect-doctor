@@ -26,8 +26,8 @@ export class TokenService {
   @Inject(ExtendedProtocolService)
   private readonly protocolService: ExtendedProtocolService;
 
-  async getSchemas(schema_s: string) {
-    return this.helperService.getSchemasHelper(schema_s, 'token');
+  async getSchemas(prefix: string, schema_s: string) {
+    return this.helperService.getSchemasHelper2(schema_s, 'token', prefix);
   }
 
   async getIssuer(issuer_s: string) {
@@ -154,7 +154,10 @@ export class TokenService {
     return [success, info];
   }
 
-  async coloredFilteredValidation(issuer: object, schema: object) {
+  async coloredFilteredValidation(
+    issuer: object,
+    schema: object,
+  ): Promise<[number, string]> {
     const keys = [];
     for (const key in issuer) {
       keys.push(key);

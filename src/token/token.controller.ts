@@ -28,6 +28,7 @@ import { join } from 'path';
 import { Express, Response } from 'express';
 import { createReadStream, promises as fs } from 'fs';
 import { ExtendedProtocolService } from '../extended-protocol/extended-protocol.service';
+import { TokenResultPage } from './tokenResultPage.dto';
 
 @Controller('token')
 export default class TokenController {
@@ -42,38 +43,60 @@ export default class TokenController {
   @Get('decode')
   @Render('decode')
   async get(@Query('schema') schema_s: string) {
-    const schemas = await this.tokenService.getSchemas(undefined);
+    const schemas_header = await this.tokenService.getSchemas(
+      'header',
+      undefined,
+    );
+    const schemas_payload = await this.tokenService.getSchemas(
+      'payload',
+      undefined,
+    );
     return {
       message: 'Please enter the wanted information!',
-      showResults: false,
-      schemas: schemas,
+      show_results: false,
+      result: {
+        header: '',
+        payload: '',
+      },
+      previous: {
+        issuer: null,
+        token: null,
+        schemas_header: schemas_header,
+        schemas_payload: schemas_payload,
+        header_match_error: false,
+        payload_match_error: false,
+        validated_header_against_schema: false,
+        validated_payload_against_schema: false,
+      },
       key_algorithms: this.tokenService.getKeyAlgorithms(),
     };
   }
 
   @Post('decode')
   @Render('decode')
-  @UseInterceptors(FileInterceptor('schema_file'))
-  async decode(
-    @Body() tokenDto: TokenDto,
-    @UploadedFile() schema_file: Express.Multer.File,
-  ) {
-    const schema_s = tokenDto.schema;
-    const schemas = await this.tokenService.getSchemas(schema_s);
+  async decode(@Body() tokenDto: TokenDto): Promise<TokenResultPage> {
+    const schemas_header = await this.tokenService.getSchemas(
+      'header',
+      tokenDto.schema_header,
+    );
+    const schemas_payload = await this.tokenService.getSchemas(
+      'payload',
+      tokenDto.schema_payload,
+    );
+
+    const previous = {
+      issuer: tokenDto.issuer,
+      token: tokenDto.token,
+      schemas_header: schemas_header,
+      schemas_payload: schemas_payload,
+      header_match_error: false,
+      payload_match_error: false,
+      match_error: false,
+      validated_header_against_schema: false,
+      validated_payload_against_schema: false,
+    };
+
     this.protocolService.extendedLog('Start decoding token');
-
-    if (schema_file && schema_s !== '') {
-      return {
-        showResults: false,
-        message: 'Please choose only one schema for validation',
-
-        payload: null,
-        header: null,
-        schemas: schemas,
-        key_algorithms: this.tokenService.getKeyAlgorithms(),
-        validated_payload_against_schema: false,
-      };
-    }
 
     const result = await this.tokenService
       .decodeToken(tokenDto.token)
@@ -120,65 +143,82 @@ export default class TokenController {
     } else {
       this.protocolService.extendedLogError('Token decoding failed');
       return {
-        showResults: true,
+        show_results: true,
         message: result.message,
 
-        payload: result.payload,
-        header: result.header,
-        schemas: schemas,
+        result: {
+          payload: result.payload,
+          header: result.header,
+        },
+        previous: previous,
         key_algorithms: this.tokenService.getKeyAlgorithms(),
-        decoding_error: true,
-        validated_payload_against_schema: false,
       };
     }
 
-    if (result.success && (schema_s !== '' || schema_file)) {
-      // color the payload according to schema if decoding succeeded
-      let schema_body;
-      if (schema_file) {
-        schema_body = JSON.parse(schema_file.buffer.toString());
+    const res = {
+      show_results: result.payload !== undefined && result.header !== undefined,
+      message: result.message,
+
+      result: {
+        header: result.header,
+        payload: result.payload,
+      },
+      previous: previous,
+      key_algorithms: this.tokenService.getKeyAlgorithms(),
+    };
+
+    if (result.success && tokenDto.schema_header !== '') {
+      // color the header according to schema if decoding succeeded
+      const schema_body = require(join('..', '..', 'schema', 'token', 'header', tokenDto.schema_header));
+      const [success, colored_header] =
+        await this.tokenService.coloredFilteredValidation(
+          JSON.parse(result.header),
+          schema_body,
+        );
+      let message = res.message;
+      let header_match_error = false;
+      if (success === 0) {
+        this.protocolService.extendedLogError('Schema did not match');
+        message = 'Decoding was successful, but header schema did not match';
+        header_match_error = true;
       } else {
-        schema_body = require(join('..', '..', 'schema', 'token', schema_s));
+        this.protocolService.extendedLogSuccess('Decoded token matched schema');
       }
+      res.show_results = result.success;
+
+      res.result.header = colored_header;
+      res.previous.header_match_error = header_match_error;
+      res.previous.match_error = res.previous.match_error || header_match_error;
+      res.previous.validated_header_against_schema = true;
+      res.message = message;
+    }
+
+    if (result.success && tokenDto.schema_payload !== '') {
+      // color the payload according to schema if decoding succeeded
+      const schema_body = require(join('..', '..', 'schema', 'token', 'payload', tokenDto.schema_payload));
       const [success, colored_payload] =
         await this.tokenService.coloredFilteredValidation(
           JSON.parse(result.payload),
           schema_body,
         );
-      let message = result.message;
-      let decoding_error = false;
+      let message = res.message;
+      let payload_match_error = false;
       if (success === 0) {
         this.protocolService.extendedLogError('Schema did not match');
-        message = 'Decoding was successful, but schema did not match';
-        decoding_error = true;
+        message = 'Decoding was successful, but payload schema did not match';
+        payload_match_error = true;
       } else {
         this.protocolService.extendedLogSuccess('Decoded token matched schema');
       }
-      return {
-        showResults: result.success,
-        message: message,
+      res.show_results = result.success;
 
-        payload: colored_payload,
-        header: result.header,
-        schemas: schemas,
-        key_algorithms: this.tokenService.getKeyAlgorithms(),
-        decoding_error: decoding_error,
-        validated_payload_against_schema: true,
-      };
-    } else {
-      return {
-        showResults:
-          result.payload !== undefined && result.header !== undefined,
-        message: result.message,
-
-        payload: result.payload,
-        header: result.header,
-        schemas: schemas,
-        key_algorithms: this.tokenService.getKeyAlgorithms(),
-        decoding_error: false,
-        validated_payload_against_schema: false,
-      };
+      res.result.payload = colored_payload;
+      res.previous.payload_match_error = payload_match_error;
+      res.previous.match_error = res.previous.match_error || payload_match_error;
+      res.previous.validated_payload_against_schema = true;
+      res.message = message;
     }
+    return res;
   }
 
   @Get('gettoken')

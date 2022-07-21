@@ -38,14 +38,14 @@
             </header>
         </div>
         <div class="container">
-            <form class="input-form" enctype="multipart/form-data" action="/api/token/decode" method="post">
+            <form class="input-form" action="/api/token/decode" method="post">
                 <div class="card card-body d-flex flex-row align-content-start w-100">
                     <label class="w-25" for="issuer">Issuer:</label>
-                    <input class="w-75" type="text" id="issuer" name="issuer" />
+		    <input class="w-75" type="text" id="issuer" name="issuer" {{#if previous.issuer}} value="{{previous.issuer}}"{{/if}}/>
                 </div>
                 <div class="card card-body d-flex flex-row align-content-start w-100">
                     <label class="w-25" for="token">Access-Token:</label>
-                    <textarea class="w-75" type="text" id="token" name="token" rows="8"></textarea>
+		    <textarea class="w-75" type="text" id="token" name="token" rows="8">{{previous.token}}</textarea>
                 </div><br>
                 <p>
                 <a class="btn btn-outline-secondary" data-bs-toggle="collapse" href="#advancedSettings" role="button" aria-expanded="false" aria-controls="advancedSettings">
@@ -60,17 +60,30 @@
                     </p>
                     <div class="collapse flex-wrap align-items-center w-100" id="headerSettings">
                         <div class="card card-body d-flex flex-row align-content-start w-100">
-                            <label class="w-50" for="schema_selector"> Select schema (uploaded or local): </label>
+                            <label class="w-50" for="schema_selector"> Select schema: </label>
                             <div class="d-flex flex-column align-content-start w-50">
                                 <div class="d-flex flex-row align-content-start">
-                                    <label class="w-50" for="schema_uploaded_selector"> Uploaded: </label>
-                                    <select class="w-50" name="schema" id="schema_uploaded_selector">
-                                        {{#if schemas}}
-                                        {{#each schemas as |schema|}}
+                                    <label class="w-50" for="schema_uploaded_selector"></label>
+                                    {{#if previous.validated_header_against_schema}}
+				    <div class="card text-white bg-{{#if previous.header_match_error}}danger{{else}}success{{/if}} w-50">
+                                        <div class="card-header">
+                                            {{#if previous.header_match_error}}
+                                            Schema didn't match
+                                            {{else}}
+                                            Schema matched
+                                            {{/if}}
+                                        </div>
+                                    {{/if}}
+                                    <select class="w-{{#if previous.validated_header_against_schema}}100{{else}}50{{/if}}" name="schema_header" id="schema_uploaded_selector">
+                                        {{#if previous.schemas_header}}
+                                        {{#each previous.schemas_header as |schema|}}
                                         <option value="{{ schema }}">{{ schema }}</option>
                                         {{/each}}
                                         {{/if}}
                                     </select>
+                                    {{#if previous.validated_header_against_schema}}
+                                    </div>
+                                    {{/if}}
                                 </div>
                             </div>
                         </div><br>
@@ -86,24 +99,24 @@
                             <div class="d-flex flex-column align-content-start w-50">
                                 <div class="d-flex flex-row align-content-start">
                                     <label class="w-50" for="schema_uploaded_selector_payload"></label>
-                                    {{#if validated_payload_against_schema}}
-                                    <div class="card text-white bg-{{#if decoding_error}}danger{{else}}success{{/if}} mb-3" style="max-width: 18rem;">
+                                    {{#if previous.validated_payload_against_schema}}
+				    <div class="card text-white bg-{{#if previous.payload_match_error}}danger{{else}}success{{/if}} w-50">
                                         <div class="card-header">
-                                            {{#if decoding_error}}
+                                            {{#if previous.payload_match_error}}
                                             Schema didn't match
                                             {{else}}
                                             Schema matched
                                             {{/if}}
                                         </div>
                                     {{/if}}
-                                    <select class="w-{{#if validated_payload_against_schema}}100{{else}}50{{/if}}" name="schema_payload" id="schema_uploaded_selector_payload">
-                                        {{#if schemas}}
-                                        {{#each schemas as |schema|}}
+                                    <select class="w-{{#if previous.validated_payload_against_schema}}100{{else}}50{{/if}}" name="schema_payload" id="schema_uploaded_selector_payload">
+                                        {{#if previous.schemas_payload}}
+                                        {{#each previous.schemas_payload as |schema|}}
                                         <option value="{{ schema }}">{{ schema }}</option>
                                         {{/each}}
                                         {{/if}}
                                     </select>
-                                    {{#if validated_payload_against_schema}}
+                                    {{#if previous.validated_payload_against_schema}}
                                     </div>
                                     {{/if}}
                                 </div>
@@ -139,8 +152,8 @@
         </div><br>
         <div class="container">
             <p>{{message}}</p>
-            {{#if showResults}}
-            {{#if decoding_error}}
+            {{#if show_results}}
+            {{#if previous.match_error}}
                 <p>
                 <a class="btn btn-danger" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
                     Toggle Results
@@ -161,13 +174,13 @@
                 <div class="card card-body">
                     <h2>Header</h2>
                     <pre id="headerDisplay">
-{{header}}
+{{{result.header}}}
                     </pre>
                 </div>
                 <div class="card card-body">
                     <h2>Payload</h2>
                     <pre id="payloadDisplay">
-{{{payload}}}
+{{{result.payload}}}
                     </pre>
                 </div>
             </div>

@@ -123,7 +123,7 @@ export class FlowsService {
 
   private grantTypeIsAllowed(allowedGrantTypes, granttype: string): boolean {
     return (
-      (allowedGrantTypes.includes('client_credentials') ||
+      (allowedGrantTypes.includes(granttype) ||
         this.settingsService.config.flows.always_on.includes(granttype)) &&
       this.settingsService.config.flows.always_off.includes(granttype) === false
     );

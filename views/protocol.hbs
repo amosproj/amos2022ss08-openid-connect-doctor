@@ -31,19 +31,32 @@
             </header>
         </div>
         <div class="container">
-            <input type="checkbox" class="btn-check" id="toggleProtocolCheckbox" checked onclick="toggleProtocol()">
-            <label class="btn btn-outline-secondary" for="toggleProtocolCheckbox" id="toggleProtocolLabel"><b>Save Protocol Logs in File Enabled</b></label><br><br>
-            <p>
-            <a id="toggleShowProtocolButton" class="btn btn-outline-secondary" data-bs-toggle="collapse" href="#protocol" role="button" aria-expanded="false" aria-controls="protocol" onclick="toggleShowProtocol()">
-                Hide Protocol
-            </a>
-            </p>
-            <div class="collapse show flex-wrap align-items-center w-100" id="protocol">
-                <button class="btn btn-outline-secondary" onclick="download('protocol.txt', $('#protocolLog').text())">Download</button>
-                <button class="btn btn-outline-secondary" onclick="clipboard($('#protocolLog').text())">Copy results</button>
-                <pre id="protocolLog">
-                    {{{ protocol }}}
-                </pre>
+            <div class="row mb-2">
+                <span>Current Version: {{version}}</span>
+            </div>
+            <div class="row mb-2">
+                <input type="checkbox" class="btn-check" id="toggleProtocolCheckbox" checked onclick="toggleProtocol()">
+                <label class="btn btn-outline-secondary w-100" for="toggleProtocolCheckbox" id="toggleProtocolLabel"><b>Save Protocol Logs in File Enabled</b></label>
+            </div>
+            <div class="row mb-2">
+                <div class="col-2">
+                    <button type="button" id="toggleShowProtocolButton" class="btn btn-outline-secondary w-100" data-bs-toggle="collapse" href="#protocol" aria-expanded="false" aria-controls="protocol" onclick="toggleShowProtocol()">
+                        Hide Protocol
+                    </button>
+                </div>
+            </div>
+            <div class="collapse show flex-wrap align-items-center" id="protocol"></div>
+                <div class="row mb-2">
+                    <div class="col-2">
+                        <button class="btn btn-outline-secondary w-100" onclick="download('protocol.txt', $('#protocolLog').text())">Download</button>    
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-outline-secondary w-100" onclick="clipboard($('#protocolLog').text())">Copy results</button>    
+                    </div>
+                </div>
+                <div class="row">
+                    <pre id="protocolLog w-100" style="white-space:pre-wrap; word-wrap:break-word;">{{{ protocol }}}</pre>
+                </div>
             </div>
         </div>
     </main> 

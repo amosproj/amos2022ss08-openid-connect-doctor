@@ -129,12 +129,12 @@ export class FlowsService {
     );
   }
 
-  async clientCredentials(
+  async clientCredentialsRawToken(
     issuer_s: string,
     clientId: string,
     clientSecret: string,
     audience: string,
-  ): Promise<[string, FlowResultDto]> {
+  ): Promise<string> {
     if (issuer_s === undefined || issuer_s === '') {
       throw new HttpException(
         'There was no issuer to validate the token against!',
@@ -162,7 +162,6 @@ export class FlowsService {
 
     this.protocolService.extendedLog('Start retrieving client credentials');
 
-    let discoveryResult = '';
     let receivedTokenString = '';
 
     try {
@@ -177,29 +176,53 @@ export class FlowsService {
         },
       );
 
-      discoveryResult = JSON.stringify(issuer, undefined, 2);
       receivedTokenString = String(receivedToken.data.access_token);
       this.protocolService.extendedLogSuccess(
         'Client credentials successfully retrieved',
       );
     } catch (error) {
       this.protocolService.extendedLogError(
+        'Failed to retrieve client credentials raw token',
+      );
+      return '';
+    }
+    return receivedTokenString;
+  }
+
+  async clientCredentials(
+    issuer_s: string,
+    clientId: string,
+    clientSecret: string,
+    audience: string,
+  ): Promise<[string, FlowResultDto]> {
+    try {
+      let discoveryResult = '';
+      const tokenString = await this.clientCredentialsRawToken(
+        issuer_s,
+        clientId,
+        clientSecret,
+        audience,
+      );
+      const issuer = await this.discoveryService.get_issuer(issuer_s);
+      if (tokenString === '') {
+        return [
+          '',
+          new FlowResultDto({
+            success: false,
+            message: 'No token retrieved',
+            payload: undefined,
+            header: undefined,
+          }),
+        ];
+      }
+      discoveryResult = JSON.stringify(issuer, undefined, 2);
+      return [discoveryResult, await this.decodeToken(issuer_s, tokenString)];
+    } catch (error) {
+      this.protocolService.extendedLogError(
         'Failed to retrieve client credentials',
       );
-      return [
-        '',
-        new FlowResultDto({
-          success: false,
-          message: `An error occurred ${error}`,
-          payload: undefined,
-          header: undefined,
-        }),
-      ];
+      throw error;
     }
-    return [
-      discoveryResult,
-      await this.decodeToken(issuer_s, receivedTokenString),
-    ];
   }
 
   async passwordGrant(

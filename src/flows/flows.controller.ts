@@ -190,36 +190,67 @@ export class FlowsController {
   }
 
   @Post('pg')
-  @Render('cc-result')
+  @Render('decode')
   async postPg(@Body() passwordGrantFlowInputDto: PasswordGrantFlowInputDto) {
-    console.log(passwordGrantFlowInputDto);
+    const schemas_header = await this.tokenService.getSchemas(
+      'header',
+      undefined,
+    );
+    const schemas_payload = await this.tokenService.getSchemas(
+      'payload',
+      undefined,
+    );
     const result = await this.flowsService
-      .passwordGrant(
+      .passwordGrantRawToken(
         passwordGrantFlowInputDto.issuerUrl,
         passwordGrantFlowInputDto.clientId,
         passwordGrantFlowInputDto.clientSecret,
         passwordGrantFlowInputDto.username,
         passwordGrantFlowInputDto.password,
       )
-      .then(([discoveryResult, decodingResult]) => {
+      .then((tokenString) => {
         return {
-          showResults: decodingResult.success,
-          message: decodingResult.message,
-
-          discoveryResult: discoveryResult,
-          payload: decodingResult.payload,
-          header: decodingResult.header,
+          message:
+            'Go to Advanced Settings or click submit to decode your token',
+          show_results: false,
+          result: {
+            header: '',
+            payload: '',
+          },
+          previous: {
+            issuer: passwordGrantFlowInputDto.issuerUrl,
+            token: tokenString,
+            schemas_header: schemas_header,
+            schemas_payload: schemas_payload,
+            header_match_error: false,
+            payload_match_error: false,
+            validated_header_against_schema: false,
+            validated_payload_against_schema: false,
+          },
+          key_algorithms: this.tokenService.getKeyAlgorithms(),
         };
       })
       .catch((error) => {
         return {
-          showResults: false,
-          message: error,
-
-          discoveryResult: '',
-          payload: '',
-          header: '',
+          message: `Something went wrong: ${error}`,
+          show_results: false,
+          result: {
+            header: '',
+            payload: '',
+          },
+          previous: {
+            issuer: passwordGrantFlowInputDto.issuerUrl,
+            token: null,
+            schemas_header: schemas_header,
+            schemas_payload: schemas_payload,
+            header_match_error: false,
+            payload_match_error: false,
+            validated_header_against_schema: false,
+            validated_payload_against_schema: false,
+          },
+          key_algorithms: this.tokenService.getKeyAlgorithms(),
         };
       });
+    return result;
   }
 }

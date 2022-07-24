@@ -225,13 +225,13 @@ export class FlowsService {
     }
   }
 
-  async passwordGrant(
+  async passwordGrantRawToken(
     issuer_s: string,
     clientId: string,
     clientSecret: string,
     username: string,
     password: string,
-  ): Promise<[string, FlowResultDto]> {
+  ): Promise<string> {
     if (issuer_s === undefined || issuer_s === '') {
       throw new HttpException(
         'There was no issuer to validate the token against!',
@@ -267,7 +267,6 @@ export class FlowsService {
       );
     }
 
-    let discoveryResult = '';
     let receivedTokenString = '';
     this.protocolService.extendedLog('Start password grant flow');
     try {
@@ -282,27 +281,53 @@ export class FlowsService {
           password: password,
         },
       );
-      discoveryResult = JSON.stringify(issuer, undefined, 2);
       receivedTokenString = String(receivedToken.data.access_token);
       this.protocolService.extendedLogSuccess(
-        'Client credentials successfully retrieved',
+        'Password grant successfully retrieved',
       );
     } catch (error) {
       this.protocolService.extendedLogError('Failed to execute password grant');
-      return [
-        '',
-        new FlowResultDto({
-          success: false,
-          message: `An error occurred ${error}`,
-          payload: undefined,
-          header: undefined,
-        }),
-      ];
+      return '';
     }
-    return [
-      discoveryResult,
-      await this.decodeToken(issuer_s, receivedTokenString),
-    ];
+    return receivedTokenString;
+  }
+
+  async passwordGrant(
+    issuer_s: string,
+    clientId: string,
+    clientSecret: string,
+    username: string,
+    password: string,
+  ): Promise<[string, FlowResultDto]> {
+    try {
+      let discoveryResult = '';
+      const tokenString = await this.passwordGrantRawToken(
+        issuer_s,
+        clientId,
+        clientSecret,
+        username,
+        password,
+      );
+      const issuer = await this.discoveryService.get_issuer(issuer_s);
+      if (tokenString === '') {
+        return [
+          '',
+          new FlowResultDto({
+            success: false,
+            message: 'No token retrieved',
+            payload: undefined,
+            header: undefined,
+          }),
+        ];
+      }
+      discoveryResult = JSON.stringify(issuer, undefined, 2);
+      return [discoveryResult, await this.decodeToken(issuer_s, tokenString)];
+    } catch (error) {
+      this.protocolService.extendedLogError(
+        'Failed to retrieve password grant',
+      );
+      throw error;
+    }
   }
 
   async authorizationFlow(

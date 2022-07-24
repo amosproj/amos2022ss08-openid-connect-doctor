@@ -120,6 +120,14 @@ export class FlowsController {
   async post(
     @Body() clientCredentialFlowInputDto: ClientCredentialFlowInputDto,
   ) {
+    const schemas_header = await this.tokenService.getSchemas(
+      'header',
+      undefined,
+    );
+    const schemas_payload = await this.tokenService.getSchemas(
+      'payload',
+      undefined,
+    );
     const result = await this.flowsService
       .clientCredentialsRawToken(
         clientCredentialFlowInputDto.issuerUrl,
@@ -139,8 +147,8 @@ export class FlowsController {
           previous: {
             issuer: clientCredentialFlowInputDto.issuerUrl,
             token: tokenString,
-            schemas_header: null,
-            schemas_payload: null,
+            schemas_header: schemas_header,
+            schemas_payload: schemas_payload,
             header_match_error: false,
             payload_match_error: false,
             validated_header_against_schema: false,
@@ -160,8 +168,8 @@ export class FlowsController {
           previous: {
             issuer: clientCredentialFlowInputDto.issuerUrl,
             token: null,
-            schemas_header: null,
-            schemas_payload: null,
+            schemas_header: schemas_header,
+            schemas_payload: schemas_payload,
             header_match_error: false,
             payload_match_error: false,
             validated_header_against_schema: false,

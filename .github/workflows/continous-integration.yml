@@ -7,7 +7,6 @@ on:
       - 'Documentation/**'
 jobs:
   run-unit-tests:
-    permissions: write-all
     strategy:
       matrix:
         node-version: [16.15.0]

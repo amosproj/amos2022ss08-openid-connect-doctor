@@ -38,58 +38,87 @@
             </header>
         </div>
         <div class="container">
-            <form class="input-form" enctype="multipart/form-data" action="/api/token/decode" method="post">
+            <form class="input-form" action="/api/token/decode" method="post">
                 <div class="card card-body d-flex flex-row align-content-start w-100">
                     <label class="w-25" for="issuer">Issuer:</label>
-                    <input class="w-75" type="text" id="issuer" name="issuer" value={{issuer}}/>
+		            <input class="w-75" type="text" id="issuer" name="issuer" {{#if previous.issuer}} value="{{previous.issuer}}"{{/if}}/>
                 </div>
                 <div class="card card-body d-flex flex-row align-content-start w-100">
                     <label class="w-25" for="token">Access-Token:</label>
-                    <textarea class="w-75" type="text" id="token" name="token" rows="8">{{token}}</textarea>
+		            <textarea class="w-75" type="text" id="token" name="token" rows="8">{{previous.token}}</textarea>
                 </div><br>
                 <p>
-                <button class="btn btn-outline-secondary mb_2" type="button" data-bs-toggle="collapse" data-bs-target="#advancedSettings" role="button" aria-expanded="false" aria-controls="advancedSettings">
-                    Filters
-                </button>
-                <div class="collapse card text-center mb-2" id="advancedSettings">
-                    <div class="card-header">
-                        <ul class="nav nav-tabs card-header-tabs">
-                            <li class="nav-item" role="presentation">
-                                <button type="button" class="nav-link active" id="header-tab" data-bs-toggle="tab" data-bs-target="#header" role="tab" aria-controls="header-settings" aria-selected="true">Header</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button type="button" class="nav-link" id="payload-tab" data-bs-toggle="tab" data-bs-target="#payload" role="tab" aria-controls="payload-settings" aria-selected="true">Payload</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button type="button" class="nav-link" id="signature-tab" data-bs-toggle="tab" data-bs-target="#signature" role="tab" aria-controls="signature-settings" aria-selected="true">Signature</button>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card">Filters</h5>
-                        <div class="tab-content">
-                            <div class="tab-pane fade show active" id="header" role="tabpanel" aria-labelledby="header-settings-tab">
-                                <div class="row">
-                                    <label class="col-sm-2 col-form-label" for="headerschema">Schema</label>
-                                    <select name="schema" id="schema_uploaded_selector" class="col-sm-10">
-                                        {{#if schemas}}
-                                            {{#each schemas as |schema|}}
-                                                <option value="{{ schema }}">{{ schema }}</option>
-                                            {{/each}}
+                <a class="btn btn-outline-secondary" data-bs-toggle="collapse" href="#advancedSettings" role="button" aria-expanded="false" aria-controls="advancedSettings">
+                    Advanced Settings
+                </a>
+                </p>
+                <div class="collapse flex-wrap align-items-center w-100" id="advancedSettings">
+                    <p>
+                    <a class="btn btn-outline-secondary" data-bs-toggle="collapse" href="#headerSettings" role="button" aria-expanded="false" aria-controls="headerSettings">
+                        Header Settings
+                    </a>
+                    </p>
+                    <div class="collapse flex-wrap align-items-center w-100" id="headerSettings">
+                        <div class="card card-body d-flex flex-row align-content-start w-100">
+                            <label class="w-50" for="schema_selector"> Select schema: </label>
+                            <div class="d-flex flex-column align-content-start w-50">
+                                <div class="d-flex flex-row align-content-start">
+                                    <label class="w-50" for="schema_uploaded_selector"></label>
+                                    {{#if previous.validated_header_against_schema}}
+				                        <div class="card text-white bg-{{#if previous.header_match_error}}danger{{else}}success{{/if}} w-50">
+                                            <div class="card-header">
+                                                {{#if previous.header_match_error}}
+                                                Schema didn't match
+                                                {{else}}
+                                                Schema matched
+                                                {{/if}}
+                                            </div>
+                                        {{/if}}
+                                    <select class="w-{{#if previous.validated_header_against_schema}}100{{else}}50{{/if}}" name="schema_header" id="schema_uploaded_selector">
+                                        {{#if previous.schemas_header}}
+                                        {{#each previous.schemas_header as |schema|}}
+                                        <option value="{{ schema }}">{{ schema }}</option>
+                                        {{/each}}
                                         {{/if}}
                                     </select>
+                                    {{#if previous.validated_header_against_schema}}
+                                    </div>
+                                    {{/if}}
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="payload" role="tabpanel" aria-labelledby="payload-settings-tab">
-                                <div class="row">
-                                    <label class="col-sm-2 col-form-label" for="payloadschema">Schema</label>
-                                    <select name="schema_payload" id="schema_uploaded_selector_payload" class="col-sm-10">
-                                        {{#if schemas}}
-                                            {{#each schemas as |schema|}}
-                                                <option value="{{ schema }}">{{ schema }}</option>
-                                            {{/each}}
+                        </div><br>
+                    </div>
+                    <p>
+                    <a class="btn btn-outline-secondary" data-bs-toggle="collapse" href="#payloadSettings" role="button" aria-expanded="false" aria-controls="payloadSettings">
+                        Payload Settings
+                    </a>
+                    </p>
+                    <div class="collapse flex-wrap align-items-center w-100" id="payloadSettings">
+                        <div class="card card-body d-flex flex-row align-content-start w-100">
+                            <label class="w-50" for="schema_selector"> Select schema: </label>
+                            <div class="d-flex flex-column align-content-start w-50">
+                                <div class="d-flex flex-row align-content-start">
+                                    <label class="w-50" for="schema_uploaded_selector_payload"></label>
+                                    {{#if previous.validated_payload_against_schema}}
+				    <div class="card text-white bg-{{#if previous.payload_match_error}}danger{{else}}success{{/if}} w-50">
+                                        <div class="card-header">
+                                            {{#if previous.payload_match_error}}
+                                            Schema didn't match
+                                            {{else}}
+                                            Schema matched
+                                            {{/if}}
+                                        </div>
+                                    {{/if}}
+                                    <select class="w-{{#if previous.validated_payload_against_schema}}100{{else}}50{{/if}}" name="schema_payload" id="schema_uploaded_selector_payload">
+                                        {{#if previous.schemas_payload}}
+                                        {{#each previous.schemas_payload as |schema|}}
+                                        <option value="{{ schema }}">{{ schema }}</option>
+                                        {{/each}}
                                         {{/if}}
                                     </select>
+                                    {{#if previous.validated_payload_against_schema}}
+                                    </div>
+                                    {{/if}}
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="signature" role="tabpanel" aria-labelledby="signature-settings-tab">
@@ -123,38 +152,36 @@
         </div><br>
         <div class="container">
             <p>{{message}}</p>
-            {{#if showResults}}
-                {{#if decoding_error}}
-                    <p>
-                    <a class="btn btn-danger" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                        Toggle Results
-                    </a>
-                    </p>
-                {{else}}
-                    <p>
-                    <a class="btn btn-outline-secondary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                        Toggle Results
-                    </a>
-                    </p>
-                {{/if}}
-
-                <div class="collapse show" id="collapseExample">
-                    <button class="btn btn-outline-secondary" onclick="download('header.txt', $('#headerDisplay').text())">Download header</button>
-                    <button class="btn btn-outline-secondary" onclick="download('payload.txt', $('#payloadDisplay').text())">Download payload</button>
-                    <button class="btn btn-outline-secondary" onclick="clipboard($('#headerDisplay').text())">Copy header</button>
-                    <button class="btn btn-outline-secondary" onclick="clipboard($('#payloadDisplay').text())">Copy payload</button>
-                    <div class="card card-body">
-                        <h2>Header</h2>
-                        <pre id="headerDisplay">
-                            {{header}}
-                        </pre>
-                    </div>
-                    <div class="card card-body">
-                        <h2>Payload</h2>
-                        <pre id="payloadDisplay">
-                            {{{payload}}}
-                        </pre>
-                    </div>
+            {{#if show_results}}
+            {{#if previous.match_error}}
+                <p>
+                <a class="btn btn-danger" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    Toggle Results
+                </a>
+                </p>
+            {{else}}
+                <p>
+                <a class="btn btn-outline-secondary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    Toggle Results
+                </a>
+                </p>
+            {{/if}}
+            <div class="collapse show" id="collapseExample">
+                <button class="btn btn-outline-secondary" onclick="download('header.txt', $('#headerDisplay').text())">Download header</button>
+                <button class="btn btn-outline-secondary" onclick="download('payload.txt', $('#payloadDisplay').text())">Download payload</button>
+                <button class="btn btn-outline-secondary" onclick="clipboard($('#headerDisplay').text())">Copy header</button>
+                <button class="btn btn-outline-secondary" onclick="clipboard($('#payloadDisplay').text())">Copy payload</button>
+                <div class="card card-body">
+                    <h2>Header</h2>
+                    <pre id="headerDisplay">
+{{{result.header}}}
+                    </pre>
+                </div>
+                <div class="card card-body">
+                    <h2>Payload</h2>
+                    <pre id="payloadDisplay">
+{{{result.payload}}}
+                    </pre>
                 </div>
             {{/if}}
         </div>

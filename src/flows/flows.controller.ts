@@ -58,32 +58,13 @@ export class FlowsController {
     return 200;
   }
 
-  @Get('authResult')
-  @Render('cc-result')
-  async authResult(
-    @Query('discoveryResult') disResult: string,
-    @Query('header') header: string,
-    @Query('message') message: string,
-    @Query('payload') payload: string,
-    @Query('showResults') showResults: boolean,
-  ) {
-    return {
-      showResults: showResults,
-      message: JSON.parse(message),
-
-      discoveryResult: JSON.parse(disResult),
-      payload: JSON.parse(payload),
-      header: JSON.parse(header),
-    };
-  }
-
   @Post('authorize')
   async authCallback(@Body() authInputDto: AuthInputDto, @Res() res: Response) {
     let result;
     try {
       const [discoveryResult, decodingResult] =
         await this.flowsService.authorizationFlow(
-          process.env.ISSUER_STRING,
+          authInputDto.issuerString,
           authInputDto.clientId,
           authInputDto.clientSecret,
           authInputDto.url,

@@ -15,6 +15,19 @@ export class HelperService {
     @Inject(ExtendedProtocolService)
     private readonly protocolService: ExtendedProtocolService;
 
+    async getSchemasHelper2(schema_s: string, sub_system: string, sub_sub_system: string) {
+        let empty_schemas;
+        if (schema_s === undefined) {
+            empty_schemas = [ this.settingsService.config[sub_system][sub_sub_system].validation_schema, '' ]
+        } else if (schema_s === '') {
+            empty_schemas = [''];
+        } else {
+            empty_schemas = [schema_s, ''];
+        }
+        const uploaded_schemas = await fs.readdir(join('schema', join(sub_system, sub_sub_system)));
+        return empty_schemas.concat(uploaded_schemas.filter((x) => { return x !== schema_s; }));
+    }
+
     async getSchemasHelper(schema_s: string, sub_system: string) {
         let empty_schemas;
         if (schema_s === undefined) {
@@ -53,7 +66,7 @@ export class HelperService {
         return [validate(issuer), validate.errors];
     }
 
-    myStringify(issuer, required, keys) {
+    myStringify(issuer, required, keys): string {
         let res = '{\n';
         let first = true;
         for (const key in issuer) {
@@ -73,7 +86,7 @@ export class HelperService {
         return res;
     }
 
-    async coloredFilteredValidationWithFileContent(issuer: object, schema: any, keys: any[]) {
+    async coloredFilteredValidationWithFileContent(issuer: object, schema: any, keys: any[]): Promise<[number, string]> {
         const [ valid, errors ] = await this.validateJson(issuer, schema);
         if (valid) {
             const required = schema.required;

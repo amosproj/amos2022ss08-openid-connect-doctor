@@ -1,0 +1,17 @@
+{
+	"$id": "example.schema.json",
+	"title": "Example",
+	"description": "Exapmle schema with some parameters to be used as template",
+	"type": "object",
+	"properties": {
+		"typ": {
+			"description": "Type of the token. E.g. Bearer",
+			"type": "string"
+		},
+		"azp": {
+			"description": "Authorized Party",
+			"type": "string"
+		}
+	},
+	"required": [ "azp" ]
+}

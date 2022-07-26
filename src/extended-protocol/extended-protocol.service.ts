@@ -8,9 +8,6 @@ import { promises as fsPromises } from 'fs';
 
 @Injectable()
 export class ExtendedProtocolService {
-    private readonly logPath = './logfiles';
-    private readonly extLogFileName = './extLogger.html';
-    private extLogFile = undefined;
     private extLogBuffer : string = '';
 
     private logger: Logger;
@@ -18,11 +15,6 @@ export class ExtendedProtocolService {
     constructor() {
         this.logger = new Logger(ExtendedProtocolService.name);
         const fs = require('fs');
-        const logFile = join(this.logPath, this.extLogFileName);
-        try {
-            fs.rmSync(logFile);
-        } catch {
-        }
     }
 
     async extendedLogError(message: string) {
@@ -38,17 +30,8 @@ export class ExtendedProtocolService {
     }
 
     private async extendedLogHelper(message: string, color: string) {
-        const logFile = join(this.logPath, this.extLogFileName);
-        if (this.extLogFile === undefined) {
-            try {
-                this.extLogFile = await fsPromises.open(logFile, 'a');
-            } catch {
-                this.logger.error(`Failed to open ${logFile}`);
-            }
-        }
         const dateTime = new Date();
         const log_line : string = `<span style="color:${color}">[${dateTime}] ${message}</span>\n`;
-        this.extLogFile.write(log_line);
         this.extLogBuffer = this.extLogBuffer + log_line;
     }
 

@@ -1,5 +1,6 @@
 <!--SDPX-License-Identifier: MIT-->
 <!--SDPX-FileCopyrightText: 2022 Sarah Julia Kriesch <sarah.j.kriesch@fau.de>-->
+<!--SDPX-FileCopyrightText: 2022 Sarah Julia Kriesch <michael.kupfer@fau.de>-->
 <!DOCTYPE html>
 <html>
     <head>
@@ -41,11 +42,11 @@
             <form class="input-form" action="/api/token/decode" method="post">
                 <div class="card card-body d-flex flex-row align-content-start w-100">
                     <label class="w-25" for="issuer">Issuer:</label>
-		            <input class="w-75" type="text" id="issuer" name="issuer" {{#if previous.issuer}} value="{{previous.issuer}}"{{/if}}/>
+		    <input class="w-75" type="text" id="issuer" name="issuer" {{#if previous.issuer}} value="{{previous.issuer}}"{{/if}}/>
                 </div>
                 <div class="card card-body d-flex flex-row align-content-start w-100">
                     <label class="w-25" for="token">Access-Token:</label>
-		            <textarea class="w-75" type="text" id="token" name="token" rows="8">{{previous.token}}</textarea>
+		    <textarea class="w-75" type="text" id="token" name="token" rows="8">{{previous.token}}</textarea>
                 </div><br>
                 <p>
                 <a class="btn btn-outline-secondary" data-bs-toggle="collapse" href="#advancedSettings" role="button" aria-expanded="false" aria-controls="advancedSettings">
@@ -65,15 +66,15 @@
                                 <div class="d-flex flex-row align-content-start">
                                     <label class="w-50" for="schema_uploaded_selector"></label>
                                     {{#if previous.validated_header_against_schema}}
-				                        <div class="card text-white bg-{{#if previous.header_match_error}}danger{{else}}success{{/if}} w-50">
-                                            <div class="card-header">
-                                                {{#if previous.header_match_error}}
-                                                Schema didn't match
-                                                {{else}}
-                                                Schema matched
-                                                {{/if}}
-                                            </div>
-                                        {{/if}}
+				    <div class="card text-white bg-{{#if previous.header_match_error}}danger{{else}}success{{/if}} w-50">
+                                        <div class="card-header">
+                                            {{#if previous.header_match_error}}
+                                            Schema didn't match
+                                            {{else}}
+                                            Schema matched
+                                            {{/if}}
+                                        </div>
+                                    {{/if}}
                                     <select class="w-{{#if previous.validated_header_against_schema}}100{{else}}50{{/if}}" name="schema_header" id="schema_uploaded_selector">
                                         {{#if previous.schemas_header}}
                                         {{#each previous.schemas_header as |schema|}}
@@ -121,26 +122,27 @@
                                     {{/if}}
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="signature" role="tabpanel" aria-labelledby="signature-settings-tab">
-                                <div class="row mb-3">
-                                    <label class="col-sm-2 col-form-label" for="header-schema">Use Key-Material from JWKS-Endpoint?</label>
-                                    <input class="col-sm-10" type="checkbox" id="getKeysFromProvider" name="getKeysFromProvider" checked="checked" onchange="toggleKeyAlgorithmInputs()"/>
-                                </div>
-                                <div class="row mb-3 d-none" id="key-alg-row">
-                                    <label class="col-sm-2 col-form-label" for="keyMaterialAlgorithm">Key-Algorithm:</label>
-                                    <select class="col-sm-10" id="keyMaterialAlgorithm" name="keyMaterialAlgorithm" disabled>
-                                        {{#if key_algorithms}}
-                                            {{#each key_algorithms as |key_alg|}}
-                                                <option id="{{key_alg}}" value="{{key_alg}}">{{key_alg}}</option>
-                                            {{/each}}
-                                        {{/if}}
-                                    </select>
-                                </div>
-                                <div class="row mb-3 d-none" id="key-mat-row">
-                                    <label class="col-sm-2 col-form-label" for="keyMaterialFilepath">Key-Filepath:</label>
-                                    <input class="col-sm-10" type="text" id="keyMaterialFilepath" name="keyMaterialFilepath" disabled/>
-                                </div>
-                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="tab-pane" id="signature" role="tabpanel" aria-labelledby="signature-settings-tab">
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label" for="header-schema">Use Key-Material from JWKS-Endpoint?</label>
+                            <input class="col-sm-10" type="checkbox" id="getKeysFromProvider" name="getKeysFromProvider" checked="checked" onchange="toggleKeyAlgorithmInputs()"/>
+                        </div>
+                        <div class="row mb-3 d-none" id="key-alg-row">
+                            <label class="col-sm-2 col-form-label" for="keyMaterialAlgorithm">Key-Algorithm:</label>
+                            <select class="col-sm-10" id="keyMaterialAlgorithm" name="keyMaterialAlgorithm" disabled>
+                                {{#if key_algorithms}}
+                                {{#each key_algorithms as |key_alg|}}
+                                <option id="{{key_alg}}" value="{{key_alg}}">{{key_alg}}</option>
+                                {{/each}}
+                                {{/if}}
+                            </select>
+                        </div>
+                        <div class="row mb-3 d-none" id="key-mat-row">
+                            <label class="col-sm-2 col-form-label" for="keyMaterialFilepath">Key-Filepath:</label>
+                            <input class="col-sm-10" type="text" id="keyMaterialFilepath" name="keyMaterialFilepath" disabled/>
                         </div>
                     </div>
                 </div>

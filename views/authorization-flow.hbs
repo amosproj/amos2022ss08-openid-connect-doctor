@@ -1,5 +1,6 @@
 <!--SDPX-License-Identifier: MIT-->
 <!--SDPX-FileCopyrightText: 2022 Sarah Julia Kriesch <sarah.j.kriesch@fau.de>-->
+<!--SDPX-FileCopyrightText: 2022 Sarah Julia Kriesch <michael.kupfer@fau.de>-->
 <!DOCTYPE html>
  <html>
 <head>
@@ -40,8 +41,8 @@
             <p>Please enter the necessary information:</p>
             <form class="input-form">
                 <div class="row mb-3">
-                    <label class="col-sm-2 col-form-label" for="issuerUrl">Issuer</label>
-                    <input type="text" id="issuerUrl" class="col-sm-8" name="issuerUrl" value="{{issuer_s}}" aria-label="Issuer input"  placeholder="Input your issuer here" aria-placeholder="Input your issuer here"/>
+                    <label class="col-sm-2 col-form-label" for="redirectUri">OpenID Provider</label>
+                    <input type="text" id="issuer" class="col-sm-8" name="issuer" aria-label="custom-URI input" {{#if issuer_s}}value="{{issuer_s}}" {{/if}}placeholder="Input your OpenID provider here" aria-placeholder="Input your OpenID Provider here"/>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="clientId">Client-ID</label>
@@ -50,10 +51,6 @@
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="clientSecret">Client-Secret</label>
                     <input type="password" id="clientSecret" class="col-sm-8" name="clientSecret" aria-label="Client-Secret input" title="Input your client-secret here" data-bs-toggle="tooltip" data-bs-placement="top" placeholder="Input your client-secret here" aria-placeholder="Input your client-secret here"/>
-                </div>
-                <div class="row mb-3">
-                    <label class="col-sm-2 col-form-label" for="redirectUri">Custom URI</label>
-                    <input type="text" id="customUri" class="col-sm-8" name="customUri" aria-label="custom-URI input" title="Input your custom URI here" data-bs-toggle="tooltip" data-bs-placement="top" placeholder="Input your custom URI here" aria-placeholder="Input your custom URI here"/>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="redirectUri"></label>
@@ -107,51 +104,40 @@
     </div>
 
     <script type="text/javascript">
-        function login() {
-            const issuer_s = document.getElementById("issuerUrl").value;
+        async function login() {
             const client_id = document.getElementById("clientId").value;
             const client_secret = document.getElementById("clientSecret").value;
-            const customUri = document.getElementById("customUri").value;
+            const issuer_s = document.getElementById("issuer").value;
             const callback_uri = 'http://localhost:8081/api/flows/callback';
             const responseType = "code";
             const state = randomString(10);
 
-            let popUpWindow = authURL(customUri, client_id, client_secret, callback_uri, responseType, state)
+            const issuer = await $.get('http://localhost:8081/api/helper/get_issuer?issuer=' + issuer_s);
+            const customUri = issuer.authorization_endpoint;
+
+            const popUpWindow = authURL(customUri, client_id, client_secret, callback_uri, responseType, state)
             let myURL = extractURL(popUpWindow);
 
-            let interval = setInterval(() => {
+            let interval = setInterval(async () => {
                 console.log('.....')
                 if (myURL.includes('code')) {
                     clearInterval(interval);
-                    const response = fetch('authorize', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({
-                            issuerString: issuer_s,
-                            clientId: client_id,
-                            clientSecret: client_secret,
-                            url: myURL,
-                            redirectUri: callback_uri,
+                    const newPage = await $.ajax({
+                        url: 'http://localhost:8081/api/flows/authorize',
+                        type: 'POST',
+                        data: JSON.stringify({
+                                issuer: issuer_s,
+                                clientId: client_id,
+                                clientSecret: client_secret,
+                                url: myURL,
+                                redirectUri: callback_uri,
                             }),
-                            redirect: 'follow'
-                        }).then((response) => response.json()) //2
-                            .then((result) => {
-                                console.log(result); //3
-                                document.getElementById("message").innerHTML =result.message;
-                                document.getElementById("header").innerHTML =result.header;
-                                document.getElementById("payload").innerHTML =result.payload;
-                                document.getElementById("discoveryMessage").innerHTML =result.discoveryResult;
-                                console.log("Show result status: "+result.showResults);
-                                if(result.showResults){
-                                    var toggle = document.getElementById("myDIV");
-                                    if (toggle.style.display === "none") {
-                                        toggle.style.display = "block";
-                                    }
-                                }
-
-                            });
-
-                            popUpWindow.close();
+                        contentType: 'application/json',
+                    });
+                    document.open();
+                    document.write(newPage);
+                    document.close();
+                    popUpWindow.close();
                 } else {
                     myURL = extractURL(popUpWindow);
                     console.log("In else block")
@@ -186,7 +172,10 @@
             return result;
         }
     </script>
-
+    <script
+            src="https://code.jquery.com/jquery-3.6.0.js"
+            integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+            crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 

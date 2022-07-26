@@ -122,26 +122,27 @@
                                     {{/if}}
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="signature" role="tabpanel" aria-labelledby="signature-settings-tab">
-                                <div class="row mb-3">
-                                    <label class="col-sm-2 col-form-label" for="header-schema">Use Key-Material from JWKS-Endpoint?</label>
-                                    <input class="col-sm-10" type="checkbox" id="getKeysFromProvider" name="getKeysFromProvider" checked="checked" onchange="toggleKeyAlgorithmInputs()"/>
-                                </div>
-                                <div class="row mb-3 d-none" id="key-alg-row">
-                                    <label class="col-sm-2 col-form-label" for="keyMaterialAlgorithm">Key-Algorithm:</label>
-                                    <select class="col-sm-10" id="keyMaterialAlgorithm" name="keyMaterialAlgorithm" disabled>
-                                        {{#if key_algorithms}}
-                                            {{#each key_algorithms as |key_alg|}}
-                                                <option id="{{key_alg}}" value="{{key_alg}}">{{key_alg}}</option>
-                                            {{/each}}
-                                        {{/if}}
-                                    </select>
-                                </div>
-                                <div class="row mb-3 d-none" id="key-mat-row">
-                                    <label class="col-sm-2 col-form-label" for="keyMaterialFilepath">Key-Filepath:</label>
-                                    <input class="col-sm-10" type="text" id="keyMaterialFilepath" name="keyMaterialFilepath" disabled/>
-                                </div>
-                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="tab-pane" id="signature" role="tabpanel" aria-labelledby="signature-settings-tab">
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label" for="header-schema">Use Key-Material from JWKS-Endpoint?</label>
+                            <input class="col-sm-10" type="checkbox" id="getKeysFromProvider" name="getKeysFromProvider" checked="checked" onchange="toggleKeyAlgorithmInputs()"/>
+                        </div>
+                        <div class="row mb-3 d-none" id="key-alg-row">
+                            <label class="col-sm-2 col-form-label" for="keyMaterialAlgorithm">Key-Algorithm:</label>
+                            <select class="col-sm-10" id="keyMaterialAlgorithm" name="keyMaterialAlgorithm" disabled>
+                                {{#if key_algorithms}}
+                                {{#each key_algorithms as |key_alg|}}
+                                <option id="{{key_alg}}" value="{{key_alg}}">{{key_alg}}</option>
+                                {{/each}}
+                                {{/if}}
+                            </select>
+                        </div>
+                        <div class="row mb-3 d-none" id="key-mat-row">
+                            <label class="col-sm-2 col-form-label" for="keyMaterialFilepath">Key-Filepath:</label>
+                            <input class="col-sm-10" type="text" id="keyMaterialFilepath" name="keyMaterialFilepath" disabled/>
                         </div>
                     </div>
                 </div>

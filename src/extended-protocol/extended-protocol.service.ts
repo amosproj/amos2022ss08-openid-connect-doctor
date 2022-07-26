@@ -42,8 +42,8 @@ export class ExtendedProtocolService {
         if (this.extLogFile === undefined) {
             try {
                 this.extLogFile = await fsPromises.open(logFile, 'a');
-            } catch {
-                this.logger.error(`Failed to open ${logFile}`);
+            } catch (error) {
+                this.logger.error(`Failed to open ${logFile} with ${error}`);
             }
         }
         const dateTime = new Date();

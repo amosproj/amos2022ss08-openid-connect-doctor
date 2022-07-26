@@ -11,16 +11,21 @@ import {
   Render,
   Query,
   Res,
+  Inject,
 } from '@nestjs/common';
 import { ClientCredentialFlowInputDto } from './Dto/clientCredentialFlowInput.dto';
 import { PasswordGrantFlowInputDto } from './Dto/passwordGrantFlowInput.dto';
 import { FlowsService } from './flows.service';
 import { AuthInputDto } from './Dto/authInput.dto';
 import { Response } from 'express';
+import { TokenService } from '../token/token.service';
 
 @Controller('flows')
 export class FlowsController {
   dicoveryContent: string;
+
+  @Inject(TokenService)
+  private readonly tokenService: TokenService;
 
   constructor(private readonly flowsService: FlowsService) {}
 
@@ -59,68 +64,131 @@ export class FlowsController {
   }
 
   @Post('authorize')
-  async authCallback(@Body() authInputDto: AuthInputDto, @Res() res: Response) {
-    let result;
-    try {
-      const [discoveryResult, decodingResult] =
-        await this.flowsService.authorizationFlow(
-          authInputDto.issuerString,
-          authInputDto.clientId,
-          authInputDto.clientSecret,
-          authInputDto.url,
-          authInputDto.redirectUri,
-        );
-      result = {
-        showResults: decodingResult.success,
-        message: decodingResult.message,
-
-        discoveryResult: discoveryResult,
-        payload: decodingResult.payload,
-        header: decodingResult.header,
-      };
-    } catch (error) {
-      result = {
-        showResults: false,
-        message: error,
-
-        discoveryResult: '',
-        payload: '',
-        header: '',
-      };
-    }
-    return res.status(302).json(result).send();
+  @Render('decode')
+  async authCallback(@Body() authInputDto: AuthInputDto) {
+    const schemas_header = await this.tokenService.getSchemas(
+      'header',
+      undefined,
+    );
+    const schemas_payload = await this.tokenService.getSchemas(
+      'payload',
+      undefined,
+    );
+    const result = await this.flowsService
+      .authorizationFlowRawToken(
+        authInputDto.issuer,
+        authInputDto.clientId,
+        authInputDto.clientSecret,
+        authInputDto.url,
+        authInputDto.redirectUri,
+      )
+      .then((tokenString) => {
+        return {
+          message:
+            'Go to Advanced Settings or click submit to decode your token',
+          show_results: false,
+          result: {
+            header: '',
+            payload: '',
+          },
+          previous: {
+            issuer: authInputDto.issuer,
+            token: tokenString,
+            schemas_header: schemas_header,
+            schemas_payload: schemas_payload,
+            header_match_error: false,
+            payload_match_error: false,
+            validated_header_against_schema: false,
+            validated_payload_against_schema: false,
+          },
+          key_algorithms: this.tokenService.getKeyAlgorithms(),
+        };
+      })
+      .catch((error) => {
+        return {
+          message: `Something went wrong: ${error}`,
+          show_results: false,
+          result: {
+            header: '',
+            payload: '',
+          },
+          previous: {
+            issuer: authInputDto.issuer,
+            token: null,
+            schemas_header: schemas_header,
+            schemas_payload: schemas_payload,
+            header_match_error: false,
+            payload_match_error: false,
+            validated_header_against_schema: false,
+            validated_payload_against_schema: false,
+          },
+          key_algorithms: this.tokenService.getKeyAlgorithms(),
+        };
+      });
+    return result;
   }
 
   @Post('cc')
-  @Render('cc-result')
+  @Render('decode')
   async post(
     @Body() clientCredentialFlowInputDto: ClientCredentialFlowInputDto,
   ) {
+    const schemas_header = await this.tokenService.getSchemas(
+      'header',
+      undefined,
+    );
+    const schemas_payload = await this.tokenService.getSchemas(
+      'payload',
+      undefined,
+    );
     const result = await this.flowsService
-      .clientCredentials(
+      .clientCredentialsRawToken(
         clientCredentialFlowInputDto.issuerUrl,
         clientCredentialFlowInputDto.clientId,
         clientCredentialFlowInputDto.clientSecret,
         clientCredentialFlowInputDto.audience,
       )
-      .then(([discoveryResult, decodingResult]) => {
+      .then((tokenString) => {
         return {
-          showResults: decodingResult.success,
-          message: decodingResult.message,
-
-          discoveryResult: discoveryResult,
-          payload: decodingResult.payload,
-          header: decodingResult.header,
+          message:
+            'Go to Advanced Settings or click submit to decode your token',
+          show_results: false,
+          result: {
+            header: '',
+            payload: '',
+          },
+          previous: {
+            issuer: clientCredentialFlowInputDto.issuerUrl,
+            token: tokenString,
+            schemas_header: schemas_header,
+            schemas_payload: schemas_payload,
+            header_match_error: false,
+            payload_match_error: false,
+            validated_header_against_schema: false,
+            validated_payload_against_schema: false,
+          },
+          key_algorithms: this.tokenService.getKeyAlgorithms(),
         };
       })
       .catch((error) => {
         return {
-          showResults: false,
-          message: error,
-
-          discoveryResult: '',
-          payload: '',
-          header: '',
+          message: `Something went wrong: ${error}`,
+          show_results: false,
+          result: {
+            header: '',
+            payload: '',
+          },
+          previous: {
+            issuer: clientCredentialFlowInputDto.issuerUrl,
+            token: null,
+            schemas_header: schemas_header,
+            schemas_payload: schemas_payload,
+            header_match_error: false,
+            payload_match_error: false,
+            validated_header_against_schema: false,
+            validated_payload_against_schema: false,
+          },
+          key_algorithms: this.tokenService.getKeyAlgorithms(),
         };
       });
 
@@ -135,36 +203,67 @@ export class FlowsController {
   }
 
   @Post('pg')
-  @Render('cc-result')
+  @Render('decode')
   async postPg(@Body() passwordGrantFlowInputDto: PasswordGrantFlowInputDto) {
-    console.log(passwordGrantFlowInputDto);
+    const schemas_header = await this.tokenService.getSchemas(
+      'header',
+      undefined,
+    );
+    const schemas_payload = await this.tokenService.getSchemas(
+      'payload',
+      undefined,
+    );
     const result = await this.flowsService
-      .passwordGrant(
+      .passwordGrantRawToken(
         passwordGrantFlowInputDto.issuerUrl,
         passwordGrantFlowInputDto.clientId,
         passwordGrantFlowInputDto.clientSecret,
         passwordGrantFlowInputDto.username,
         passwordGrantFlowInputDto.password,
       )
-      .then(([discoveryResult, decodingResult]) => {
+      .then((tokenString) => {
         return {
-          showResults: decodingResult.success,
-          message: decodingResult.message,
-
-          discoveryResult: discoveryResult,
-          payload: decodingResult.payload,
-          header: decodingResult.header,
+          message:
+            'Go to Advanced Settings or click submit to decode your token',
+          show_results: false,
+          result: {
+            header: '',
+            payload: '',
+          },
+          previous: {
+            issuer: passwordGrantFlowInputDto.issuerUrl,
+            token: tokenString,
+            schemas_header: schemas_header,
+            schemas_payload: schemas_payload,
+            header_match_error: false,
+            payload_match_error: false,
+            validated_header_against_schema: false,
+            validated_payload_against_schema: false,
+          },
+          key_algorithms: this.tokenService.getKeyAlgorithms(),
         };
       })
       .catch((error) => {
         return {
-          showResults: false,
-          message: error,
-
-          discoveryResult: '',
-          payload: '',
-          header: '',
+          message: `Something went wrong: ${error}`,
+          show_results: false,
+          result: {
+            header: '',
+            payload: '',
+          },
+          previous: {
+            issuer: passwordGrantFlowInputDto.issuerUrl,
+            token: null,
+            schemas_header: schemas_header,
+            schemas_payload: schemas_payload,
+            header_match_error: false,
+            payload_match_error: false,
+            validated_header_against_schema: false,
+            validated_payload_against_schema: false,
+          },
+          key_algorithms: this.tokenService.getKeyAlgorithms(),
         };
       });
+    return result;
   }
 }

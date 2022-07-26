@@ -27,7 +27,12 @@
 		"validation_schema": "all.schema.json"
 	},
 	"token": {
-		"validation_schema": "test.schema.json",
+		"header": {
+			"validation_schema": "test.schema.json"
+		},
+		"payload": {
+			"validation_schema": "test.schema.json"
+		},
 		"key_algorithm": "RS256"
 	},
 	"flows": {

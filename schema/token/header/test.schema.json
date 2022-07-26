@@ -8,10 +8,10 @@
 			"description": "Type of the token. E.g. Bearer",
 			"type": "string"
 		},
-		"clientId": {
-			"description": "ClientID for which the token was issued",
+		"alg": {
+			"description": "Algorithm used",
 			"type": "string"
 		}
 	},
-	"required": [ "clientId" ]
+	"required": [ "alg" ]
 }

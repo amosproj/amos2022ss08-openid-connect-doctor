@@ -1,6 +1,8 @@
+// 89-more-details-in-the-protocol
 //SDPX-License-Identifier: MIT
 //SDPX-FileCopyrightText: 2022 Michael Kupfer <michael.kupfer@fau.de>
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import {HttpException, Inject, Injectable, Logger} from '@nestjs/common';
+
 import { join } from 'path';
 import { SettingsService } from '../settings/settings.service';
 import { HelperService } from '../helper/helper.service';
@@ -8,7 +10,7 @@ import { promises as fsPromises } from 'fs';
 
 @Injectable()
 export class ExtendedProtocolService {
-    private readonly logPath = './logfiles';
+    private readonly logPath = './output';
     private readonly extLogFileName = './extLogger.html';
     private extLogFile = undefined;
     private extLogBuffer : string = '';
@@ -26,18 +28,30 @@ export class ExtendedProtocolService {
     }
 
     async extendedLogError(message: string) {
-        this.extendedLogHelper(message, 'red');
+        if (message === undefined || message === null) {
+            throw new HttpException('Extended Log Error message can not be undefined or null', 400);
+        }
+        await this.extendedLogHelper(message, 'red');
     }
 
     async extendedLogSuccess(message: string) {
-        this.extendedLogHelper(message, 'green');
+        if (message === undefined || message === null) {
+            throw new HttpException('Extended Log Success message can not be undefined or null', 400);
+        }
+        await this.extendedLogHelper(message, 'green');
     }
 
     async extendedLog(message: string) {
-        this.extendedLogHelper(message, 'black');
+        if (message === undefined || message === null) {
+            throw new HttpException('Extended Log message can not be undefined or null', 400);
+        }
+       await this.extendedLogHelper(message, 'black');
     }
 
-    private async extendedLogHelper(message: string, color: string) {
+     async extendedLogHelper(message: string, color: string) {
+         if (message === undefined || message === null || typeof(message)=== undefined || color===undefined) {
+             throw new HttpException('Extended Log Helper can not be undefined or null', 400);
+         }
         const logFile = join(this.logPath, this.extLogFileName);
         if (this.extLogFile === undefined) {
             try {

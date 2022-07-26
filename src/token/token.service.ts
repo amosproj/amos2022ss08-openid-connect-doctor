@@ -111,10 +111,14 @@ export class TokenService {
   }
 
   async decodeToken(tokenString: string): Promise<[string, string]> {
+    this.protocolService.extendedLog(`Start decoding token:\n${tokenString}`);
     const [header, payload] = this.decodeTokenString(tokenString);
 
     const formattedHeader = JSON.stringify(header, undefined, 2);
     const formattedPayload = JSON.stringify(payload, undefined, 2);
+
+    this.protocolService.extendedLogSuccess(`Successfully decoded header:\n${JSON.stringify(header, undefined, 2)}`);
+    this.protocolService.extendedLogSuccess(`Successfully decoded payload:\n${JSON.stringify(payload, undefined, 2)}`);
 
     return [formattedHeader, formattedPayload];
   }
@@ -168,11 +172,6 @@ export class TokenService {
         schema,
         keys,
       );
-    if (success === 1) {
-      this.protocolService.extendedLogSuccess('Validation success');
-    } else {
-      this.protocolService.extendedLogError(`Validation failed: ${info}`);
-    }
     return [success, info];
   }
 
@@ -204,10 +203,11 @@ export class TokenService {
   ): Promise<[boolean, string]> {
     let isValid = true;
     let message = '';
-
     try {
       const keyMaterial = await this.getExternalKeyMaterial(issuer);
+      this.protocolService.extendedLogSuccess('Retrieved key material');
 
+      this.protocolService.extendedLog('Start token verification');
       const { payload, protectedHeader } = await jose.jwtVerify(
         tokenString,
         keyMaterial,
@@ -235,6 +235,7 @@ export class TokenService {
   ): Promise<
     GetKeyFunction<jose.JoseHeaderParameters, jose.FlattenedJWSInput>
   > {
+    this.protocolService.extendedLog(`Retrieve keys from ${issuerUrl}`);
     const discoveryInformation = await this.discoveryService.get_issuer(
       issuerUrl,
     );

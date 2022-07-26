@@ -38,11 +38,6 @@ export class DiscoveryService {
     this.protocolService.extendedLog(`Validate issuer ${issuer.issuer} against ${schema_file}`);
     const schema = require(join('..', '..', 'schema', schema_file));
     const [ success, info ] = await this.helperService.coloredFilteredValidationWithFileContent(issuer, schema, keys);
-    if (success === 1) {
-      this.protocolService.extendedLogSuccess('Validation success');
-    } else {
-      this.protocolService.extendedLogError(`Validation failed: ${info}`);
-    }
     return [ success, info ];
   }
 }

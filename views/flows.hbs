@@ -16,20 +16,25 @@
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
+    <div class="container">
         <center>
             <img class="mx-auto d-block mt-2" src="/images/logo-amos.png" alt="Image"  max-width="200" height="180">
         </center>
-            <div class="navbar-item">
-                <a class="btn btn-outline-secondary" href="/api/discovery/issuer/find?issuer_s={{issuer_s}}" role="button">Back to Discovery</a>
-            </div>
-            <div class="navbar-item mx-auto">
-                <a class="btn btn-outline-secondary" href="/api/protocol/logger" role="button">Protocol</a>
-            </div>
-        </div>
-    </nav>
-    
+        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+            <a href="/api/discovery/issuer/find?issuer_s={{issuer_s}}" role="button" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+                <span class="btn btn-outline-secondary me-2">Back to Discovery</span>
+            </a>
+
+            <a href="/api/protocol/logger" class="nav col-12 col-md-auto mb-2 mb-md-0 text-decoration-none">
+                <span class="btn btn-outline-secondary me-2">Protocol</span>
+            </a>
+
+            <a class="col-md-3 text-end">
+                <span class="btn me-2"></span>
+            </a>
+        </header>
+    </div>
+
     <div class="container">
         <h2>Authentication-Flows</h2>
         <p>Please select the authentication-flow you want to test:</p>

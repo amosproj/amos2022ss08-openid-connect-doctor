@@ -5,9 +5,9 @@ on:
     paths-ignore:
       - 'Deliverables/**'
       - 'Documentation/**'
-permissions: read-all|write-all
 jobs:
   run-unit-tests:
+    permissions: write-all
     strategy:
       matrix:
         node-version: [16.15.0]

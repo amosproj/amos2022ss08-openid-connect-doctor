@@ -83,36 +83,68 @@ export class FlowsController {
   }
 
   @Post('authorize')
-  async authCallback(@Body() authInputDto: AuthInputDto, @Res() res: Response) {
-    let result;
-    try {
-      const [discoveryResult, decodingResult] =
-        await this.flowsService.authorizationFlow(
-          process.env.ISSUER_STRING,
-          authInputDto.clientId,
-          authInputDto.clientSecret,
-          authInputDto.url,
-          authInputDto.redirectUri,
-        );
-      result = {
-        showResults: decodingResult.success,
-        message: decodingResult.message,
-
-        discoveryResult: discoveryResult,
-        payload: decodingResult.payload,
-        header: decodingResult.header,
-      };
-    } catch (error) {
-      result = {
-        showResults: false,
-        message: error,
-
-        discoveryResult: '',
-        payload: '',
-        header: '',
-      };
-    }
-    return res.status(302).json(result).send();
+  @Render('decode')
+  async authCallback(@Body() authInputDto: AuthInputDto) {
+    const schemas_header = await this.tokenService.getSchemas(
+      'header',
+      undefined,
+    );
+    const schemas_payload = await this.tokenService.getSchemas(
+      'payload',
+      undefined,
+    );
+    const result = await this.flowsService
+      .authorizationFlowRawToken(
+        authInputDto.issuer,
+        authInputDto.clientId,
+        authInputDto.clientSecret,
+        authInputDto.url,
+        authInputDto.redirectUri,
+      )
+      .then((tokenString) => {
+        return {
+          message:
+            'Go to Advanced Settings or click submit to decode your token',
+          show_results: false,
+          result: {
+            header: '',
+            payload: '',
+          },
+          previous: {
+            issuer: authInputDto.issuer,
+            token: tokenString,
+            schemas_header: schemas_header,
+            schemas_payload: schemas_payload,
+            header_match_error: false,
+            payload_match_error: false,
+            validated_header_against_schema: false,
+            validated_payload_against_schema: false,
+          },
+          key_algorithms: this.tokenService.getKeyAlgorithms(),
+        };
+      })
+      .catch((error) => {
+        return {
+          message: `Something went wrong: ${error}`,
+          show_results: false,
+          result: {
+            header: '',
+            payload: '',
+          },
+          previous: {
+            issuer: authInputDto.issuer,
+            token: null,
+            schemas_header: schemas_header,
+            schemas_payload: schemas_payload,
+            header_match_error: false,
+            payload_match_error: false,
+            validated_header_against_schema: false,
+            validated_payload_against_schema: false,
+          },
+          key_algorithms: this.tokenService.getKeyAlgorithms(),
+        };
+      });
+    return result;
   }
 
   @Post('cc')

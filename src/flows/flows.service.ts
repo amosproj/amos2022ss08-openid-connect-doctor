@@ -330,6 +330,86 @@ export class FlowsService {
     }
   }
 
+  async authorizationFlowRawToken(
+    issuer_s: string,
+    clientId: string,
+    clientSecret: string,
+    url: string,
+    redirectURI: string,
+  ): Promise<string> {
+    if (issuer_s === undefined || issuer_s === '') {
+      throw new HttpException(
+        'There was no issuer to validate the token against for authorization code flow!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (clientId === undefined || clientId === '') {
+      throw new HttpException(
+        'There was no client id provided for authorization code flow',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    if (clientSecret === undefined || clientSecret === '') {
+      throw new HttpException(
+        'There was no client secret provided for authorization code flow',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    if (url === undefined || url === '') {
+      throw new HttpException(
+        'There is no url provided for the authorization flow!',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    if (redirectURI == undefined || redirectURI === '') {
+      throw new HttpException(
+        'There was no redirectURI provided!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    this.protocolService.extendedLog('Start authorization flow');
+
+    const callbackUri = url.split('?')[0];
+    const myParameters = url.split('?')[1];
+    const parameters = JSON.parse(
+      '{"' + myParameters.replace(/&/g, '","').replace(/=/g, '":"') + '"}',
+      function (key, value) {
+        return key === '' ? value : decodeURIComponent(value);
+      },
+    );
+
+    let tokenString = '';
+
+    try {
+      const issuer = await this.discoveryService.get_issuer(issuer_s);
+      const token = await this.tokenService.getToken(
+        String(issuer.token_endpoint),
+        {
+          grant_type: 'authorization_code',
+          client_id: clientId,
+          client_secret: clientSecret,
+          code: parameters.code,
+          redirect_uri: callbackUri,
+          audience: 'oidc-app',
+        },
+      );
+
+      tokenString = String(token.data.access_token);
+      this.protocolService.extendedLog(
+        'Successfully retrieved access token for authorization code flow',
+      );
+    } catch (error) {
+      this.protocolService.extendedLogError('Failed authorization code flow');
+      return '';
+    }
+    return tokenString;
+  }
+
   async authorizationFlow(
     issuer_s: string,
     clientId: string,

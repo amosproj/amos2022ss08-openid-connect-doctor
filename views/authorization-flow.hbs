@@ -40,6 +40,10 @@
             <p>Please enter the necessary information:</p>
             <form class="input-form">
                 <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label" for="issuerUrl">Issuer</label>
+                    <input type="text" id="issuerUrl" class="col-sm-10" name="issuerUrl" value="{{issuer_s}}" aria-label="Issuer input"  placeholder="Input your issuer here" aria-placeholder="Input your issuer here"/>
+                </div>
+                <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="clientId">Client-ID</label>
                     <input type="text" id="clientId" class="col-sm-8" name="clientId" aria-label="Client-Id input"  placeholder="Input your client-id here" aria-placeholder="Input your client-id here"/>
                 </div>
@@ -104,6 +108,7 @@
 
     <script type="text/javascript">
         function login() {
+            const issuer_s = document.getElementById("issuerUrl").value;
             const client_id = document.getElementById("clientId").value;
             const client_secret = document.getElementById("clientSecret").value;
             const customUri = document.getElementById("customUri").value;
@@ -122,6 +127,7 @@
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
+                            issuerString: issuer_s,
                             clientId: client_id,
                             clientSecret: client_secret,
                             url: myURL,

@@ -41,16 +41,16 @@
             <p>Please enter the necessary information:</p>
             <form class="input-form">
                 <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label" for="redirectUri">OpenID Provider</label>
+                    <input type="text" id="issuer" class="col-sm-8" name="issuer" aria-label="custom-URI input" {{#if issuer_s}}value="{{issuer_s}}" {{/if}}placeholder="Input your OpenID provider here" aria-placeholder="Input your OpenID Provider here"/>
+                </div>
+                <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="clientId">Client-ID</label>
                     <input type="text" id="clientId" class="col-sm-8" name="clientId" aria-label="Client-Id input"  placeholder="Input your client-id here" aria-placeholder="Input your client-id here"/>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="clientSecret">Client-Secret</label>
                     <input type="password" id="clientSecret" class="col-sm-8" name="clientSecret" aria-label="Client-Secret input"  placeholder="Input your client-secret here" aria-placeholder="Input your client-secret here"/>
-                </div>
-                <div class="row mb-3">
-                    <label class="col-sm-2 col-form-label" for="redirectUri">OpenID Provider</label>
-                    <input type="text" id="issuer" class="col-sm-8" name="issuer" aria-label="custom-URI input" {{#if issuer_s}}value="{{issuer_s}}" {{/if}}placeholder="Input your OpenID provider here" aria-placeholder="Input your custom URI here"/>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="redirectUri"></label>

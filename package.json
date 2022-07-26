@@ -90,7 +90,8 @@
       "schema/**/*",
       "public/**/*",
       "logfiles/**/*",
-      "node_modules/hbs/**/*.js"
+      "node_modules/hbs/**/*.js",
+      "settings/*.json"
     ],
     "targets": [
       "node16-linux-x64",

@@ -1,0 +1,155 @@
+\documentclass[english, letterpaper, 10 pt]{report}
+
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{listings}
+\hypersetup{
+    colorlinks,
+    linktoc=all,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+% -------------------------------------------------------------------------------------
+% BEGIN DOCUMENT
+% -------------------------------------------------------------------------------------
+\begin{document}
+\title{Build Documentation}
+\author{Sarah Julia Kriesch}
+\maketitle
+\pagestyle{empty}
+
+
+\newpage
+% -------------------------------------------------------------------------------------
+% General Build Information
+% ------------------------------------------
+% -------------------------------------------
+\section*{General Build Information}
+
+There are two build paths available in our project "OpenID Connect Doctor".
+Developers should use the "Build with the command line" to test their software and for a review before every release.
+\\
+
+\noindent Then there is an automated build path included into the CI/CD pipeline with pkg to create binaries for MacOS, Windows and Linux. These binaries will be created automatically with every release and are also available for downloads under \href{https://github.com/amosproj/amos2022ss08-openid-connect-doctor/releases}{Assets} of our releases. The names are openid-doctor-linux, openid-doctor-macos and openid-doctor-win.exe.
+
+
+% -------------------------------------------------------------------------------------
+% Manual Build with the command line
+% -------------------------------------------------------------------------------------
+\section*{Manual Builds}
+
+Developers or people, who want to build the application manually via the command line based on the main branch, should have installed Node.js Version 16.15.0 or later. Nodejs includes the command npm, which is required for manual builds.
+\\
+
+\noindent All required npm packages (referenced in our \href{https://github.com/amosproj/amos2022ss08-openid-connect-doctor/blob/main/package.json}{package.json} as dependencies will be installed with:
+
+\begin{lstlisting}[frame=single]
+  $ npm install
+\end{lstlisting}
+
+\noindent Afterwards the build process can be started with:
+\begin{lstlisting}[frame=single]
+  $ npm run build
+\end{lstlisting}
+
+\noindent The application will be opened with the following command then:
+\begin{lstlisting}[frame=single]
+  $ npm start
+\end{lstlisting}
+
+
+% -------------------------------------------------------------------------------------
+% Automated Build with Github Actions
+% -------------------------------------------------------------------------------------
+\section*{Automated Build}
+There has been the requirement to create binaries for executing after every release. 
+The most efficient method is the integration of automated builds in the CI/CD pipeline within the release cycle.
+That has been done with pkg\footnote{https://github.com/vercel/pkg}. The installation will integrate some additional dependencies for \href{https://github.com/amosproj/amos2022ss08-openid-connect-doctor/pull/60/commits/e927a44611477a41ef9a9a1d1430916fc07ef915#diff-053150b640a7ce75eff69d1a22cae7f0f94ad64ce9a855db544dda0929316519}{package-lock.json}.
+\\
+
+\noindent Pkg has to be referenced in the file package.json under "scripts" with:
+\begin{lstlisting}[frame=single]
+  "binary": "pkg package.json"
+\end{lstlisting}
+
+\newpage
+\noindent Then the target architectures have to be defined in the same file, the same as the content which has to be packaged:
+
+\begin{lstlisting}[frame=single]
+"bin": "bundle/index.js",
+ "pkg": {
+    "assets": [
+      "views/**/*",
+      "schema/**/*",
+      "public/**/*",
+      "logfiles/**/*",
+      "node_modules/hbs/**/*.js"
+    ],
+    "targets": [
+      "node16-linux-x64",
+      "node16-win-x64",
+      "node16-macos-x64"
+    ]
+\end{lstlisting}
+
+
+\noindent Afterwards, the automated build of binaries should have been integrated into the CI/CD pipeline of Github.
+\\
+
+\noindent That will be done with the file \href{https://github.com/amosproj/amos2022ss08-openid-connect-doctor/blob/main/.github/workflows/release-binary.yml}{.github/workflows/release-binary.yml}.
+\\
+\noindent The release job of binaries should be executed only during release. That is defined with:
+\begin{lstlisting}[frame=single]
+name: release-binary
+on:
+  release:
+    types: [published]
+\end{lstlisting}
+
+\newpage
+\noindent The job is defined with executing npm commands to build the application and to upload all build artifacts with executing permissions of a Github Token:
+\begin{lstlisting}[frame=single]
+jobs:
+  build-binary:
+    name: build-binary
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@main
+      - name: Setup Node.js version
+        uses: actions/setup-node@main
+        with:
+          node-version: 16.15.0
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Build application
+        run: npm run build
+      - name: Bundle
+        run: npm run bundle
+      - name: Generate Binary
+        run: npm run binary
+      - run: chmod -R +x openid-*
+      - name: Upload artifacts
+        uses: skx/github-action-publish-binaries@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: 'openid-*'
+\end{lstlisting}
+
+
+
+\newpage
+% -------------------------------------------------------------------------------------
+% REFERENCES
+% -------------------------------------------------------------------------------------
+%\bibliography{}
+
+% -------------------------------------------------------------------------------------
+% END DOCUMENT
+% -------------------------------------------------------------------------------------
+\end{document}

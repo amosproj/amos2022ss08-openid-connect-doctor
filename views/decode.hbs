@@ -122,28 +122,28 @@
                                     {{/if}}
                                 </div>
                             </div>
-                        </div><br>
-                    </div>
-                    <div class="card card-body d-flex flex-row align-content-start w-100">
-                        <label class="w-50" for="getKeysFromProvider">Use Key-Material from JWKS-Endpoint?</label>
-                        <input class="w-50" type="checkbox" id="getKeysFromProvider" name="getKeysFromProvider" checked="checked"/>
-                    </div>
-                    <div class="card card-body d-flex flex-column align-content-start w-100">
-                        <div class="d-flex flex-row align-content-start w-100">
-                            <label class="w-50" id="keyMaterialAlgorithmLabel" for="keyMaterialAlgorithm">Key-Algorithm:</label>
-                            <select class="w-50" id="keyMaterialAlgorithm" name="keyMaterialAlgorithm">
-                                {{#if key_algorithms}}
-                                {{#each key_algorithms as |key_alg|}}
-                                <option id="{{key_alg}}" value="{{key_alg}}">{{key_alg}}</option>
-                                {{/each}}
-                                {{/if}}
-                            </select>
-                        </div><br>
-                        <div class="d-flex flex-row align-content-start w-100">
-                            <label class="w-50" id="keyMaterialFilepathLabel" for="keyMaterialFilepath">Key-Filepath:</label>
-                            <input class="w-50" type="text" id="keyMaterialFilepath" name="keyMaterialFilepath" />
+                            <div class="tab-pane fade" id="signature" role="tabpanel" aria-labelledby="signature-settings-tab">
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label" for="header-schema">Use Key-Material from JWKS-Endpoint?</label>
+                                    <input class="col-sm-10" type="checkbox" id="getKeysFromProvider" name="getKeysFromProvider" checked="checked" onchange="toggleKeyAlgorithmInputs()"/>
+                                </div>
+                                <div class="row mb-3 d-none" id="key-alg-row">
+                                    <label class="col-sm-2 col-form-label" for="keyMaterialAlgorithm">Key-Algorithm:</label>
+                                    <select class="col-sm-10" id="keyMaterialAlgorithm" name="keyMaterialAlgorithm" disabled>
+                                        {{#if key_algorithms}}
+                                            {{#each key_algorithms as |key_alg|}}
+                                                <option id="{{key_alg}}" value="{{key_alg}}">{{key_alg}}</option>
+                                            {{/each}}
+                                        {{/if}}
+                                    </select>
+                                </div>
+                                <div class="row mb-3 d-none" id="key-mat-row">
+                                    <label class="col-sm-2 col-form-label" for="keyMaterialFilepath">Key-Filepath:</label>
+                                    <input class="col-sm-10" type="text" id="keyMaterialFilepath" name="keyMaterialFilepath" disabled/>
+                                </div>
+                            </div>
                         </div>
-                    </div><br>
+                    </div>
                 </div>
                 <div class="button-group">
                     <button class="btn btn-outline-secondary" type="submit" formaction="/api/token/decode" formmethod="get">Reset</button>
@@ -184,10 +184,31 @@
 {{{result.payload}}}
                     </pre>
                 </div>
-            </div>
             {{/if}}
         </div>
         <script>
+            function toggleKeyAlgorithmInputs() {
+                var checkboxElement = document.getElementById('getKeysFromProvider');
+                var algSelectionRow = document.getElementById('key-alg-row');
+                var algSelectionElement = document.getElementById('keyMaterialAlgorithm');
+                var matSelectionRow = document.getElementById('key-mat-row');
+                var matSelectionElement = document.getElementById('keyMaterialFilepath');
+
+                if (checkboxElement.checked === false) {
+                    algSelectionRow.classList.remove('d-none');
+                    algSelectionElement.disabled = false;
+
+                    matSelectionRow.classList.remove('d-none');
+                    matSelectionElement.disabled = false;
+                } else {
+                    algSelectionRow.classList.add('d-none');
+                    algSelectionElement.disabled = true;
+
+                    matSelectionRow.classList.add('d-none');
+                    matSelectionElement.disabled = true;
+                }
+            }
+
             function download(filename, text) {
                 var tmp_element = document.createElement('a');
                 tmp_element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));

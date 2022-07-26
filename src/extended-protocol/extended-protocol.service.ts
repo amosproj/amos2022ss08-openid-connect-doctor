@@ -10,7 +10,7 @@ import { promises as fsPromises } from 'fs';
 
 @Injectable()
 export class ExtendedProtocolService {
-    private readonly logPath = './logfiles';
+    private readonly logPath = './output';
     private readonly extLogFileName = './extLogger.html';
     private extLogFile = undefined;
     private extLogBuffer : string = '';

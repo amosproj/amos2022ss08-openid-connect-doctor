@@ -1,3 +1,7 @@
+//SDPX-License-Identifier: MIT
+//SDPX-FileCopyrightText: 2022 Md Golam Muktadir <golam.muktadir@fau.de>
+
+
 export class ProtocolLogger{
     public log: string;
     public statusCode: number;

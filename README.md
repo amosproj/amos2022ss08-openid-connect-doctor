@@ -4,7 +4,7 @@
 <img src="public/images/logo-amos.png" width="430" height="300">
 </p>
 
-
+The OpenID Connect Doctor is a tool for the creation of authentication configurations with OpenID for your applications. That includes also the verification of valid tokens and password grants. You can download the configuration in a JSON format and include it into any application then.
 
 ## Documentation
 The documentation can be found in the [Documentation-Folder](https://github.com/amosproj/amos2022ss08-openid-connect-doctor/blob/main/Documentation/user-documentation.md).

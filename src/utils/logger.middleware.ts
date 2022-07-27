@@ -1,3 +1,7 @@
+//SDPX-License-Identifier: MIT
+//SDPX-FileCopyrightText: 2022 Md Golam Muktadir <golam.muktadir@fau.de>
+
+
 import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 

@@ -1,3 +1,7 @@
+//SDPX-License-Identifier: MIT
+//SDPX-FileCopyrightText: 2022 Md Golam Muktadir <golam.muktadir@fau.de>
+
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProtocolService } from './protocol.service';
 import { ExtendedProtocolModule } from '../extended-protocol/extended-protocol.module';
